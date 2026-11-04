@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ab7b2a40b88c61449096922e35e94ca, type: 3}
+  m_Name: ach_surv_kill_2000
+  m_EditorClassIdentifier: Assembly-CSharp::AchievementData
+  achievementId: ach_surv_kill_2000
+  title: Tentiforverse Efsanesi
+  description: "2000 d\xFC\u015Fman \xF6ld\xFCr."
+  icon: {fileID: 0}
+  category: 1
+  trackedStat: 11
+  targetValue: 2000
+  goldReward: 2000

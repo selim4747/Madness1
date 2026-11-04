@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50c68dc098b97b46beccfff2049e5ef, type: 3}
+  m_Name: Story_Dialogue_ 1
+  m_EditorClassIdentifier: Assembly-CSharp::StoryDialogueData
+  eventId: story_002
+  triggerDay: 2
+  isFinale: 0
+  speakerName: Afor
+  speakerPortrait: {fileID: 0}
+  npcPrefabOverride: {fileID: 0}
+  focusCamera: 1
+  cameraFocusOffset: {x: 0, y: 0}
+  hareketliAnlatim: 0
+  hareketMesafesi: 2
+  lines:
+  - speakerName: Afor
+    text: "Merhaba. Nas\u0131ls\u0131n?"
+  - speakerName: Afor
+    text: NEEEEE?
+  - speakerName: Afor
+    text: "D\xFCn canavarlar m\u0131 vard\u0131? Nas\u0131l g\xF6r\xFCn\xFCyorlard\u0131."
+  - speakerName: Afor
+    text: "\xD6nceki G\xF6revlinin tam anlatt\u0131\u011F\u0131 gibi."
+  - speakerName: Afor
+    text: "Ama bu nas\u0131l olur?"

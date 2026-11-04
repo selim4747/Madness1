@@ -1,0 +1,450 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 541cd646e9ffb2644acd4d7dcf48f0af, type: 3}
+  m_Name: BahceKonuVerisi
+  m_EditorClassIdentifier: Assembly-CSharp::BahceKonuVerisi
+  tumCumleler:
+  - id: kitap_01
+    metin: "Bu d\xFCkkandaki kitap se\xE7kisi ger\xE7ekten etkileyici."
+    konular:
+    - kitaplar
+    - dukkan
+    secenekler:
+    - secenekMetni: "D\xFCkkan hakk\u0131nda ne d\xFC\u015F\xFCn\xFCyorsun?"
+      hedefCumleId: dukkan_01
+    - secenekMetni: "Sen nas\u0131l okursun?"
+      hedefCumleId: kitap_02
+  - id: kitap_02
+    metin: "Bir kitaba ba\u015Flay\u0131nca bitirmeden b\u0131rakam\u0131yorum."
+    konular:
+    - kitaplar
+    secenekler:
+    - secenekMetni: "En sevdi\u011Fin t\xFCr ne?"
+      hedefCumleId: kitap_03
+    - secenekMetni: "Ba\u015Fka al\u0131\u015Fkanl\u0131klar\u0131n var m\u0131?"
+      hedefCumleId: aliskanlik_01
+  - id: kitap_03
+    metin: "En sevdi\u011Fim t\xFCr hangisi mi? S\xF6ylesem \u015Fa\u015F\u0131r\u0131rs\u0131n."
+    konular:
+    - kitaplar
+    - bilimkurgu
+    secenekler:
+    - secenekMetni: Neden bilim kurgu?
+      hedefCumleId: bilimkurgu_01
+  - id: kitap_04
+    metin: "Eski bask\u0131 kitaplar\u0131n kokusunu \xF6zl\xFCyorum."
+    konular:
+    - kitaplar
+    - anilar
+    secenekler:
+    - secenekMetni: "Ne gibi an\u0131lar\u0131n var?"
+      hedefCumleId: anilar_01
+  - id: dukkan_01
+    metin: "Buraya her geldi\u011Fimde kendimi evimde gibi hissediyorum."
+    konular:
+    - dukkan
+    - mahalle
+    secenekler:
+    - secenekMetni: "Mahalle hakk\u0131nda ne d\xFC\u015F\xFCn\xFCyorsun?"
+      hedefCumleId: mahalle_01
+  - id: dukkan_02
+    metin: "Bah\xE7e k\u0131sm\u0131 ger\xE7ekten huzur verici bir k\xF6\u015Fe olmu\u015F."
+    konular:
+    - dukkan
+    - doga
+    secenekler:
+    - secenekMetni: "Do\u011Fay\u0131 sever misin?"
+      hedefCumleId: doga_01
+  - id: bilimkurgu_01
+    metin: "Uzayl\u0131 medeniyetleri hakk\u0131nda yaz\u0131lanlar\u0131 hep merak
+      etmi\u015Fimdir."
+    konular:
+    - bilimkurgu
+    - uzay
+    secenekler:
+    - secenekMetni: "Uzay hakk\u0131nda ne d\xFC\u015F\xFCn\xFCyorsun?"
+      hedefCumleId: uzay_01
+  - id: uzay_01
+    metin: "G\xF6ky\xFCz\xFCne bakarken hep 'acaba orada da birileri bize bak\u0131yor
+      mu' diye d\xFC\u015F\xFCn\xFCr\xFCm."
+    konular:
+    - uzay
+    - geceler
+    secenekler:
+    - secenekMetni: "Geceleri g\xF6ky\xFCz\xFC nas\u0131l?"
+      hedefCumleId: geceler_01
+  - id: geceler_01
+    metin: "Gece g\xF6ky\xFCz\xFC \xE7ok net g\xF6r\xFCn\xFCyor bu mevsimde."
+    konular:
+    - geceler
+    - mevsimler
+    secenekler:
+    - secenekMetni: Bu mevsimi seviyor musun?
+      hedefCumleId: mevsimler_01
+  - id: hava_01
+    metin: "Bug\xFCn hava tam da kitap okumaya uygun."
+    konular:
+    - hava_durumu
+    - kitaplar
+    secenekler:
+    - secenekMetni: "Kitap konusunu a\xE7al\u0131m m\u0131?"
+      hedefCumleId: kitap_02
+  - id: hava_02
+    metin: "Ya\u011Fmur ya\u011Farken bir \u015Feyler okumak ayr\u0131 g\xFCzel."
+    konular:
+    - hava_durumu
+    - kitaplar
+    secenekler: []
+  - id: mevsimler_01
+    metin: "Bu mevsimi di\u011Ferlerine tercih ederim, bir sebebi var m\u0131 bilmiyorum."
+    konular:
+    - mevsimler
+    secenekler:
+    - secenekMetni: "Eski g\xFCnleri \xF6zl\xFCyor musun?"
+      hedefCumleId: anilar_02
+  - id: doga_01
+    metin: "Bitkilerin aras\u0131nda oturmak insan\u0131 sakinle\u015Ftiriyor."
+    konular:
+    - doga
+    - hobiler
+    secenekler:
+    - secenekMetni: "Ba\u015Fka nelerle u\u011Fra\u015F\u0131rs\u0131n?"
+      hedefCumleId: hobiler_01
+  - id: doga_02
+    metin: "\xC7ocukken bah\xE7ede saatlerce oynard\u0131m."
+    konular:
+    - doga
+    - anilar
+    secenekler:
+    - secenekMetni: "\xC7ocuklu\u011Funu \xF6zl\xFCyor musun?"
+      hedefCumleId: anilar_02
+  - id: anilar_01
+    metin: "K\xFC\xE7\xFCkken b\xFCy\xFCkannemin bana okudu\u011Fu masallar\u0131
+      h\xE2l\xE2 hat\u0131rl\u0131yorum."
+    konular:
+    - anilar
+    - aile
+    secenekler:
+    - secenekMetni: "Ailen hakk\u0131nda ne d\xFC\u015F\xFCn\xFCyorsun?"
+      hedefCumleId: aile_01
+  - id: anilar_02
+    metin: "Eski g\xFCnler her zaman daha g\xFCzel g\xF6r\xFCn\xFCyor, de\u011Fil
+      mi?"
+    konular:
+    - anilar
+    secenekler:
+    - secenekMetni: "Karde\u015Finle aran\u0131z nas\u0131l?"
+      hedefCumleId: aile_02
+  - id: aile_01
+    metin: "Ailem her zaman okumay\u0131 te\u015Fvik etmi\u015Ftir."
+    konular:
+    - aile
+    - kitaplar
+    secenekler: []
+  - id: aile_02
+    metin: "Karde\u015Fimle h\xE2l\xE2 eski g\xFCnleri konu\u015Furuz bazen."
+    konular:
+    - aile
+    - arkadaslik
+    secenekler:
+    - secenekMetni: "Arkada\u015Fl\u0131k hakk\u0131nda ne d\xFC\u015F\xFCn\xFCyorsun?"
+      hedefCumleId: arkadaslik_01
+  - id: arkadaslik_01
+    metin: "\u0130yi bir dost bulmak, iyi bir kitap bulmaktan daha zor bence."
+    konular:
+    - arkadaslik
+    - kitaplar
+    secenekler: []
+  - id: arkadaslik_02
+    metin: "Eski arkada\u015Flarla ba\u011F kurmak zamanla zorla\u015F\u0131yor."
+    konular:
+    - arkadaslik
+    secenekler:
+    - secenekMetni: "\u0130\u015Fin nas\u0131l gidiyor?"
+      hedefCumleId: meslek_01
+  - id: meslek_01
+    metin: "\u0130\u015Fim beni bazen \xE7ok yoruyor ama \u015Fikayet edecek de\u011Filim."
+    konular:
+    - meslek
+    secenekler:
+    - secenekMetni: "Gelecek planlar\u0131n var m\u0131?"
+      hedefCumleId: gelecek_01
+  - id: meslek_02
+    metin: "Meslekta\u015Flar\u0131mla aram\u0131z gayet iyi, \u015Fansl\u0131y\u0131m
+      bu konuda."
+    konular:
+    - meslek
+    - arkadaslik
+    secenekler: []
+  - id: gelecek_01
+    metin: "Bir g\xFCn kendi i\u015Fimi kurmay\u0131 hayal ediyorum."
+    konular:
+    - gelecek
+    - meslek
+    secenekler: []
+  - id: gelecek_02
+    metin: "Nereye gidece\u011Fimi bilmiyorum ama bir yerlere gidece\u011Fimi biliyorum."
+    konular:
+    - gelecek
+    - seyahat
+    secenekler:
+    - secenekMetni: "Seyahat etmeyi d\xFC\u015F\xFCn\xFCyor musun?"
+      hedefCumleId: seyahat_01
+  - id: seyahat_01
+    metin: "Hi\xE7 gitmedi\u011Fim bir yere gitmek istiyorum bu y\u0131l."
+    konular:
+    - seyahat
+    secenekler:
+    - secenekMetni: "Buradan ayr\u0131lmay\u0131 d\xFC\u015F\xFCn\xFCr m\xFCs\xFCn?"
+      hedefCumleId: mahalle_02
+  - id: seyahat_02
+    metin: "Seyahat ederken hep yan\u0131mda bir kitap ta\u015F\u0131r\u0131m."
+    konular:
+    - seyahat
+    - kitaplar
+    secenekler: []
+  - id: mahalle_01
+    metin: "Bu mahalle eskisi kadar sessiz de\u011Fil ama yine de seviyorum."
+    konular:
+    - mahalle
+    secenekler: []
+  - id: mahalle_02
+    metin: "Ba\u015Fka \u015Fehirleri g\xF6rd\xFCk\xE7e buras\u0131n\u0131n k\u0131ymetini
+      daha iyi anl\u0131yorum."
+    konular:
+    - mahalle
+    - seyahat
+    secenekler: []
+  - id: yemek_01
+    metin: "Bir fincan s\u0131cak i\xE7ecek e\u015Fli\u011Finde okumak gibisi yok."
+    konular:
+    - yemek
+    - kitaplar
+    secenekler: []
+  - id: yemek_02
+    metin: "Annemin yemeklerini h\xE2l\xE2 \xF6zl\xFCyorum a\xE7\u0131k\xE7as\u0131."
+    konular:
+    - yemek
+    - aile
+    secenekler:
+    - secenekMetni: "Ailenle ilgili ba\u015Fka an\u0131n var m\u0131?"
+      hedefCumleId: aile_01
+  - id: muzik_01
+    metin: "Arka planda m\xFCzik olmadan pek \xE7al\u0131\u015Fam\u0131yorum."
+    konular:
+    - muzik
+    - hobiler
+    secenekler: []
+  - id: muzik_02
+    metin: "Eski \u015Fark\u0131lar bana hep bir \u015Feyleri hat\u0131rlat\u0131yor."
+    konular:
+    - muzik
+    - anilar
+    secenekler: []
+  - id: hobiler_01
+    metin: "Bo\u015F zaman\u0131mda ellerimle bir \u015Feyler yapmay\u0131 seviyorum."
+    konular:
+    - hobiler
+    secenekler: []
+  - id: hobiler_02
+    metin: "Yeni bir hobiye ba\u015Flamak hi\xE7 ge\xE7 de\u011Fil derler."
+    konular:
+    - hobiler
+    - gelecek
+    secenekler: []
+  - id: hayvan_01
+    metin: "Bir hayvan\u0131m olsa hayat\u0131m daha renkli olurdu san\u0131r\u0131m."
+    konular:
+    - hayvanlar
+    secenekler:
+    - secenekMetni: "Do\u011Fay\u0131 sever misin?"
+      hedefCumleId: doga_01
+  - id: hayvan_02
+    metin: "Sokak hayvanlar\u0131na yemek vermeyi hi\xE7 ihmal etmem."
+    konular:
+    - hayvanlar
+    - mahalle
+    secenekler: []
+  - id: ruya_01
+    metin: "D\xFCn gece \xE7ok garip bir r\xFCya g\xF6rd\xFCm, h\xE2l\xE2 akl\u0131mdan
+      \xE7\u0131km\u0131yor."
+    konular:
+    - ruyalar
+    secenekler:
+    - secenekMetni: "Ba\u015Fka neler g\xF6r\xFCyorsun r\xFCyanda?"
+      hedefCumleId: ruya_02
+  - id: ruya_02
+    metin: "R\xFCyalar\u0131mda genelde u\xE7tu\u011Fumu g\xF6r\xFCr\xFCm, tuhaf
+      de\u011Fil mi?"
+    konular:
+    - ruyalar
+    - uzay
+    secenekler: []
+  - id: saglik_01
+    metin: "Son zamanlarda daha \xE7ok y\xFCr\xFCmeye \xF6zen g\xF6steriyorum."
+    konular:
+    - saglik
+    secenekler:
+    - secenekMetni: "Do\u011Fada vakit ge\xE7irir misin?"
+      hedefCumleId: doga_01
+  - id: aliskanlik_01
+    metin: "Her sabah ayn\u0131 rutini takip etmeden g\xFCne ba\u015Flayam\u0131yorum."
+    konular:
+    - aliskanliklar
+    secenekler: []
+  - id: aliskanlik_02
+    metin: "Baz\u0131 al\u0131\u015Fkanl\u0131klar\u0131mdan vazge\xE7mek ger\xE7ekten
+      zor."
+    konular:
+    - aliskanliklar
+    - gelecek
+    secenekler:
+    - secenekMetni: "Gelecekte de\u011Fi\u015Fmek ister misin?"
+      hedefCumleId: gelecek_01
+  - id: l25_01
+    metin: "L25'in ortadan kayboldu\u011Funu duydun mu? Aylard\u0131r kimse ondan
+      haber alam\u0131yor."
+    konular:
+    - l25
+    secenekler:
+    - secenekMetni: "Nereye gitti\u011Fini biliyor musun?"
+      hedefCumleId: l25_02
+  - id: l25_02
+    metin: "Baz\u0131lar\u0131 ba\u015Fka bir evrende mahsur kald\u0131\u011F\u0131n\u0131
+      s\xF6yl\xFCyor ama kimse tam olarak nerede oldu\u011Funu bilmiyor."
+    konular:
+    - l25
+    secenekler:
+    - secenekMetni: "Onunla tan\u0131\u015Fm\u0131\u015F m\u0131yd\u0131n hi\xE7?"
+      hedefCumleId: l25_03
+  - id: l25_03
+    metin: "Ke\u015Fke L25 ile bir kez olsun konu\u015Fabilseydim, soras\u0131 \xE7ok
+      \u015Feyim vard\u0131."
+    konular:
+    - l25
+    secenekler: []
+  - id: eskigorevli_01
+    metin: "Buradaki eski g\xF6revliyi hat\u0131rl\u0131yor musun? Onu d\xFC\u015F\xFCnmeden
+      edemiyorum bazen."
+    konular:
+    - eski_gorevli
+    - anilar
+    secenekler:
+    - secenekMetni: "Gitti\u011Finden beri neler de\u011Fi\u015Fti?"
+      hedefCumleId: eskigorevli_02
+  - id: eskigorevli_02
+    metin: "Gitti\u011Finden beri buras\u0131 bir tuhaf, ama belki de ben \xF6yle
+      hissediyorumdur."
+    konular:
+    - eski_gorevli
+    - dukkan
+    secenekler:
+    - secenekMetni: "Onu nas\u0131l hat\u0131rl\u0131yorsun?"
+      hedefCumleId: eskigorevli_03
+  - id: eskigorevli_03
+    metin: "Onun her zaman oturdu\u011Fu k\xF6\u015Feye h\xE2l\xE2 oturmaya k\u0131yam\u0131yorum,
+      garip gelecek ama."
+    konular:
+    - eski_gorevli
+    secenekler: []
+  - id: kutuphanetarihi_01
+    metin: "Bu k\xFCt\xFCphanenin bin y\u0131ll\u0131k oldu\u011Funu biliyor muydun?"
+    konular:
+    - kutuphane_tarihi
+    - dukkan
+    secenekler:
+    - secenekMetni: "Bu kadar eski bir yerde neler olmu\u015Ftur?"
+      hedefCumleId: kutuphanetarihi_02
+  - id: kutuphanetarihi_02
+    metin: "Bu kadar eski bir yerde ka\xE7 insan\u0131n hik\xE2yesi sakl\u0131d\u0131r
+      kim bilir."
+    konular:
+    - kutuphane_tarihi
+    - anilar
+    secenekler:
+    - secenekMetni: "Eski g\xF6revliyi tan\u0131yor muydun?"
+      hedefCumleId: eskigorevli_01
+  - id: buzokyanusu_01
+    metin: "T\xF6mye'nin okyanusunun tamamen buzla kapl\u0131 oldu\u011Funu biliyor
+      muydun?"
+    konular:
+    - buz_okyanusu
+    - uzay
+    secenekler:
+    - secenekMetni: "Alt\u0131nda ne oldu\u011Funu hi\xE7 merak ettin mi?"
+      hedefCumleId: buzokyanusu_02
+  - id: buzokyanusu_02
+    metin: "Buzun alt\u0131nda ne oldu\u011Funu kimse bilmiyor, hi\xE7 merak etmedin
+      mi?"
+    konular:
+    - buz_okyanusu
+    secenekler:
+    - secenekMetni: Sen oraya gider miydin?
+      hedefCumleId: buzokyanusu_03
+  - id: buzokyanusu_03
+    metin: "Baz\u0131 geceler oraya gidip bakmay\u0131 hayal ederim, korkak olmasam
+      tabii."
+    konular:
+    - buz_okyanusu
+    - geceler
+    secenekler: []
+  - id: kaelan_ailesi_01
+    metin: "Kaelan'\u0131n ailesini gen\xE7 ya\u015Fta kaybetti\u011Fini duymu\u015Ftum,
+      ne kadar zor olmal\u0131."
+    konular:
+    - kaelan_ailesi
+    - anilar
+    secenekler:
+    - secenekMetni: "Nas\u0131l atlatm\u0131\u015F bunu?"
+      hedefCumleId: kaelan_ailesi_02
+  - id: kaelan_ailesi_02
+    metin: "Baz\u0131 insanlar b\xF6yle \u015Feyleri hi\xE7 atlatam\u0131yor, sadece
+      \xFCst\xFCn\xFC \xF6rt\xFCyor."
+    konular:
+    - kaelan_ailesi
+    secenekler:
+    - secenekMetni: "Onu nas\u0131l biri olarak tan\u0131rs\u0131n?"
+      hedefCumleId: kaelan_ailesi_03
+  - id: kaelan_ailesi_03
+    metin: "Duydu\u011Fuma g\xF6re onlar \xF6lmeden \xE7ok \xF6nce bile hep kendi
+      d\xFCnyas\u0131ndaym\u0131\u015F, kimse tam anlayamam\u0131\u015F onu."
+    konular:
+    - kaelan_ailesi
+    secenekler: []
+  tanimliKonular:
+  - aile
+  - aliskanliklar
+  - anilar
+  - arkadaslik
+  - bilimkurgu
+  - buz_okyanusu
+  - doga
+  - dukkan
+  - eski_gorevli
+  - geceler
+  - gelecek
+  - hava_durumu
+  - hayvanlar
+  - hobiler
+  - kaelan_ailesi
+  - kitaplar
+  - kutuphane_tarihi
+  - l25
+  - mahalle
+  - meslek
+  - mevsimler
+  - muzik
+  - ruyalar
+  - saglik
+  - seyahat
+  - uzay
+  - yemek

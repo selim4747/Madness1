@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50c68dc098b97b46beccfff2049e5ef, type: 3}
+  m_Name: Story_Dialogue_
+  m_EditorClassIdentifier: Assembly-CSharp::StoryDialogueData
+  eventId: story_001
+  triggerDay: 1
+  isFinale: 0
+  speakerName: Afor
+  speakerPortrait: {fileID: 0}
+  npcPrefabOverride: {fileID: 0}
+  focusCamera: 1
+  cameraFocusOffset: {x: 0, y: 0}
+  lines:
+  - speakerName: 
+    text: Merhaba
+  - speakerName: 
+    text: "ilk g\xFCn\xFCn san\u0131r\u0131m"
+  - speakerName: 
+    text: "\xF6nceki k\xFCt\xFCphane g\xF6revlisini tan\u0131rd\u0131m"

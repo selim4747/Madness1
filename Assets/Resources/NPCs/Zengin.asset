@@ -1,0 +1,324 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36e4278d8647c9e4895a173550d45073, type: 3}
+  m_Name: Zengin
+  m_EditorClassIdentifier: Assembly-CSharp::CustomerData
+  karakterHavuzu:
+  - musteriIsmi: Danpar
+    cinsiyet: 1
+    loreHikayesi: 
+    sevilenTurler: 000000000200000001000000
+    sevmedigiTurler: 
+    sabirCarpani: 1
+    odemeCarpani: 1
+    incelemeSuresiCarpani: 1
+    meslek: 
+    ozelDiyaloglar:
+    - "Kitap g\xFCzel knk"
+    - "S\xFCper bir yaz\u0131"
+    - "\u015Eu kitap fena sard\u0131"
+    - "Cans\u0131n Bra"
+    - Sevdim seni
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: "Elenya Sar\u0131"
+    cinsiyet: 1
+    loreHikayesi: "Feilin anne taraf\u0131ndan birisi"
+    sevilenTurler: 0000000005000000
+    sevmedigiTurler: 
+    sabirCarpani: 1
+    odemeCarpani: 1
+    incelemeSuresiCarpani: 1
+    meslek: Doktor
+    ozelDiyaloglar:
+    - "Sar\u0131 ailesindenim, hastanede doktorum \u2014 vaktim az ama kitaps\u0131z
+      yapam\u0131yorum."
+    - "Bug\xFCn uzun bir n\xF6betten \xE7\u0131kt\u0131m, buraya gelmek beni dinlendiriyor
+      tuhaf bir \u015Fekilde."
+    - "Bilim kitaplar\u0131 severim ama bazen bir roman da iyi gelir, itiraf ediyorum."
+    - "Bu teoriyi meslekta\u015Flar\u0131ma anlataca\u011F\u0131m, ilgin\xE7 bir
+      bak\u0131\u015F a\xE7\u0131s\u0131 sunuyor."
+    - "Ailemde tuhaf hik\xE2yeler anlat\u0131l\u0131r eskiden, b\xFCy\xFCk b\xFCy\xFCkannemin
+      bir s\u0131rr\u0131 varm\u0131\u015F derler. G\xFCl\xFCp ge\xE7erim genelde."
+    - "Bug\xFCn \xE7ok yorgunum ama bir kitap almadan gitmem, kendime s\xF6z verdim."
+    - "Param konusunda c\xF6mertim, iyi bir kitaba her zaman de\u011Fer."
+    - "Param konusunda c\xF6mertim, iyi bir kitaba her zaman de\u011Fer."
+    tisortSprite: {fileID: 0}
+    sosyal: 0
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: Feotun
+    cinsiyet: 1
+    loreHikayesi: 
+    sevilenTurler: 020000000500000004000000
+    sevmedigiTurler: 
+    sabirCarpani: 1
+    odemeCarpani: 1
+    incelemeSuresiCarpani: 1
+    meslek: 
+    ozelDiyaloglar: []
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: Igbar Eldig
+    cinsiyet: 1
+    loreHikayesi: "S\u0131radan biri"
+    sevilenTurler: 040000000000000001000000
+    sevmedigiTurler: 
+    sabirCarpani: 1
+    odemeCarpani: 1
+    incelemeSuresiCarpani: 1
+    meslek: 
+    ozelDiyaloglar:
+    - "Ax-24'ten geliyorum, i\u015F i\xE7in buraday\u0131m \u2014 \u015Furas\u0131
+      ger\xE7ekten donmu\u015F bir okyanus mu, inanam\u0131yorum h\xE2l\xE2."
+    - "Gezi kitaplar\u0131n\u0131 severim, her yeni gezegen beni heyecanland\u0131r\u0131r."
+    - "Necale, buz \xFCst\xFC gemiler ger\xE7ekten g\xFCvenli mi? Biraz endi\u015Feliyim
+      a\xE7\u0131k\xE7as\u0131."
+    - "Paran bende, sorun de\u011Fil, ama bu paran\u0131n burada ne kadar etti\u011Fini
+      h\xE2l\xE2 tam \xE7\xF6zemedim."
+    - "Necale, bu \u015Fehirde yabanc\u0131lara nas\u0131l davran\u0131l\u0131yor?
+      Meraktan soruyorum, k\xF6t\xFC bir tecr\xFCbem olmad\u0131 hen\xFCz"
+    - "Ax-24'te b\xF6yle donmu\u015F bir deniz yok, hep merak etmi\u015Fimdir buran\u0131n
+      nas\u0131l bir yer oldu\u011Funu."
+    - "Necale, param fazla gelir mi sence buraya, yoksa ben mi bir \u015Fey yanl\u0131\u015F
+      anl\u0131yorum fiyatlar\u0131"
+    tisortSprite: {fileID: 0}
+    sosyal: 0
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: sami
+    cinsiyet: 1
+    loreHikayesi: 
+    sevilenTurler: 040000000600000003000000
+    sevmedigiTurler: 
+    sabirCarpani: 1
+    odemeCarpani: 1
+    incelemeSuresiCarpani: 1
+    meslek: 
+    ozelDiyaloglar: []
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: "Egir E\u015Fci"
+    cinsiyet: 1
+    loreHikayesi: "Evrende s\u0131radan bir vatanda\u015F."
+    sevilenTurler: 030000000600000001000000
+    sevmedigiTurler: 
+    sabirCarpani: 1.2257965
+    odemeCarpani: 1.2732426
+    incelemeSuresiCarpani: 0.89179784
+    meslek: Esnaf
+    ozelDiyaloglar:
+    - "Kitaplar\u0131n fiyat\u0131 de\u011Fi\u015Fti mi son zamanlarda?"
+    - "Sence kaderimiz mi bizi se\xE7iyor, yoksa biz mi onu?"
+    - "Param c\xFCzdan\u0131mda az ama bir \u015Feyler alay\u0131m yine de."
+    - "Buraya gelmeden \xF6nce hep bir liste yapar\u0131m ama unutuyorum."
+    - "Bu raf\u0131n en \xFCst k\u0131sm\u0131na hi\xE7 ula\u015Fam\u0131yorum, yard\u0131m
+      eder misin?"
+    - "Sence herkesin bir kaderi mi var, yoksa hepsi tesad\xFCf m\xFC?"
+    - "Sence hat\u0131ralar ger\xE7ekten bize mi ait, yoksa biz mi onlara?"
+    - "Sence her son asl\u0131nda bir ba\u015Flang\u0131\xE7 m\u0131?"
+    - "\u0130nsan neden okur sence?"
+    - "Bug\xFCn sadece bakmaya geldim, almayaca\u011F\u0131m san\u0131r\u0131m."
+    - "Sence her insan\u0131n i\xE7inde bir yazar m\u0131 var?"
+    - "\u0130nsan neden bu kadar \xE7ok ge\xE7mi\u015Fe tutunur sence?"
+    - "Kitaplar\u0131 d\xFCzenlemek zor olmal\u0131, sayg\u0131 duyuyorum."
+    - "Bug\xFCn ne kadar vaktim var bilmiyorum ama kalmak istiyorum."
+    - "Bug\xFCn biraz acelem var ama yine de bakay\u0131m dedim."
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: "Tam\u0131s Bura"
+    cinsiyet: 1
+    loreHikayesi: "Evrende s\u0131radan bir vatanda\u015F."
+    sevilenTurler: 050000000800000007000000
+    sevmedigiTurler: 
+    sabirCarpani: 0.80754954
+    odemeCarpani: 0.992233
+    incelemeSuresiCarpani: 0.99518335
+    meslek: Doktor
+    ozelDiyaloglar:
+    - "Kitap se\xE7mek benim i\xE7in hep zor bir karar."
+    - "Sence hik\xE2yeler ger\xE7ek hayattan m\u0131 do\u011Far, yoksa hayal g\xFCc\xFCnden
+      m\xFC?"
+    - "Bu \u015Fehirde herkes bir \u015Fey biliyor gibi davran\u0131yor, sence de
+      \xF6yle mi?"
+    - "Bu raflar ne zaman yenilendi, hat\u0131rlam\u0131yorum."
+    - "Sence bir hik\xE2yeyi bitirmek bazen zor mu gelir yazara?"
+    - "Bu k\xFCt\xFCphanenin saatleri de\u011Fi\u015Fti mi son zamanlarda?"
+    - "Sence bir kitab\u0131n kapa\u011F\u0131 i\xE7eri\u011Finden daha m\u0131 \xF6nemli
+      bazen?"
+    - "\u0130nsan neden hep bir anlam arar sence?"
+    - "Param az ama g\xF6z\xFCm hep pahal\u0131 kitaplarda."
+    - "Bu \u015Fehirde herkes bir g\xFCn gidecekmi\u015F gibi ya\u015F\u0131yor,
+      sen de mi hissediyorsun?"
+    - "\u0130nsan neden bu kadar \xE7ok soru sorar sence?"
+    - "\u0130nsan neden hep bir yere ait olmak ister sence?"
+    - "\u0130nsan neden baz\u0131 kitaplar\u0131 tekrar tekrar okur sence?"
+    - "Buraya her geli\u015Fimde farkl\u0131 bir \u015Fey ke\u015Ffediyorum."
+    - "Param c\xFCzdan\u0131mda az ama bir \u015Feyler alay\u0131m yine de."
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: "Huj Sar\u0131"
+    cinsiyet: 0
+    loreHikayesi: "Evrende s\u0131radan bir vatanda\u015F."
+    sevilenTurler: 020000000100000000000000
+    sevmedigiTurler: 
+    sabirCarpani: 1.259911
+    odemeCarpani: 1.095468
+    incelemeSuresiCarpani: 0.99312735
+    meslek: "M\xFChendis"
+    ozelDiyaloglar:
+    - "Sence kelimeler duygular\u0131 tam anlatabiliyor mu?"
+    - "\u0130nsan neden hep bir anlam arar sence?"
+    - "Sence herkesin bir kaderi mi var, yoksa hepsi tesad\xFCf m\xFC?"
+    - "Bug\xFCn ilk kez buraya geliyorum, biraz heyecanl\u0131y\u0131m."
+    - "Buraya her geli\u015Fimde farkl\u0131 bir kitap \xE7ekiyor dikkatimi."
+    - "Kitaplar \xF6l\xFCms\xFCzl\xFCk m\xFC sunuyor yazara sence?"
+    - "Sence her insan\u0131n hayat\u0131nda bir k\xFCt\xFCphane an\u0131 vard\u0131r?"
+    - "\u0130nsan neden hep bir yere ait olmak ister sence?"
+    - "\u0130nsan neden ge\xE7mi\u015Fini bu kadar \xE7ok anlat\u0131r sence?"
+    - "Bug\xFCn biraz acelem var ama yine de bakay\u0131m dedim."
+    - "\u0130nsan neden ge\xE7mi\u015Fe bu kadar s\u0131k d\xF6ner sence?"
+    - "Buraya her geli\u015Fimde farkl\u0131 bir \u015Fey ke\u015Ffediyorum."
+    - "\u0130nsan neden hep bir anlam yaratmaya \xE7al\u0131\u015F\u0131r sence?"
+    - "Sence her insan\u0131n i\xE7inde bir yazar m\u0131 var?"
+    - "Sence her kay\u0131p bir \u015Fey \xF6\u011Fretir mi?"
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: Pileg Sanu
+    cinsiyet: 0
+    loreHikayesi: "Evrende s\u0131radan bir vatanda\u015F."
+    sevilenTurler: 060000000100000008000000
+    sevmedigiTurler: 
+    sabirCarpani: 0.7390023
+    odemeCarpani: 1.0045877
+    incelemeSuresiCarpani: 1.3137059
+    meslek: Esnaf
+    ozelDiyaloglar:
+    - "Bu k\xFCt\xFCphanede ka\xE7 kitap var acaba, hi\xE7 sayd\u0131n m\u0131?"
+    - "Sen hep buradas\u0131n, hi\xE7 izin yapm\u0131yor musun?"
+    - "Zaman ge\xE7tik\xE7e insanlar m\u0131 de\u011Fi\u015Fiyor, yoksa biz onlar\u0131
+      m\u0131 farkl\u0131 g\xF6r\xFCyoruz sence?"
+    - "Bazen bir kitap al\u0131r\u0131m ama hi\xE7 okumam, sadece sahip olmak i\xE7in,
+      garip de\u011Fil mi?"
+    - "Sana her zaman g\xFCveniyorum kitap se\xE7iminde."
+    - "Buraya her geli\u015Fimde farkl\u0131 bir \u015Fey ke\u015Ffediyorum."
+    - "\u0130nsan neden hep bir cevap arar sence?"
+    - "Kitaplar \xF6l\xFCms\xFCzl\xFCk m\xFC sunuyor yazara sence?"
+    - "Bug\xFCn buraya gelmeden \xF6nce bir \u015Fey unuttu\u011Fumu hissettim."
+    - "\u0130nsan neden ge\xE7mi\u015Fe bu kadar s\u0131k d\xF6ner sence?"
+    - "K\xFCt\xFCphanede \xE7al\u0131\u015Fmak yorucu mu senin i\xE7in?"
+    - "Sence hik\xE2yeler ger\xE7ek hayattan m\u0131 do\u011Far, yoksa hayal g\xFCc\xFCnden
+      m\xFC?"
+    - "Sence her son asl\u0131nda bir ba\u015Flang\u0131\xE7 m\u0131?"
+    - "Bug\xFCn buraya gelirken bir \u015Fark\u0131 dinledim, h\xE2l\xE2 kafamda."
+    - "\u0130nsan hat\u0131rlad\u0131\u011F\u0131 kadar m\u0131 ger\xE7ektir sence?"
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  - musteriIsmi: "P\u0131da Eldig"
+    cinsiyet: 0
+    loreHikayesi: "Evrende s\u0131radan bir vatanda\u015F."
+    sevilenTurler: 050000000800000006000000
+    sevmedigiTurler: 
+    sabirCarpani: 0.95464766
+    odemeCarpani: 0.98655427
+    incelemeSuresiCarpani: 0.9005034
+    meslek: Doktor
+    ozelDiyaloglar:
+    - "Egir'in kitab\u0131nda bir su\xE7 avc\u0131s\u0131 var diye duydum, do\u011Fru
+      mu?"
+    - "Bu k\xFCt\xFCphanede en \xE7ok hangi t\xFCr kitap sat\u0131l\u0131yor acaba?"
+    - "Kitaplar\u0131 d\xFCzenlemek zor olmal\u0131, sayg\u0131 duyuyorum."
+    - "Bu \u015Fehirde herkes bir \u015Fey biliyor gibi davran\u0131yor, sence de
+      \xF6yle mi?"
+    - "\u0130nsan neden burada, bu raflar aras\u0131nda bir \u015Fey ar\u0131yor
+      sence?"
+    - "Bu \u015Fehirde zaman bazen bize ac\u0131mas\u0131z geliyor, sence de mi?"
+    - "Bug\xFCn k\u0131sa bir \u015Fey istiyorum, uzun kitaplara vaktim yok."
+    - "\u0130nsan neden bu kadar \xE7ok soru sorar sence?"
+    - "Bug\xFCn ne \xF6nerirsin bana? Sen daha \xE7ok okuyorsundur."
+    - "Bug\xFCn buraya gelirken bir \u015Fark\u0131 dinledim, h\xE2l\xE2 kafamda."
+    - "Ge\xE7mi\u015Fe d\xF6nebilseydim ne de\u011Fi\u015Ftirirdim acaba, hi\xE7
+      d\xFC\u015F\xFCnd\xFCn m\xFC?"
+    - "\u0130nsan neden ayn\u0131 kitab\u0131 defalarca okur sence?"
+    - "Param yetince gelirim yine, bug\xFCnl\xFCk bu kadar."
+    - Yeni bir kitap geldi mi bu hafta?
+    - "Bu k\xFCt\xFCphanenin bir tarihi var m\u0131, merak ediyorum."
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari: []
+    gunlukKonusmaLimiti: 3
+    ozelGunKarakteri: 0
+    gorunecegiGunler: 
+    herKacGundeBir: 0
+    enErkenGun: 0
+    enGecGun: 0
+  preferredRarity: 0
+  budget: 500

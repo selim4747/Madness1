@@ -1,0 +1,235 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 690215e3dbc623846b0c76474d88a201, type: 3}
+  m_Name: NpcHavuzuAyarlari
+  m_EditorClassIdentifier: Assembly-CSharp::NpcHavuzuAyarlari
+  kadinIsimleri:
+  - Afor
+  - "Zafk\u0131"
+  - Izdag
+  - Yejen
+  - "Afr\u0131"
+  - "P\u0131da"
+  - Huj
+  - Pileg
+  - "\xDClt\xF6"
+  erkekIsimleri:
+  - "Tam\u0131s"
+  - Kyldo
+  - Saek
+  - Kaelan
+  - Danpar
+  - Egir
+  - Feil
+  - Gri
+  - Geceg
+  - Yulkom
+  - Igme
+  - Zal
+  - Gize
+  soyadlar:
+  - Bura
+  - "Sar\u0131"
+  - Sanu
+  - "E\u015Fci"
+  - Eldig
+  meslekler:
+  - "\xD6\u011Fretmen"
+  - "M\xFChendis"
+  - Doktor
+  - Esnaf
+  diyaloglar:
+  - "Senin en sevdi\u011Fin kitap hangisi, hi\xE7 sormad\u0131m."
+  - "Buraya gelmeyi bir al\u0131\u015Fkanl\u0131k h\xE2line getirdim art\u0131k."
+  - "Bug\xFCn k\u0131sa bir ziyaret olacak, i\u015Fim var sonra."
+  - "Bu raflar aras\u0131nda en sevdi\u011Fim k\xF6\u015Fe hep ayn\u0131."
+  - "Afor'un k\u0131z karde\u015Fiyle aran\u0131z nas\u0131l, tan\u0131yor musun
+    onu?"
+  - "Tar\u0131 hakk\u0131nda konu\u015Fmak yasak gibi bir \u015Fey oldu sanki, sen
+    de mi hissediyorsun?"
+  - "Senin \xF6nerdi\u011Fin kitaplar hep isabetli oluyor."
+  - "Bug\xFCn k\u0131sa bir \u015Fey istiyorum, uzun kitaplara vaktim yok."
+  - "K\xFCt\xFCphanenin kokusu de\u011Fi\u015Fmi\u015F gibi, yeni raf m\u0131 geldi?"
+  - "Buraya gelmek benim i\xE7in k\xFC\xE7\xFCk bir ka\xE7\u0131\u015F oluyor."
+  - Yeni bir kitap geldi mi bu hafta?
+  - "Buraya gelmeden \xF6nce hep bir liste yapar\u0131m ama unutuyorum."
+  - "Kap\u0131dan girer girmez huzur buluyorum, tuhaf de\u011Fil mi?"
+  - "Bug\xFCn ilk kez buraya geliyorum, biraz heyecanl\u0131y\u0131m."
+  - "Bug\xFCn can\u0131m s\u0131kk\u0131nd\u0131, buraya gelince ge\xE7ti biraz."
+  - "\u015Eu k\xF6\u015Fedeki masa hep dolu oluyor, pop\xFCler bir yer olmu\u015F."
+  - "Bug\xFCn param az ama yine de bakmaya geldim, kusura bakma."
+  - "Kitap kokusu bana hep iyi gelir, garip bir \u015Fey."
+  - "Bug\xFCn sadece bakmaya geldim, almayaca\u011F\u0131m san\u0131r\u0131m."
+  - "Bu kitab\u0131n devam\u0131 var m\u0131 acaba?"
+  - "Param yetince gelirim yine, bug\xFCnl\xFCk bu kadar."
+  - "Raflar aras\u0131nda dola\u015Fmak beni dinlendiriyor."
+  - "Raflar aras\u0131nda kaybolmak g\xFCzel bir his."
+  - "Buraya her geli\u015Fimde farkl\u0131 bir \u015Fey ke\u015Ffediyorum."
+  - "\u015Eu raf\u0131n d\xFCzeni de\u011Fi\u015Fmi\u015F, al\u0131\u015Fmam biraz
+    zaman alacak."
+  - "Bug\xFCn ne kadar vaktim var bilmiyorum ama kalmak istiyorum."
+  - "Kap\u0131y\u0131 her a\xE7t\u0131\u011F\u0131mda i\xE7eri bir tazelik geliyor."
+  - "Kitap se\xE7mek benim i\xE7in hep zor bir karar."
+  - "Kitaplar\u0131 nas\u0131l s\u0131ral\u0131yorsun, bir sistemin var m\u0131?"
+  - "K\xFCt\xFCphanede \xE7al\u0131\u015Fmak yorucu mu senin i\xE7in?"
+  - "Bug\xFCn buraya gelmeden \xF6nce bir \u015Fey unuttu\u011Fumu hissettim."
+  - "Bug\xFCn biraz acelem var ama yine de bakay\u0131m dedim."
+  - "Bu k\xFCt\xFCphane olmasa nereye giderdim bilmiyorum."
+  - "Kitap se\xE7erken kapa\u011Fa m\u0131 bakars\u0131n, i\xE7eri\u011Fe mi \xF6nce?"
+  - "Ge\xE7en sefer ald\u0131\u011F\u0131m kitab\u0131 bitiremedim daha, yine de
+    bir tane daha alay\u0131m."
+  - "Bu raf\u0131n en \xFCst k\u0131sm\u0131na hi\xE7 ula\u015Fam\u0131yorum, yard\u0131m
+    eder misin?"
+  - "Bug\xFCn ne \xF6nerirsin bana? Sen daha \xE7ok okuyorsundur."
+  - "Kitaplar\u0131 kiralamak m\u0131, sat\u0131n almak m\u0131 daha iyi?"
+  - "Bug\xFCn erken geldim, sessiz olaca\u011F\u0131n\u0131 biliyordum."
+  - "\u015Eu kitab\u0131n kapa\u011F\u0131 \xE7ok g\xFCzel, i\xE7eri\u011Fi de \xF6yle
+    mi acaba?"
+  - "Param yetmezse indirim yapar m\u0131s\u0131n acaba?"
+  - "Param c\xFCzdan\u0131mda az ama bir \u015Feyler alay\u0131m yine de."
+  - "Bug\xFCn buraya gelirken ya\u011Fmur ya\u011F\u0131yordu, \u0131sland\u0131m
+    biraz."
+  - "Kitap se\xE7erken hep \xE7ok uzun s\xFCr\xFCyorum, kusura bakma."
+  - "Sana her zaman g\xFCveniyorum kitap se\xE7iminde."
+  - "Bu k\xFCt\xFCphanede en \xE7ok hangi t\xFCr kitap sat\u0131l\u0131yor acaba?"
+  - "Param yetmeyebilir ama bakmak da bir \u015Fey, de\u011Fil mi?"
+  - "Bu k\xFCt\xFCphanenin bir tarihi var m\u0131, merak ediyorum."
+  - "Bu raflar ne zaman yenilendi, hat\u0131rlam\u0131yorum."
+  - "Bu k\xFCt\xFCphanenin saatleri de\u011Fi\u015Fti mi son zamanlarda?"
+  - "Bug\xFCn buraya gelirken bir tan\u0131d\u0131kla kar\u015F\u0131la\u015Ft\u0131m,
+    gecikmemin sebebi bu."
+  - "Kitaplar\u0131n fiyat\u0131 de\u011Fi\u015Fti mi son zamanlarda?"
+  - "Sen hep buradas\u0131n, hi\xE7 izin yapm\u0131yor musun?"
+  - "Bu kitab\u0131 ge\xE7en ay da alm\u0131\u015Ft\u0131m galiba, haf\u0131zam beni
+    yan\u0131ltm\u0131yorsa."
+  - "Kitaplar\u0131 nereden getiriyorsun, hi\xE7 sormad\u0131m sana."
+  - "Kitaplar\u0131 d\xFCzenlemek zor olmal\u0131, sayg\u0131 duyuyorum."
+  - "Param az ama g\xF6z\xFCm hep pahal\u0131 kitaplarda."
+  - "Buraya gelmeden \xF6nce hep bir bahane bulurum kendime."
+  - "Bu raftaki kitaplar yeni mi, ilk defa g\xF6r\xFCyorum bunlar\u0131."
+  - "Bug\xFCn buraya gelmek istedim ama sebebini bilmiyorum."
+  - "Bu k\xFCt\xFCphanede ka\xE7 kitap var acaba, hi\xE7 sayd\u0131n m\u0131?"
+  - "Param bug\xFCn c\xFCzdan\u0131mda de\u011Fil, yar\u0131n gelirim."
+  - "Bug\xFCn buraya gelirken bir \u015Fark\u0131 dinledim, h\xE2l\xE2 kafamda."
+  - "Buraya her geli\u015Fimde farkl\u0131 bir kitap \xE7ekiyor dikkatimi."
+  - "Kitaplar\u0131n aras\u0131nda saatlerce kaybolabilirim.Bu k\xFCt\xFCphanenin
+    ilk sahibi kimmi\u015F biliyor musun?"
+  - "Egir'in kitab\u0131nda bir su\xE7 avc\u0131s\u0131 var diye duydum, do\u011Fru
+    mu?"
+  - "Danpar \xFC\xE7 kopya kitap al\u0131yormu\u015F bazen, g\xF6rd\xFCn m\xFC hi\xE7?"
+  - "Zaman baz\u0131 insanlara daha yava\u015F ak\u0131yor sanki, sence de mi?"
+  - "\u0130nsan neden hep bir \u015Feyi tamamlamak ister sence?"
+  - "Ge\xE7mi\u015Fe d\xF6nebilseydim ne de\u011Fi\u015Ftirirdim acaba, hi\xE7 d\xFC\u015F\xFCnd\xFCn
+    m\xFC?"
+  - "\u0130nsan neden ayn\u0131 kitab\u0131 defalarca okur sence?"
+  - "\u0130nsan neden okur sence?"
+  - "\u0130nsan neden hep bir anlam arar sence?"
+  - "\u0130nsan neden kitaplara bu kadar ba\u011Flan\u0131r sence, e\u015Fya olduklar\u0131
+    h\xE2lde?"
+  - "Sence hayaller neden bu kadar ger\xE7ek hissettiriyor?"
+  - "\u0130nsan neden ge\xE7mi\u015Fe bu kadar ba\u011Fl\u0131 kal\u0131r sence?"
+  - "\u0130nsan neden kaybetti\u011Fi bir karakteri ger\xE7ek biri gibi yas tutar
+    sence?"
+  - "\u0130nsan neden hep geriye bakar sence?"
+  - "Sence her son asl\u0131nda bir ba\u015Flang\u0131\xE7 m\u0131?"
+  - "Kitaplar \xF6l\xFCms\xFCzl\xFCk m\xFC sunuyor yazara sence?"
+  - "Bu \u015Fehirde herkes bir \u015Fey biliyor gibi davran\u0131yor, sence de \xF6yle
+    mi?"
+  - "Sence her insan\u0131n hayat\u0131nda bir k\xFCt\xFCphane an\u0131 vard\u0131r?"
+  - "Bir kitab\u0131 bitirmek bir vedaya benziyor bazen, sen de hissediyor musun
+    bunu?"
+  - "Sence hik\xE2yeler ger\xE7ek hayattan m\u0131 do\u011Far, yoksa hayal g\xFCc\xFCnden
+    m\xFC?"
+  - "Sence kurgusal bir d\xFCnya ger\xE7ek d\xFCnyadan daha m\u0131 g\xFCvenli hissettiriyor?"
+  - "\u0130nsan neden bir kahramana bu kadar ba\u011Flan\u0131r sence?"
+  - "Sence her insan\u0131n bir kaderi mi var, yoksa hepimiz kendi hik\xE2yemizi
+    mi yaz\u0131yoruz?"
+  - "Zaman ge\xE7tik\xE7e insanlar m\u0131 de\u011Fi\u015Fiyor, yoksa biz onlar\u0131
+    m\u0131 farkl\u0131 g\xF6r\xFCyoruz sence?"
+  - "\u0130nsan neden kay\u0131plar\u0131n\u0131 bu kadar \xE7ok d\xFC\u015F\xFCn\xFCr
+    sence?"
+  - "Sence mutluluk kal\u0131c\u0131 olabilir mi?"
+  - "Sence her sona bir ba\u015Flang\u0131\xE7 m\u0131 gizli?"
+  - "\u0130nsan neden hep bir hik\xE2yenin par\xE7as\u0131 olmak ister?"
+  - "\u0130nsan neden ge\xE7mi\u015Fe bu kadar s\u0131k d\xF6ner sence?"
+  - "Sence bir hik\xE2yeyi bitirmek bazen zor mu gelir yazara?"
+  - "Sence bir kitab\u0131n anlam\u0131 okuyana g\xF6re mi de\u011Fi\u015Fir?"
+  - "\u0130nsan neden kaybetti\u011Fi \u015Feyleri idealize eder sence?"
+  - "Sence kelimeler duygular\u0131 tam anlatabiliyor mu?"
+  - "Sence her hik\xE2yenin bir sonu olmak zorunda m\u0131?"
+  - "Sence okumak yaln\u0131zl\u0131\u011F\u0131 m\u0131 azalt\u0131r, yoksa derinle\u015Ftirir
+    mi?"
+  - "\u0130nsan neden hep bir yere ait olmak ister sence?"
+  - "\u0130nsan neden bu kadar \xE7ok anlam arar hayatta sence?"
+  - "\u0130nsan neden bu kadar \xE7ok ge\xE7mi\u015Fe tutunur sence?"
+  - "Sence her insan bir g\xFCn huzur bulur mu?"
+  - "Zaman ge\xE7tik\xE7e her \u015Fey k\xFC\xE7\xFCl\xFCyor mu sence, yoksa biz
+    mi b\xFCy\xFCyoruz?"
+  - "\u0130nsan neden hep bir yere d\xF6nmek ister sence?"
+  - "\u0130nsan neden hep bir anlam yaratmaya \xE7al\u0131\u015F\u0131r sence?"
+  - "Sence bir k\xFCt\xFCphane sadece kitaplar\u0131n de\u011Fil, insanlar\u0131n
+    da haf\u0131zas\u0131n\u0131 m\u0131 tutar?"
+  - "Sence bir insan ger\xE7ekten de\u011Fi\u015Febilir mi?"
+  - "Sence her kay\u0131p bir \u015Fey \xF6\u011Fretir mi?"
+  - "\u0130nsan neden yaln\u0131z kalmaktan bu kadar korkar sence?"
+  - "\u0130nsan neden bu kadar \xE7ok soru sorar sence?"
+  - "Sence herkesin bir kaderi mi var, yoksa hepsi tesad\xFCf m\xFC?"
+  - "\u0130nsan kaybetti\u011Fi \u015Feyleri mi, yoksa kaybetme fikrini mi seviyor
+    sence?"
+  - "Bu \u015Fehirde herkes bir g\xFCn gidecekmi\u015F gibi ya\u015F\u0131yor, sen
+    de mi hissediyorsun?"
+  - "Kader diye bir \u015Fey var m\u0131 ger\xE7ekten sence?"
+  - "\u0130nsan neden bir kitab\u0131 bitirmeden b\u0131rak\u0131r bazen sence?"
+  - "Bu \u015Fehirde herkesin pe\u015Finde ko\u015Ftu\u011Fu bir \u015Fey var gibi,
+    sence de mi?"
+  - "\u0130nsan neden burada, bu raflar aras\u0131nda bir \u015Fey ar\u0131yor sence?"
+  - "\u0130nsan neden kelimelere bu kadar g\xFC\xE7 atfeder sence?"
+  - "Bu \u015Fehirde zaman bazen bize ac\u0131mas\u0131z geliyor, sence de mi?"
+  - "\u0130nsan neden hep bir \u015Feyi tamamlamak ister sence, hi\xE7 d\xFC\u015F\xFCnd\xFCn
+    m\xFC?"
+  - "Sence kaderimiz mi bizi se\xE7iyor, yoksa biz mi onu?"
+  - "Unutmak bir kay\u0131p m\u0131, bir kurtulu\u015F mu sence?"
+  - "Sence bir hik\xE2yenin sonu okuyucuya m\u0131, yazara m\u0131 ait?"
+  - "Sence her insan\u0131n i\xE7inde bir yazar m\u0131 var?"
+  - "Sence r\xFCyalar bir anlam m\u0131 ta\u015F\u0131r?"
+  - "Bazen bir kitap al\u0131r\u0131m ama hi\xE7 okumam, sadece sahip olmak i\xE7in,
+    garip de\u011Fil mi?"
+  - "Bu \u015Fehirde herkesin bir hik\xE2yesi var gibi, sen de mi \xF6yle d\xFC\u015F\xFCn\xFCyorsun?"
+  - "Sence hat\u0131ralar ger\xE7ekten bize mi ait, yoksa biz mi onlara?"
+  - "Sence unutmak bazen bir l\xFCtuf mu?"
+  - "\u0130nsan neden baz\u0131 kitaplar\u0131 tekrar tekrar okur sence?"
+  - "Sence her hik\xE2yenin bir kahraman\u0131 olmak zorunda m\u0131?"
+  - "Kitaplar bize ger\xE7e\u011Fi mi anlat\u0131r, yoksa hayali mi anlat\u0131r
+    sence?"
+  - "\u0130nsan neden bir yazar\u0131n hayat\u0131n\u0131 merak eder kitab\u0131ndan
+    \xE7ok sence?"
+  - "\u0130nsan neden hep bir cevap arar sence?"
+  - "\u0130nsan hat\u0131rlad\u0131\u011F\u0131 kadar m\u0131 ger\xE7ektir sence?"
+  - "Kitaplar bize ger\xE7ek hayattan daha \xE7ok mu \u015Fey \xF6\u011Fretiyor sence?"
+  - "Sence bir kitab\u0131n kapa\u011F\u0131 i\xE7eri\u011Finden daha m\u0131 \xF6nemli
+    bazen?"
+  - "Sence unuttu\u011Fumuz \u015Feyler ger\xE7ekten kayboluyor mu?"
+  - "\u0130nsan yaln\u0131zl\u0131ktan m\u0131 korkar, yoksa unutulmaktan m\u0131
+    sence?"
+  - "\u0130nsan neden ge\xE7mi\u015Fini bu kadar \xE7ok anlat\u0131r sence?"
+  - "Sence ge\xE7mi\u015F bizi mi \u015Fekillendiriyor, yoksa biz mi onu?"
+  sabirCarpaniMin: 0.7
+  sabirCarpaniMax: 1.5
+  odemeCarpaniMin: 0.8
+  odemeCarpaniMax: 1.3
+  incelemeCarpaniMin: 0.7
+  incelemeCarpaniMax: 1.4
+  kadinKiyafetHavuzu: []
+  erkekKiyafetHavuzu: []
+  meslekTurEslesmeleri:
+  - "\xD6\u011Fretmen: Tarih, Felsefe"
+  - 'Doktor: Bilim'

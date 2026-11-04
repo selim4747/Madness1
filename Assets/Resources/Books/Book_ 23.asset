@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 276db542529e76b4c9dc1527ff11b31c, type: 3}
+  m_Name: Book_ 23
+  m_EditorClassIdentifier: Assembly-CSharp::BookData
+  bookId: shop1_book01
+  displayName: "OyunBozan Maceralar\u0131"
+  genre: Polisiye
+  shopNumber: 1
+  shelfIndex: 4
+  rarity: 1
+  basePrice: 50
+  bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
+  loreSentence: "Hey... Bunu okumaman gerekiyordu!!! Hakk\u0131nda kesinlikle soru
+    sorma!"
+  isStartingShelf: 0

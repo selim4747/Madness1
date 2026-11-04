@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53aaa722317946e4897fa3718da284a2, type: 3}
+  m_Name: Story_Gun1Canavarlar
+  m_EditorClassIdentifier: Assembly-CSharp::StoryCutsceneData
+  eventId: cutscene_001
+  triggerDay: 1
+  isFinale: 0
+  videoClip: {fileID: 32900000, guid: ba0d2fef237c07e4b95d82da923c13a1, type: 3}
+  narratorVoiceOver: {fileID: 0}
+  captions:
+  - showAtSeconds: 0
+    speakerName: ...
+    text: "Birden canavarlar ortaya \xE7\u0131kt\u0131"
+  canSkip: 1
+  fadeInSeconds: 0.5
+  fadeOutSeconds: 0.5

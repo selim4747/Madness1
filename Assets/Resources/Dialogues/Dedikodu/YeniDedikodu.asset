@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 019a95d876d3a8246aec9358bd0ff29b, type: 3}
+  m_Name: YeniDedikodu
+  m_EditorClassIdentifier: Assembly-CSharp::DedikoduData
+  dedikoduId: 001
+  kaynakIsim: "Zafk\u0131 E\u015Fci"
+  ogrenmeMetni: "tamamd\u0131r"
+  kaynakIliskiEtkisi: 3
+  hedefIsim: Egir
+  paylasimTepkiMetni: oyle
+  hedefIliskiEtkisi: 0
+  paylasimSonrasiDiyaloglar:
+  - "Konu\u015Fma olay\u0131!!"
+  baglananBahceCumleId: 

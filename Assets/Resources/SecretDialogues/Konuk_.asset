@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26a8cae24c90e954ca78464d6fea2ac9, type: 3}
+  m_Name: Konuk_
+  m_EditorClassIdentifier: Assembly-CSharp::HikayeKonuguData
+  konukId: konuk_001
+  isim: Gezgin
+  konukPrefab: {fileID: 0}
+  gorunecegiGunler: 
+  herKacGundeBir: 6
+  enErkenGun: 12
+  enGecGun: 48
+  focusCamera: 1
+  cameraFocusOffset: {x: 0, y: 0}
+  hareketliAnlatim: 0
+  hareketMesafesi: 2
+  lines:
+  - speakerName: "Bilinmeyen Ki\u015Fi"
+    text: Merhaba
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
+  - speakerName: 
+    text: "Karde\u015Fim Feili tan\u0131yor musun acaba?"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
+  - speakerName: "Bilinmeyen Ki\u015Fi"
+    text: "Arada buraya u\u011Frarm\u0131\u015F duydu\u011Fuma g\xF6re"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
+  tanisincaDuzenliGelir: 0
+  duzenliKimlik:
+    musteriIsmi: Saek
+    cinsiyet: 1
+    yas: 30
+    loreHikayesi: "Evrende s\u0131radan bir vatanda\u015F."
+    sevilenTurler: 030000000000000004000000
+    sevmedigiTurler: 07000000
+    sabirCarpani: 1.11
+    odemeCarpani: 1.3
+    incelemeSuresiCarpani: 0.75
+    meslek: Esnaf???
+    ozelDiyaloglar: []
+    tisortSprite: {fileID: 0}
+    sosyal: 1
+    bahceDiyaloglari:
+    - id: 
+      metin: 
+      ekDiller: []
+      ses:
+        turkce: {fileID: 0}
+        ingilizce: {fileID: 0}
+      konular: []
+      secenekler: []
+    - id: 
+      metin: 
+      ekDiller: []
+      ses:
+        turkce: {fileID: 0}
+        ingilizce: {fileID: 0}
+      konular: []
+      secenekler: []
+    gunlukKonusmaLimiti: 5
+    ozelGunKarakteri: 1
+    gorunecegiGunler: 0000000000000000
+    herKacGundeBir: 5
+    enErkenGun: 0
+    enGecGun: 0
+    cokluKisilikliMi: 0
+    digerKisilikIhtimali: 0.25
+    digerKisilikIsmi: 
+    digerKisilikDiyaloglari: []
+  katilacagiTip: 1
