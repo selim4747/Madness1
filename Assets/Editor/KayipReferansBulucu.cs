@@ -1,18 +1,7 @@
-// KayipReferansBulucu.cs — Editor araci: "'X' is missing the class attribute
-// 'ExtensionOfNativeClass'!" gibi hatalarin EN YAYGIN sebebi olan "Missing (Mono Script)"
-// kalintilarini (eskiden bir sinif MonoBehaviour/Component'ti, sonra duz siniфa cevrildi ama
-// sahne/prefab'taki eski bilesen kaydi SILINMEDI) TUM prefab'larda VE su an ACIK olan sahnede
-// tarar, listeler ve (onaylarsan) temizler.
-//
-// GUVENLIK SINIRI: SADECE su an ACIK olan sahneyi tarar, DIGER sahneleri OTOMATIK ACMAZ. Bu
-// projede COK sayida Awake() singleton'i oldugu icin (Instance != null ise Destroy(gameObject))
-// birden fazla sahneyi ayni anda yuklemek yan etkiler yaratabilir. Baska bir sahneyi kontrol
-// etmek icin onu AC, bu taramayi tekrar calistir.
-//
-// KULLANIM: Delilik > Denetim > Kayıp Script Bulucu
-// Bu dosya Assets/Editor/ klasorune konulmali (Unity otomatik olarak build'e dahil etmez).
-//
-// NJG Games | Delilik | Unity 6 | UTF-8 with BOM
+// KayipReferansBulucu.cs
+// 1) Missing Script temizler
+// 2) Tüm iç içe / liste Object referanslarındaki null ve MISSING'leri listeler
+// Prefab bulgularında "Göster" prefabı seçer.
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
@@ -21,164 +10,177 @@ using System.Collections.Generic;
 
 public class KayipReferansBulucu : EditorWindow
 {
-    private class Bulgu
+    private class ScriptBulgu
     {
-        public GameObject sahneNesnesi; // sadece SAHNEDEKI bulgularda dolu (Ping icin)
+        public Object hedef;
         public string konum;
         public int kayipSayisi;
     }
 
-    private List<Bulgu> bulgular = new List<Bulgu>();
-    private bool tarandiMi = false;
+    private class NullBulgu
+    {
+        public Object hedef;
+        public string konum;
+        public string bilesen;
+        public string alan;
+        public bool missing;
+    }
+
+    private List<ScriptBulgu> scriptBulgulari = new List<ScriptBulgu>();
+    private List<NullBulgu> nullBulgulari = new List<NullBulgu>();
+    private bool tarandiMi;
+    private Vector2 scroll;
+    private bool sadeceMissing;
 
     [MenuItem("Delilik/Denetim/Kayıp Script Bulucu")]
-    public static void PencereyiAc()
-    {
-        GetWindow<KayipReferansBulucu>("Kayıp Script Bulucu");
-    }
+    public static void PencereyiAc() => GetWindow<KayipReferansBulucu>("Kayıp Referans Bulucu");
 
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("Kayıp Script/Referans Bulucu", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Kayıp Script + Null Referans Bulucu", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox(
-            "'... is missing the class attribute ExtensionOfNativeClass' gibi hatalar genelde " +
-            "bir GameObject/Prefab'ta unutulmuş bir 'Missing Script' bileşeninden gelir — eskiden " +
-            "bir sınıf Component'ti, sonra düz sınıfa çevrildi ama sahne/prefab'taki eski bileşen " +
-            "kaydı silinmedi.\n\n" +
-            "GÜVENLİK: bu araç SADECE şu an AÇIK olan sahneyi ve TÜM prefab'ları tarar. Diğer " +
-            "sahneleri otomatik AÇMAZ (bu projede çok sayıda Awake() singleton'ı var, birden " +
-            "fazla sahneyi aynı anda yüklemek yan etkiler yaratabilir) — başka bir sahneyi " +
-            "kontrol etmek için onu AÇIP taramayı tekrar çalıştır.",
+            "Missing Script + tüm Object referansları (iç içe class, List, array dahil).\n" +
+            "MISSING = bağlantı kopmuş. null = alan boş (bilerek de olabilir).",
             MessageType.Info);
 
-        EditorGUILayout.Space();
-        if (GUILayout.Button("Yeni Özellik Kurulum Rehberi", GUILayout.Height(28)))
+        if (GUILayout.Button("Yeni Özellik Kurulum Rehberi", GUILayout.Height(24)))
             YeniOzellikKurulumYardimcisi.Ac();
 
-        EditorGUILayout.Space();
-        if (GUILayout.Button("Tara (Açık Sahne + Tüm Prefablar)", GUILayout.Height(30))) Tara();
-
+        if (GUILayout.Button("Tara", GUILayout.Height(30))) Tara();
         if (!tarandiMi) return;
 
-        EditorGUILayout.Space();
+        sadeceMissing = EditorGUILayout.Toggle("Sadece MISSING göster (boş null'ları gizle)", sadeceMissing);
+        scroll = EditorGUILayout.BeginScrollView(scroll);
 
-        if (bulgular.Count == 0)
-        {
-            EditorGUILayout.HelpBox("Açık sahnede ve prefab'larda kayıp script bulunamadı. Hata hâlâ çıkıyorsa, sorun BAŞKA bir (şu an kapalı) sahnede olabilir — o sahneyi açıp taramayı tekrar çalıştır.", MessageType.None);
-            return;
-        }
-
-        EditorGUILayout.LabelField($"{bulgular.Count} nesnede kayıp script bulundu.", EditorStyles.boldLabel);
-
-        foreach (var b in bulgular)
+        EditorGUILayout.LabelField("Missing Script: " + scriptBulgulari.Count, EditorStyles.boldLabel);
+        foreach (var b in scriptBulgulari)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"{b.konum}  ({b.kayipSayisi} kayıp bileşen)", EditorStyles.wordWrappedLabel);
-            if (b.sahneNesnesi != null && GUILayout.Button("Göster", GUILayout.Width(60)))
-                EditorGUIUtility.PingObject(b.sahneNesnesi);
+            EditorGUILayout.LabelField(b.konum + " (" + b.kayipSayisi + ")");
+            if (b.hedef != null && GUILayout.Button("Göster", GUILayout.Width(60)))
+                Ping(b.hedef);
             EditorGUILayout.EndHorizontal();
         }
-
-        EditorGUILayout.Space();
-        if (GUILayout.Button("TÜMÜNÜ TEMİZLE (kayıp bileşenleri kaldır)", GUILayout.Height(32)))
+        if (scriptBulgulari.Count > 0 && GUILayout.Button("Kayıp Scriptleri Temizle"))
             Temizle();
+
+        EditorGUILayout.Space(6);
+        int gosterilen = 0;
+        EditorGUILayout.LabelField("Null / Missing Referans", EditorStyles.boldLabel);
+        foreach (var n in nullBulgulari)
+        {
+            if (sadeceMissing && !n.missing) continue;
+            gosterilen++;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(n.konum + " → " + n.bilesen + "." + n.alan);
+            if (n.hedef != null && GUILayout.Button("Göster", GUILayout.Width(60)))
+                Ping(n.hedef);
+            EditorGUILayout.EndHorizontal();
+        }
+        if (gosterilen == 0)
+            EditorGUILayout.HelpBox(sadeceMissing ? "MISSING referans yok." : "Null referans yok.", MessageType.None);
+
+        EditorGUILayout.EndScrollView();
+    }
+
+    private static void Ping(Object o)
+    {
+        Selection.activeObject = o;
+        EditorGUIUtility.PingObject(o);
     }
 
     private void Tara()
     {
-        bulgular.Clear();
+        scriptBulgulari.Clear();
+        nullBulgulari.Clear();
 
-        Scene aktifSahne = SceneManager.GetActiveScene();
-        foreach (GameObject kok in aktifSahne.GetRootGameObjects())
-            TaraGameObjectAgaci(kok, "Sahne '" + aktifSahne.name + "'", sahneIci: true);
+        Scene sahne = SceneManager.GetActiveScene();
+        foreach (GameObject kok in sahne.GetRootGameObjects())
+            TaraObje(kok, "Sahne/" + sahne.name, kok);
 
         foreach (string guid in AssetDatabase.FindAssets("t:Prefab"))
         {
             string yol = AssetDatabase.GUIDToAssetPath(guid);
             GameObject root = PrefabUtility.LoadPrefabContents(yol);
-            try
-            {
-                TaraGameObjectAgaci(root, "Prefab '" + yol + "'", sahneIci: false);
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(root);
-            }
+            try { TaraObje(root, "Prefab/" + yol, AssetDatabase.LoadAssetAtPath<Object>(yol)); }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
         }
-
         tarandiMi = true;
     }
 
-    private void TaraGameObjectAgaci(GameObject nesne, string konumOnEki, bool sahneIci)
+    private void TaraObje(GameObject nesne, string konum, Object pingHedef)
     {
         int kayip = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(nesne);
         if (kayip > 0)
+            scriptBulgulari.Add(new ScriptBulgu { hedef = pingHedef, konum = konum + "/" + Hiyerarsi(nesne), kayipSayisi = kayip });
+
+        foreach (var b in nesne.GetComponents<MonoBehaviour>())
         {
-            bulgular.Add(new Bulgu
+            if (b == null) continue;
+            var so = new SerializedObject(b);
+            var prop = so.GetIterator();
+            // Tüm görünür property'leri (iç içe dahil) dolaş
+            while (prop.NextVisible(true))
             {
-                sahneNesnesi = sahneIci ? nesne : null, // prefab icerigi disaridan Ping edilemez
-                konum = konumOnEki + $" → '{HiyerarsiYolu(nesne)}'",
-                kayipSayisi = kayip
-            });
+                if (prop.propertyType != SerializedPropertyType.ObjectReference) continue;
+                if (prop.name == "m_Script") continue;
+
+                bool degerNull = prop.objectReferenceValue == null;
+                bool missing = degerNull && prop.objectReferenceInstanceIDValue != 0;
+                if (!degerNull) continue;
+
+                nullBulgulari.Add(new NullBulgu
+                {
+                    hedef = pingHedef,
+                    konum = konum + "/" + Hiyerarsi(nesne),
+                    bilesen = b.GetType().Name,
+                    alan = prop.propertyPath + (missing ? " [MISSING]" : " [null]"),
+                    missing = missing
+                });
+            }
         }
 
-        foreach (Transform cocuk in nesne.transform)
-            TaraGameObjectAgaci(cocuk.gameObject, konumOnEki, sahneIci);
+        foreach (Transform c in nesne.transform)
+            TaraObje(c.gameObject, konum, pingHedef);
     }
 
     private void Temizle()
     {
-        int temizlenenNesne = 0, temizlenenBilesen = 0;
-
-        Scene aktifSahne = SceneManager.GetActiveScene();
-        foreach (GameObject kok in aktifSahne.GetRootGameObjects())
-            TemizleGameObjectAgaci(kok, ref temizlenenNesne, ref temizlenenBilesen);
-        if (temizlenenNesne > 0) EditorSceneManager.MarkSceneDirty(aktifSahne);
+        int n = 0, b = 0;
+        Scene sahne = SceneManager.GetActiveScene();
+        foreach (GameObject kok in sahne.GetRootGameObjects())
+            TemizleAgac(kok, ref n, ref b);
+        if (n > 0) EditorSceneManager.MarkSceneDirty(sahne);
 
         foreach (string guid in AssetDatabase.FindAssets("t:Prefab"))
         {
             string yol = AssetDatabase.GUIDToAssetPath(guid);
             GameObject root = PrefabUtility.LoadPrefabContents(yol);
-
-            int oncekiNesne = temizlenenNesne;
-            TemizleGameObjectAgaci(root, ref temizlenenNesne, ref temizlenenBilesen);
-
-            if (temizlenenNesne > oncekiNesne)
-                PrefabUtility.SaveAsPrefabAsset(root, yol);
-
+            int once = n;
+            TemizleAgac(root, ref n, ref b);
+            if (n > once) PrefabUtility.SaveAsPrefabAsset(root, yol);
             PrefabUtility.UnloadPrefabContents(root);
         }
-
-        EditorUtility.DisplayDialog("Tamamlandı",
-            $"{temizlenenBilesen} kayıp bileşen, {temizlenenNesne} nesneden kaldırıldı.\n" +
-            "Açık sahneyi kaydetmeyi unutma (Ctrl+S) — prefab'lar zaten diske kaydedildi.", "Tamam");
-
+        EditorUtility.DisplayDialog("Tamam", b + " script temizlendi.", "OK");
         Tara();
     }
 
-    private void TemizleGameObjectAgaci(GameObject nesne, ref int temizlenenNesne, ref int temizlenenBilesen)
+    private void TemizleAgac(GameObject o, ref int nesne, ref int bilesen)
     {
-        int kayip = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(nesne);
-        if (kayip > 0)
+        int k = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(o);
+        if (k > 0)
         {
-            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(nesne);
-            temizlenenBilesen += kayip;
-            temizlenenNesne++;
+            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(o);
+            bilesen += k; nesne++;
         }
-
-        foreach (Transform cocuk in nesne.transform)
-            TemizleGameObjectAgaci(cocuk.gameObject, ref temizlenenNesne, ref temizlenenBilesen);
+        foreach (Transform c in o.transform) TemizleAgac(c.gameObject, ref nesne, ref bilesen);
     }
 
-    private static string HiyerarsiYolu(GameObject nesne)
+    private static string Hiyerarsi(GameObject o)
     {
-        string yol = nesne.name;
-        Transform ebeveyn = nesne.transform.parent;
-        while (ebeveyn != null)
-        {
-            yol = ebeveyn.name + "/" + yol;
-            ebeveyn = ebeveyn.parent;
-        }
-        return yol;
+        string s = o.name;
+        var p = o.transform.parent;
+        while (p != null) { s = p.name + "/" + s; p = p.parent; }
+        return s;
     }
 }

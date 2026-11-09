@@ -19,9 +19,10 @@ public class GeceOncesiOzet : MonoBehaviour
             GameManager.Instance.OnPhaseChanged -= FazDegisti;
     }
 
-    private void FazDegisti(GamePhase eski, GamePhase yeni)
+    private void FazDegisti(GamePhase yeni)
     {
-        if (sadeceGunduzdenGeceye && !(eski == GamePhase.Day && yeni == GamePhase.Night)) return;
+        // Event sadece yeni fazı veriyor. Gündüz->Gece kontrolü için sadece Night'a bakıyoruz.
+        if (sadeceGunduzdenGeceye && yeni != GamePhase.Night) return;
         string metin = "Gün bitti.";
         if (GunlukHedefYoneticisi.Instance != null)
         {
