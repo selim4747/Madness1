@@ -598,10 +598,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CustomerController
   profile: {fileID: 11400000, guid: 07c59e5189015604bb3479c650076f30, type: 2}
   bodyRenderer: {fileID: 0}
+  erkekGorunumu: {fileID: 0}
+  kadinGorunumu: {fileID: 0}
   tisortRenderer: {fileID: 0}
   animator: {fileID: 0}
+  calismayiDenemeSansi: 50
   maxWaitTime: 5
   maxPatienceTime: 30
+  portalConfig: {fileID: 11400000, guid: eb0215aadaacc4c3e95f68e437580c6b, type: 2}
 --- !u!50 &8509222365949318283
 Rigidbody2D:
   serializedVersion: 5

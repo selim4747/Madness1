@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
@@ -178,7 +178,7 @@ public class CustomerSpawner : MonoBehaviour
     {
         ayniAndaMaxMusteri += 5;
         spawnAriligi = Mathf.Max(0.5f, spawnAriligi - 1f);
-        Debug.Log("[TEST] Musteri kapasitesi: " + ayniAndaMaxMusteri + ", spawn araligi: " + spawnAriligi + "sn");
+        DevLog.Info("[TEST] Musteri kapasitesi: " + ayniAndaMaxMusteri + ", spawn araligi: " + spawnAriligi + "sn");
     }
 
     // ==========================================

@@ -425,7 +425,6 @@ GameObject:
   - component: {fileID: 8509222365949318283}
   - component: {fileID: 8570990620055880456}
   - component: {fileID: -8962160561769245097}
-  - component: {fileID: -1826145862012832801}
   - component: {fileID: -3692179036019415675}
   m_Layer: 6
   m_Name: Customer_VIP 2
@@ -604,6 +603,7 @@ MonoBehaviour:
   calismayiDenemeSansi: 50
   maxWaitTime: 5
   maxPatienceTime: 30
+  portalConfig: {fileID: 11400000, guid: eb0215aadaacc4c3e95f68e437580c6b, type: 2}
 --- !u!50 &8509222365949318283
 Rigidbody2D:
   serializedVersion: 5
@@ -656,46 +656,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPop
   sure: 0.25
---- !u!114 &-1826145862012832801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8484691464830057470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a448fe090274d134f83c9e7f66db66da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProseduralHareketAnimasyonu
-  govde: {fileID: 0}
-  solBacak: {fileID: 0}
-  sagBacak: {fileID: 0}
-  solKol: {fileID: 0}
-  sagKol: {fileID: 0}
-  bas: {fileID: 0}
-  pikselModu: 1
-  yuruyusKareSayisi: 4
-  pixelsPerUnit: 16
-  adimFrekansi: 2
-  hizaGoreOlcekle: 1
-  bacakSalinimMesafesi: 0.12
-  bacakKaldirmaYuksekligi: 0.05
-  bacakDonmeAcisi: 12
-  kolSalinimMesafesi: 0.09
-  kolDonmeAcisi: 15
-  govdeAlcalmaMiktari: 0.025
-  govdeYanSalinimi: 0.012
-  govdeEgilmeAcisi: 2.5
-  basSalinimMiktari: 0.008
-  idleNefesGenligi: 0.012
-  idleNefesHizi: 1.8
-  idleGecisHizi: 8
-  agirlik: 1
-  hasarTepkiSuresi: 0.18
-  hasarSikismaMiktari: 0.3
-  saldiriHazirlikSuresi: 0.12
-  olumAnimasyonuSuresi: 0.4
 --- !u!114 &-3692179036019415675
 MonoBehaviour:
   m_ObjectHideFlags: 0

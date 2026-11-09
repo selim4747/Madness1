@@ -1,4 +1,4 @@
-﻿// BahceSohbetRadari.cs — Musteriye DEGIL, MASAYA baglidir. Oyuncu ETK'ye basinca, o masada
+// BahceSohbetRadari.cs — Musteriye DEGIL, MASAYA baglidir. Oyuncu ETK'ye basinca, o masada
 // oturan musteriyle SECIMLI bir konusma baslatir: NPC bir cumle soyler, DialogueBox'ta
 // secenek butonlari belirir, oyuncu birini secer, NPC secime gore devam eder. Seceneksiz
 // bir cumleye ulasilinca (ya da oyuncu Kapat'a basinca) konusma biter.
@@ -50,21 +50,21 @@ public class BahceSohbetRadari : MonoBehaviour, ISohbetHedefi
     {
         if (BahceYoneticisi.Instance == null || BahceSohbetYoneticisi.Instance == null || DialogueBox.Instance == null)
         {
-            Debug.LogWarning($"🔴 [BAHÇE SOHBET] Eksik referans — BahceYoneticisi={(BahceYoneticisi.Instance == null ? "YOK" : "var")}, BahceSohbetYoneticisi={(BahceSohbetYoneticisi.Instance == null ? "YOK" : "var")}, DialogueBox={(DialogueBox.Instance == null ? "YOK" : "var")}");
+            DevLog.Warning($"🔴 [BAHÇE SOHBET] Eksik referans — BahceYoneticisi={(BahceYoneticisi.Instance == null ? "YOK" : "var")}, BahceSohbetYoneticisi={(BahceSohbetYoneticisi.Instance == null ? "YOK" : "var")}, DialogueBox={(DialogueBox.Instance == null ? "YOK" : "var")}");
             return;
         }
 
         aktifMusteri = RastgeleOturaniBul();
         if (aktifMusteri == null)
         {
-            Debug.LogWarning($"🔴 [BAHÇE SOHBET] {masaNoktalari.Length} noktanın hiçbirinde kimse oturmuyor.");
+            DevLog.Warning($"🔴 [BAHÇE SOHBET] {masaNoktalari.Length} noktanın hiçbirinde kimse oturmuyor.");
             return;
         }
 
         aktifKimlik = aktifMusteri.SecilenKimlik;
         if (aktifKimlik == null)
         {
-            Debug.LogWarning($"🔴 [BAHÇE SOHBET] {aktifMusteri.name} oturuyor ama SecilenKimlik null.");
+            DevLog.Warning($"🔴 [BAHÇE SOHBET] {aktifMusteri.name} oturuyor ama SecilenKimlik null.");
             return;
         }
 
@@ -95,7 +95,7 @@ public class BahceSohbetRadari : MonoBehaviour, ISohbetHedefi
         // konu agini kesfediyor — o limit hemen dolup "bugun epey konustuk" mesajina
         // takiliyordu. Bahcenin KENDI dogal siniri zaten var: sikilma sayaci (BahceSohbetiKaydet).
         BahceSohbetSonucu sonuc = BahceSohbetYoneticisi.Instance.SohbetiBaslat(aktifMusteri, aktifKimlik);
-        Debug.Log($"🟢 [BAHÇE SOHBET] {aktifKimlik.musteriIsmi} ile sohbet başlatılıyor, sonuc={(sonuc == null ? "NULL" : "'" + sonuc.npcMetni + "'")}");
+        DevLog.Info($"🟢 [BAHÇE SOHBET] {aktifKimlik.musteriIsmi} ile sohbet başlatılıyor, sonuc={(sonuc == null ? "NULL" : "'" + sonuc.npcMetni + "'")}");
         SonucuGoster(sonuc);
     }
 

@@ -387,7 +387,7 @@ public class KasaEtkilesim : MonoBehaviour
         if (mesaiKilidiAcik) return;
 
         mesaiSayaci = Mathf.Max(mesaiSayaci, mesaiIcinGerekenSure - 1f);
-        Debug.Log("[TEST] Mesai suresi 1 saniyeye dusuruldu (test butonu).");
+        DevLog.Info("[TEST] Mesai suresi 1 saniyeye dusuruldu (test butonu).");
     }
 
     // ── Oturum kaydi koprusu ──
@@ -408,7 +408,7 @@ public class KasaEtkilesim : MonoBehaviour
 
     public void GeceyiBaslatButonu()
     {
-        Debug.Log("[KasaEtkilesim] GeceyiBaslatButonu() cagrildi. mesaiKilidiAcik=" + mesaiKilidiAcik +
+        DevLog.Info("[KasaEtkilesim] GeceyiBaslatButonu() cagrildi. mesaiKilidiAcik=" + mesaiKilidiAcik +
                    ", GameManager.Instance=" + (GameManager.Instance != null ? "VAR" : "NULL") +
                    ", bu objenin adi=" + gameObject.name +
                    ", CurrentPhase=" + (GameManager.Instance != null ? GameManager.Instance.CurrentPhase.ToString() : "?") +
@@ -417,7 +417,7 @@ public class KasaEtkilesim : MonoBehaviour
         if (mesaiKilidiAcik && GameManager.Instance != null)
         {
             bool basladi = GameManager.Instance.RequestGoToNight();
-            Debug.Log("[KasaEtkilesim] RequestGoToNight() sonucu: " + basladi);
+            DevLog.Info("[KasaEtkilesim] RequestGoToNight() sonucu: " + basladi);
             BilgisayariAcKapat();
         }
     }

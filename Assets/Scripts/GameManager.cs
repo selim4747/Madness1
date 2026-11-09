@@ -1,4 +1,4 @@
-﻿// GameManager.cs — Merkezi oyun akisi kontrolcusu
+// GameManager.cs — Merkezi oyun akisi kontrolcusu
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System;
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
             if (ToastNotification.Instance != null)
                 ToastNotification.Instance.Show("Gece basliyor — once bir silah almalisin!", 4f);
             else
-                Debug.LogWarning("[GameManager] Silah yok, gece baslamiyor (ToastNotification sahnede yok, mesaj gosterilemedi).");
+                DevLog.Warning("[GameManager] Silah yok, gece baslamiyor (ToastNotification sahnede yok, mesaj gosterilemedi).");
             return false;
         }
 
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
         // SONSUZA KADAR takili birakiyordu (Play modundan cikmadan asla Day'e donmuyordu).
         if (PhaseTransition.Instance == null)
         {
-            Debug.LogError("[GameManager] PhaseTransition sahnede yok — gece gecisi baslatilamiyor.");
+            DevLog.Error("[GameManager] PhaseTransition sahnede yok — gece gecisi baslatilamiyor.");
             return false;
         }
 

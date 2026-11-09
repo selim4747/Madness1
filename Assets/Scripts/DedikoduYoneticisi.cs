@@ -58,7 +58,7 @@ public class DedikoduYoneticisi : MonoBehaviour
         if (!GecerliMi(d) || ogrenilenler.Contains(d.dedikoduId)) return;
 
         ogrenilenler.Add(d.dedikoduId);
-        Debug.Log($"🗣️ [DEDİKODU] Öğrenildi: '{d.dedikoduId}' ({d.kaynakIsim} → {d.hedefIsim} hakkında)");
+        DevLog.Info($"🗣️ [DEDİKODU] Öğrenildi: '{d.dedikoduId}' ({d.kaynakIsim} → {d.hedefIsim} hakkında)");
 
         if (d.kaynakIliskiEtkisi != 0 && SadikMusteriYoneticisi.Instance != null)
             SadikMusteriYoneticisi.Instance.DisaridanPuanEkle(d.kaynakIsim, d.kaynakIliskiEtkisi);
@@ -89,7 +89,7 @@ public class DedikoduYoneticisi : MonoBehaviour
         if (!GecerliMi(d) || paylasilanlar.Contains(d.dedikoduId)) return;
 
         paylasilanlar.Add(d.dedikoduId);
-        Debug.Log($"💬 [DEDİKODU] Paylaşıldı: '{d.dedikoduId}' → {d.hedefIsim}");
+        DevLog.Info($"💬 [DEDİKODU] Paylaşıldı: '{d.dedikoduId}' → {d.hedefIsim}");
 
         if (d.hedefIliskiEtkisi != 0 && SadikMusteriYoneticisi.Instance != null)
             SadikMusteriYoneticisi.Instance.DisaridanPuanEkle(d.hedefIsim, d.hedefIliskiEtkisi);

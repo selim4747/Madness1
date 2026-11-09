@@ -1,4 +1,4 @@
-﻿// StoryNPCController.cs — Afor ve diger lore karakterleri
+// StoryNPCController.cs — Afor ve diger lore karakterleri
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System.Collections;
@@ -42,13 +42,14 @@ public class StoryNPCController : NavMeshMover
     // GEÇİT IŞINLAMASI: haritada NavMesh'in aradan geçmediği iki dar bant (Y ekseni).
     // NPC bu bantlardan birinin içine düşerse (yürüyerek geçemediği için), doğrudan
     // bandın diğer tarafındaki güvenli Y konumuna ışınlanır — yol hesaplamaya calisilmaz.
-    private const float GECIT1_MIN_Y = 44.9f;
-    private const float GECIT1_MAX_Y = 45.1f;
-    private const float GECIT1_HEDEF_Y = 41f;
-
-    private const float GECIT2_MIN_Y = 41.9f;
-    private const float GECIT2_MAX_Y = 42.1f;
-    private const float GECIT2_HEDEF_Y = 46f;
+    // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
+    [SerializeField] private NavMeshPortalConfig portalConfig;
+    private float GECIT1_MIN_Y => portalConfig != null ? portalConfig.gecit1MinY : 44.9f;
+    private float GECIT1_MAX_Y => portalConfig != null ? portalConfig.gecit1MaxY : 45.1f;
+    private float GECIT1_HEDEF_Y => portalConfig != null ? portalConfig.gecit1HedefY : 41f;
+    private float GECIT2_MIN_Y => portalConfig != null ? portalConfig.gecit2MinY : 41.9f;
+    private float GECIT2_MAX_Y => portalConfig != null ? portalConfig.gecit2MaxY : 42.1f;
+    private float GECIT2_HEDEF_Y => portalConfig != null ? portalConfig.gecit2HedefY : 46f;
 
     public string NpcName { get { return npcName; } }
     public BookData CarriedBook { get { return carriedBook; } }
@@ -205,7 +206,7 @@ public class StoryNPCController : NavMeshMover
         // KRITIK: Warp() mevcut yolu SILER — hedefi tekrar vererek yola aninda devam ettir.
         HedefiGeriYukle();
 
-        Debug.Log($"⚡ [IŞINLAMA] {npcName} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
+        DevLog.Info($"⚡ [IŞINLAMA] {npcName} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
     }
 
     private void Update()

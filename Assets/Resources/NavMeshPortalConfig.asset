@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787aedd181ddb469bbfc9fb3fa2a71f8, type: 3}
+  m_Name: NavMeshPortalConfig
+  m_EditorClassIdentifier: Assembly-CSharp::NavMeshPortalConfig
+  gecit1MinY: 44.9
+  gecit1MaxY: 45.1
+  gecit1HedefY: 41
+  gecit2MinY: 41.9
+  gecit2MaxY: 42.1
+  gecit2HedefY: 46
+  partialPathIsinlamaSaniye: 5

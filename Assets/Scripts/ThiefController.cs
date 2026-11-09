@@ -1,4 +1,4 @@
-﻿// ThiefController.cs — Hirsiz yapay zekasi
+// ThiefController.cs — Hirsiz yapay zekasi
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 
@@ -23,18 +23,14 @@ public class ThiefController : NavMeshMover
     private Transform doorPoint;
     private bool hasStolen;
 
-    // GEÇİT IŞINLAMASI: haritada NavMesh'in aradan geçmediği iki dar bant (Y ekseni).
-    // NPC bu bantlardan birinin içine düşerse (yürüyerek geçemediği için), doğrudan
-    // bandın diğer tarafındaki güvenli Y konumuna ışınlanır — yol hesaplamaya calisilmaz.
-    // CustomerController / StoryNPCController ile AYNI bant degerleri — bahce iki ayri
-    // NavMesh adasi gibi davrandigi icin hirsiz da bu bantlari gecerken takilabilirdi.
-    private const float GECIT1_MIN_Y = 44.9f;
-    private const float GECIT1_MAX_Y = 45.1f;
-    private const float GECIT1_HEDEF_Y = 41f;
-
-    private const float GECIT2_MIN_Y = 41.9f;
-    private const float GECIT2_MAX_Y = 42.1f;
-    private const float GECIT2_HEDEF_Y = 46f;
+    // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
+    [SerializeField] private NavMeshPortalConfig portalConfig;
+    private float GECIT1_MIN_Y => portalConfig != null ? portalConfig.gecit1MinY : 44.9f;
+    private float GECIT1_MAX_Y => portalConfig != null ? portalConfig.gecit1MaxY : 45.1f;
+    private float GECIT1_HEDEF_Y => portalConfig != null ? portalConfig.gecit1HedefY : 41f;
+    private float GECIT2_MIN_Y => portalConfig != null ? portalConfig.gecit2MinY : 41.9f;
+    private float GECIT2_MAX_Y => portalConfig != null ? portalConfig.gecit2MaxY : 42.1f;
+    private float GECIT2_HEDEF_Y => portalConfig != null ? portalConfig.gecit2HedefY : 46f;
 
     public void Initialize(Transform door, ShelfController shelf)
     {
@@ -46,7 +42,7 @@ public class ThiefController : NavMeshMover
         if (alertIcon != null) alertIcon.SetActive(true);
         if (stolenBookIcon != null) stolenBookIcon.enabled = false;
 
-        AudioManager.Instance.PlayAlarm();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayAlarm();
 
         // GÜVENLİK AĞI: spawn noktasi (doorPoint) bake edilmis NavMesh'in tam ustunde
         // olmayabilir — CustomerController.MoveTo() ayni riske karsi bu kontrolu yapiyor.
@@ -61,7 +57,7 @@ public class ThiefController : NavMeshMover
             }
             else
             {
-                Debug.LogWarning($"⚠️ [NAVMESH] {gameObject.name} NavMesh uzerinde degil, 5 birim icinde gecerli nokta da bulunamadi — hareket edemiyor. doorPoint'in NavMesh ile kapli oldugundan emin ol.");
+                DevLog.Warning($"⚠️ [NAVMESH] {gameObject.name} NavMesh uzerinde degil, 5 birim icinde gecerli nokta da bulunamadi — hareket edemiyor. doorPoint'in NavMesh ile kapli oldugundan emin ol.");
             }
         }
 
@@ -108,7 +104,7 @@ public class ThiefController : NavMeshMover
         // gerek yok, o mekanizma zaten base class'ta hazir.)
         HedefiGeriYukle();
 
-        Debug.Log($"⚡ [IŞINLAMA] {gameObject.name} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
+        DevLog.Info($"⚡ [IŞINLAMA] {gameObject.name} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
     }
 
     private void Update()
@@ -167,7 +163,7 @@ public class ThiefController : NavMeshMover
     private void Escape()
     {
         if (hasStolen)
-            ToastNotification.Instance.Show("Hirsiz bir kitap calip kacti!", 3f);
+            if (ToastNotification.Instance != null) ToastNotification.Instance.Show("Hirsiz bir kitap calip kacti!", 3f);
 
         Destroy(gameObject);
     }
@@ -187,11 +183,11 @@ public class ThiefController : NavMeshMover
             hasStolen = false;
         }
 
-        EconomyManager.Instance.AddGold(catchReward);
-        SatisfactionTracker.Instance.RecordPositiveEvent();   // "itibar" = memnuniyet
+        if (EconomyManager.Instance != null) EconomyManager.Instance.AddGold(catchReward);
+        if (SatisfactionTracker.Instance != null) SatisfactionTracker.Instance.RecordPositiveEvent();   // "itibar" = memnuniyet
         PlayerProgressStats.AddThiefCaught();
 
-        ToastNotification.Instance.Show("Hirsizi yakaladin! +" + catchReward + " Para", 3f);
+        if (ToastNotification.Instance != null) ToastNotification.Instance.Show("Hirsizi yakaladin! +" + catchReward + " Para", 3f);
         Destroy(gameObject);
     }
 }
