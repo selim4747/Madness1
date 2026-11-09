@@ -1,4 +1,4 @@
-﻿// KayipReferansBulucu.cs — Editor araci: "'X' is missing the class attribute
+// KayipReferansBulucu.cs — Editor araci: "'X' is missing the class attribute
 // 'ExtensionOfNativeClass'!" gibi hatalarin EN YAYGIN sebebi olan "Missing (Mono Script)"
 // kalintilarini (eskiden bir sinif MonoBehaviour/Component'ti, sonra duz siniфa cevrildi ama
 // sahne/prefab'taki eski bilesen kaydi SILINMEDI) TUM prefab'larda VE su an ACIK olan sahnede
@@ -50,6 +50,10 @@ public class KayipReferansBulucu : EditorWindow
             "fazla sahneyi aynı anda yüklemek yan etkiler yaratabilir) — başka bir sahneyi " +
             "kontrol etmek için onu AÇIP taramayı tekrar çalıştır.",
             MessageType.Info);
+
+        EditorGUILayout.Space();
+        if (GUILayout.Button("Yeni Özellik Kurulum Rehberi", GUILayout.Height(28)))
+            YeniOzellikKurulumYardimcisi.Ac();
 
         EditorGUILayout.Space();
         if (GUILayout.Button("Tara (Açık Sahne + Tüm Prefablar)", GUILayout.Height(30))) Tara();
