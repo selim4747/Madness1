@@ -64,8 +64,8 @@ MonoBehaviour:
     tisortSprite: {fileID: 0}
     sosyal: 1
     bahceDiyaloglari:
-    - id: 
-      metin: 
+    - id: saek_0
+      metin: "Nas\u0131ls\u0131n\u0131z\x03"
       ekDiller: []
       ses:
         turkce: {fileID: 0}

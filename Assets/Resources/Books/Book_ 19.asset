@@ -16,7 +16,7 @@ MonoBehaviour:
   kitapAdi: "\u0130simsiz Kitap"
   kitapTuru: 0
   nadirlik: 0
-  fiyat: 50
+  fiyat: 14
   shopNumber: 1
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "Bu kitab\u0131n hikayesi hen\xFCz yaz\u0131lmad\u0131..."
