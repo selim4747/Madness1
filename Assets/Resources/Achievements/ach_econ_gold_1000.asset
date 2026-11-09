@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AchievementData
   achievementId: ach_econ_gold_1000
   title: Cebi Dolu
-  description: "Toplamda 1000 alt\u0131n kazan."
+  description: "Toplamda 500 alt\u0131n kazan."
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 12
-  targetValue: 1000
+  targetValue: 500
   goldReward: 100

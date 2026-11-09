@@ -16,7 +16,7 @@ MonoBehaviour:
   kitapAdi: "Hamur canl\u0131lar"
   kitapTuru: 2
   nadirlik: 0
-  fiyat: 50
+  fiyat: 14
   shopNumber: 3
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "Bilin\xE7li varl\u0131klar\u0131n ki\u015Filiklerinin k\xFC\xE7\xFCkl\xFC\u011F\xFCnde

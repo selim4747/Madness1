@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "5 y\xFCkseltme sat\u0131n al."
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 13
   targetValue: 5
-  goldReward: 200
+  goldReward: 150

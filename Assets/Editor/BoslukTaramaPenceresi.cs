@@ -124,7 +124,7 @@ public class BoslukTaramaPenceresi : EditorWindow
         EditorGUILayout.Space();
         if (GUILayout.Button("TARA", GUILayout.Height(30))) TaramaBaslat();
 
-        if (!tarandiMi) return;
+        if (sonuclar == null) return;
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField($"{sonuclar.taranankAssetSayisi} ScriptableObject asset'i tarandı.", EditorStyles.miniLabel);

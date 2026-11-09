@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "72 farkl\u0131 kitap ke\u015Ffet (yar\u0131s\u0131)."
   icon: {fileID: 0}
   category: 4
+  gizli: 0
   trackedStat: 9
   targetValue: 72
-  goldReward: 600
+  goldReward: 250

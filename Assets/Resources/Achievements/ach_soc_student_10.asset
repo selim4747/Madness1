@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "10 \xF6\u011Frenciye hizmet ver."
   icon: {fileID: 0}
   category: 2
+  gizli: 0
   trackedStat: 3
   targetValue: 10
-  goldReward: 150
+  goldReward: 35

@@ -16,7 +16,7 @@ MonoBehaviour:
   kitapAdi: Oyun Bozan FanMade
   kitapTuru: 3
   nadirlik: 0
-  fiyat: 50
+  fiyat: 10
   shopNumber: 5
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "Egirin yazd\u0131\u011F\u0131 oyun bozan fan hikayesi"

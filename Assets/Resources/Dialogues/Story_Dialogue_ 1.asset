@@ -25,11 +25,41 @@ MonoBehaviour:
   lines:
   - speakerName: Afor
     text: "Merhaba. Nas\u0131ls\u0131n?"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
   - speakerName: Afor
     text: NEEEEE?
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
   - speakerName: Afor
     text: "D\xFCn canavarlar m\u0131 vard\u0131? Nas\u0131l g\xF6r\xFCn\xFCyorlard\u0131."
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
   - speakerName: Afor
-    text: "\xD6nceki G\xF6revlinin tam anlatt\u0131\u011F\u0131 gibi."
+    text: "Ama bu \xE7ok tuhaf"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0
   - speakerName: Afor
-    text: "Ama bu nas\u0131l olur?"
+    text: "Hayal g\xF6r\xFCyordun galiba"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 0

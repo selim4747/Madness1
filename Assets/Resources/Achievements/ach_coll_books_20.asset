@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "20 farkl\u0131 kitap t\xFCr\xFC/ba\u015Fl\u0131k ke\u015Ffet."
   icon: {fileID: 0}
   category: 4
+  gizli: 0
   trackedStat: 9
   targetValue: 20
-  goldReward: 150
+  goldReward: 100

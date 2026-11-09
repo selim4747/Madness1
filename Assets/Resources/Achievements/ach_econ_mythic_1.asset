@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "\u0130lk mitik kitab\u0131n\u0131 sat."
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 1
   targetValue: 1
-  goldReward: 300
+  goldReward: 200

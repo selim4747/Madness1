@@ -12,14 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276db542529e76b4c9dc1527ff11b31c, type: 3}
   m_Name: Book_ 23
   m_EditorClassIdentifier: Assembly-CSharp::BookData
-  bookId: shop1_book01
-  displayName: "OyunBozan Maceralar\u0131"
-  genre: Polisiye
+  bookId: shop1_book15
+  kitapAdi: "\u0130simsiz Kitap"
+  kitapTuru: 0
+  nadirlik: 0
+  fiyat: 50
   shopNumber: 1
-  shelfIndex: 4
-  rarity: 1
-  basePrice: 50
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
-  loreSentence: "Hey... Bunu okumaman gerekiyordu!!! Hakk\u0131nda kesinlikle soru
-    sorma!"
-  isStartingShelf: 0
+  loreBilgisi: "Bu kitab\u0131n hikayesi hen\xFCz yaz\u0131lmad\u0131..."

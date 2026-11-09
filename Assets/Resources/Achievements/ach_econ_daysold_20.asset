@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "Tek g\xFCnde 20 kitap sat."
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 8
   targetValue: 20
-  goldReward: 250
+  goldReward: 60

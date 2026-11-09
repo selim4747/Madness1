@@ -686,7 +686,8 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Standalone: SENTIS_ANALYTICS_ENABLED
+    Android: SENTIS_ANALYTICS_ENABLED;APP_UI_EDITOR_ONLY
+    Standalone: SENTIS_ANALYTICS_ENABLED;APP_UI_EDITOR_ONLY
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -788,11 +789,11 @@ PlayerSettings:
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: 608be3e9-954c-4a68-8f21-aebdb81bb9c9
+  cloudProjectId: cd66e7cb-9dda-406a-9876-25d9364fb547
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: DelilikYeni
-  organizationId: selimkaratas
+  projectName: Madness
+  organizationId: istiklaldot
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

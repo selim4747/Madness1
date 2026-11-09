@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "T\xFCm kitaplar\u0131 (144) ke\u015Ffet."
   icon: {fileID: 0}
   category: 4
+  gizli: 0
   trackedStat: 9
   targetValue: 144
-  goldReward: 1500
+  goldReward: 350

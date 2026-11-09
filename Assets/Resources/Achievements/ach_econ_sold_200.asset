@@ -17,6 +17,7 @@ MonoBehaviour:
   description: 200 kitap sat.
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 0
   targetValue: 200
-  goldReward: 400
+  goldReward: 250

@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "Bah\xE7ede 5 m\xFC\u015Fteri a\u011F\u0131rla."
   icon: {fileID: 0}
   category: 2
+  gizli: 0
   trackedStat: 14
   targetValue: 5
-  goldReward: 150
+  goldReward: 35

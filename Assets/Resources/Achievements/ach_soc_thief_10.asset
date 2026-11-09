@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "10 h\u0131rs\u0131z yakala."
   icon: {fileID: 0}
   category: 2
+  gizli: 0
   trackedStat: 2
   targetValue: 10
-  goldReward: 500
+  goldReward: 100

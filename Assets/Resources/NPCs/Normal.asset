@@ -38,7 +38,7 @@ MonoBehaviour:
       davrand\u0131"
     - "Unutmak zor. Kimse bana bunun ne kadar zor oldu\u011Funu s\xF6ylemedi."
     - "Bazen buraya sadece onun oturdu\u011Fu yere bakmak i\xE7in geliyorum."
-    - "Polisiye raflar\u0131na h\xE2l\xE2 ilk o bakard\u0131, ben ikinci s\u0131radayd\u0131m."
+    - "Polisiye raflar\u0131na her bakt\u0131\u011F\u0131mda akl\u0131ma o geliyor"
     - "Kitab\u0131m\u0131 rafta g\xF6rd\xFCm de... garip bir gurur, garip bir ac\u0131,
       ikisi bir arada."
     tisortSprite: {fileID: 0}
@@ -79,6 +79,7 @@ MonoBehaviour:
     - "Oooh Bu kitap s\xFCper"
     - "Afor bursundan bana para ay\u0131rsa evde kendi k\xFCt\xFCphanemi kurard\u0131m"
     - "K\xFC\xE7\xFCk karde\u015Fiyim ama kitap vermiyor bana"
+    - "Her g\xFCn burada ama nedense hi\xE7 g\xF6rm\xFCyorum"
     tisortSprite: {fileID: 0}
     sosyal: 1
     bahceDiyaloglari:
@@ -144,8 +145,10 @@ MonoBehaviour:
     - "Bir tarif kitab\u0131 alaca\u011F\u0131m, ama bug\xFCn pi\u015Firecek g\xFCc\xFCm
       yok galiba."
     - "Yeni bir tarif kitab\u0131 var m\u0131? Kafam\u0131 da\u011F\u0131tmam laz\u0131m."
+    - "Onun Gemici olaca\u011F\u0131n\u0131 san\u0131p babas\u0131n\u0131n gemisinde
+      i\u015Fe girmi\u015Ftim.\nAma \xF6ld\xFC\u011F\xFCn\xFC duyunca ayr\u0131ld\u0131m"
     tisortSprite: {fileID: 0}
-    sosyal: 1
+    sosyal: 0
     bahceDiyaloglari: []
     gunlukKonusmaLimiti: 3
     ozelGunKarakteri: 0

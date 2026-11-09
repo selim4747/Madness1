@@ -860,6 +860,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b231e3c27dc35d242acc75ad192d61f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SadikMusteriYoneticisi
+  sohbetPuani: 5
+  kademeler: []
+  puanBasiAgirlikCarpani: 0.02
+  maxAgirlikCarpani: 4
+  sogumaAktif: 1
+  sogumaBaslamaGunSayisi: 2
+  sogumaGundeMiktar: 2
 --- !u!4 &53167641
 Transform:
   m_ObjectHideFlags: 0
@@ -7439,7 +7446,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.2
+  orthographic size: 6.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

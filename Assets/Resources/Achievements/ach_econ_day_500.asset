@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AchievementData
   achievementId: ach_econ_day_500
   title: "Bereketli G\xFCn"
-  description: "Tek g\xFCnde 500 alt\u0131n kazan."
+  description: "Tek g\xFCnde 200 alt\u0131n kazan."
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 7
-  targetValue: 500
-  goldReward: 250
+  targetValue: 200
+  goldReward: 50

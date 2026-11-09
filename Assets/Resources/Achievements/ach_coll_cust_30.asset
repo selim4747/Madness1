@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "30 farkl\u0131 m\xFC\u015Fteriyle tan\u0131\u015F."
   icon: {fileID: 0}
   category: 4
+  gizli: 0
   trackedStat: 16
   targetValue: 30
-  goldReward: 800
+  goldReward: 150

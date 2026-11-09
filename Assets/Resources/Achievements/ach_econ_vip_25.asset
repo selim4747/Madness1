@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "25 VIP m\xFC\u015Fteriye sat\u0131\u015F yap."
   icon: {fileID: 0}
   category: 0
+  gizli: 0
   trackedStat: 18
   targetValue: 25
-  goldReward: 900
+  goldReward: 750

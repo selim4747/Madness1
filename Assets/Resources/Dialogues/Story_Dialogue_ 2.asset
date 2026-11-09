@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50c68dc098b97b46beccfff2049e5ef, type: 3}
+  m_Name: Story_Dialogue_ 2
+  m_EditorClassIdentifier: Assembly-CSharp::StoryDialogueData
+  eventId: story_003
+  triggerDay: 3
+  isFinale: 0
+  speakerName: Afor
+  speakerPortrait: {fileID: 0}
+  npcPrefabOverride: {fileID: 0}
+  focusCamera: 1
+  cameraFocusOffset: {x: 0, y: 0}
+  hareketliAnlatim: 0
+  hareketMesafesi: 2
+  lines:
+  - speakerName: Afor
+    text: "2 g\xFCnd\xFCr canavar m\u0131 g\xF6r\xFCyorsun?"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 1
+  - speakerName: Afor
+    text: "Bu kadar \xE7abuk delirmek m\xFCmk\xFCn de\u011Fil"
+    ekDiller:
+    - dil: 1
+      metin: It is impossible to see fake things that fast
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 1
+  - speakerName: Afor
+    text: 'Peki. '
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 1
+  - speakerName: Afor
+    text: "Bu gece de g\xF6r\xFCrsen ertesi gece burada kal\u0131r\u0131m ak\u015Fam
+      s\u0131rf canavarlar\u0131 g\xF6rmek i\xE7in"
+    ekDiller: []
+    ses:
+      turkce: {fileID: 0}
+      ingilizce: {fileID: 0}
+    konusanCinsiyeti: 0
+    konusanYasGrubu: 1

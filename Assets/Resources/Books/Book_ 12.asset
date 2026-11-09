@@ -12,14 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276db542529e76b4c9dc1527ff11b31c, type: 3}
   m_Name: Book_ 12
   m_EditorClassIdentifier: Assembly-CSharp::BookData
-  bookId: shop1_book01
-  displayName: "OyunBozan Maceralar\u0131"
-  genre: Polisiye
+  bookId: shop1_book13
+  kitapAdi: "Ge\xE7i\u015F Dereleri"
+  kitapTuru: 5
+  nadirlik: 0
+  fiyat: 16
   shopNumber: 1
-  shelfIndex: 4
-  rarity: 1
-  basePrice: 50
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
-  loreSentence: "Hey... Bunu okumaman gerekiyordu!!! Hakk\u0131nda kesinlikle soru
-    sorma!"
-  isStartingShelf: 0
+  loreBilgisi: "Buz okyanusundan neto k\u0131tas\u0131na su olarak ge\xE7en su k\xFCtleleri
+    hakk\u0131nda bilgi"

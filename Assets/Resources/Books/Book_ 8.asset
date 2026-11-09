@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276db542529e76b4c9dc1527ff11b31c, type: 3}
   m_Name: Book_ 8
   m_EditorClassIdentifier: Assembly-CSharp::BookData
-  bookId: shop1_book07
+  bookId: shop1_book09
   kitapAdi: "Beyaz Ta\u015F"
   kitapTuru: 4
   nadirlik: 0
-  fiyat: 50
+  fiyat: 14
   shopNumber: 1
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "\xC7OK G\u0130ZL\u0130"

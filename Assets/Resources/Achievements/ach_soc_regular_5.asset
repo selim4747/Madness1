@@ -20,4 +20,4 @@ MonoBehaviour:
   gizli: 0
   trackedStat: 25
   targetValue: 5
-  goldReward: 600
+  goldReward: 125

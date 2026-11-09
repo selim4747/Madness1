@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276db542529e76b4c9dc1527ff11b31c, type: 3}
   m_Name: Book_ 9
   m_EditorClassIdentifier: Assembly-CSharp::BookData
-  bookId: shop1_book08
+  bookId: shop1_book10
   kitapAdi: Saek
   kitapTuru: 3
   nadirlik: 0
-  fiyat: 50
+  fiyat: 13
   shopNumber: 1
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: 'Bir Katilin Hikayesi:)))))

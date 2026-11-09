@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "50. g\xFCne ula\u015F."
   icon: {fileID: 0}
   category: 1
+  gizli: 0
   trackedStat: 6
   targetValue: 50
-  goldReward: 1000
+  goldReward: 750

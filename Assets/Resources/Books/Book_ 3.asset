@@ -16,7 +16,7 @@ MonoBehaviour:
   kitapAdi: Bir Evrengezerin Seyir Defteri
   kitapTuru: 4
   nadirlik: 0
-  fiyat: 50
+  fiyat: 16
   shopNumber: 4
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "Yanl\u0131\u015Fl\u0131kla evrenler aras\u0131nda gezmeye ba\u015Flayan

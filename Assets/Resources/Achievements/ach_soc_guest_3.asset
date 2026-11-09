@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "3 farkl\u0131 hikaye konu\u011Fuyla tan\u0131\u015F."
   icon: {fileID: 0}
   category: 2
+  gizli: 0
   trackedStat: 15
   targetValue: 3
-  goldReward: 600
+  goldReward: 90
