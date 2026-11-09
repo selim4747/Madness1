@@ -1,4 +1,4 @@
-﻿// EnemyPool.cs — Dusman nesne havuzu (mobil performans)
+// EnemyPool.cs — Dusman nesne havuzu (mobil performans)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ public class EnemyPool : MonoBehaviour
         Queue<GameObject> queue;
         if (!pools.TryGetValue(type, out queue))
         {
-            Debug.LogError("[EnemyPool] Tanimsiz dusman tipi: " + type);
+            DevLog.Error("[EnemyPool] Tanimsiz dusman tipi: " + type);
             return null;
         }
 

@@ -221,7 +221,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (CarriedBook == null) return false;
 
-        StudentDeskController masa = StudentDeskManager.Instance.FindNearestDeskWithRequest(pos, deskRange);
+        StudentDeskController masa = StudentDeskManager.Instance != null ? StudentDeskManager.Instance.FindNearestDeskWithRequest(pos, deskRange) : null;
         if (masa == null) return false;
 
         bool accepted = masa.DeliverBook(CarriedBook, CarriedFromShelf);
@@ -236,7 +236,7 @@ public class PlayerInteraction : MonoBehaviour
     private bool IsNearDesk(Vector3 pos)
     {
         if (StudentDeskManager.Instance == null) return false;
-        return StudentDeskManager.Instance.FindNearestDeskWithRequest(pos, deskRange) != null;
+        return StudentDeskManager.Instance != null && StudentDeskManager.Instance.FindNearestDeskWithRequest(pos, deskRange) != null;
     }
 
     /// <summary>Herhangi bir masanin istedigi (parlayan) raflardan menzildeki en yakini.</summary>
@@ -244,7 +244,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (StudentDeskManager.Instance == null) return null;
 
-        List<ShelfController> requested = StudentDeskManager.Instance.GetAllActiveRequestedShelves();
+        List<ShelfController> requested = StudentDeskManager.Instance != null ? StudentDeskManager.Instance.GetAllActiveRequestedShelves() : new List<ShelfController>();
 
         ShelfController nearest = null;
         float best = shelfRange;

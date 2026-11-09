@@ -1,4 +1,4 @@
-﻿// LocalizationManager.cs — Coklu dil altyapisi (ilk surumde sadece Turkce)
+// LocalizationManager.cs — Coklu dil altyapisi (ilk surumde sadece Turkce)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System;
@@ -48,7 +48,7 @@ public class LocalizationManager : MonoBehaviour
         TextAsset file = FindFile(language);
         if (file == null)
         {
-            Debug.LogWarning("[Localization] Dil dosyasi bulunamadi: " + language);
+            DevLog.Warning("[Localization] Dil dosyasi bulunamadi: " + language);
             return;
         }
 

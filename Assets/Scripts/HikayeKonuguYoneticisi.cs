@@ -72,7 +72,7 @@ public class HikayeKonuguYoneticisi : MonoBehaviour
     {
         if (konuk.konukPrefab == null || bahceKosesi == null)
         {
-            Debug.LogWarning("[HikayeKonugu] '" + konuk.isim + "' spawn edilemedi — prefab ya da bahce kosesi atanmamis.");
+            DevLog.Warning("[HikayeKonugu] '" + konuk.isim + "' spawn edilemedi — prefab ya da bahce kosesi atanmamis.");
             return;
         }
 
@@ -81,12 +81,12 @@ public class HikayeKonuguYoneticisi : MonoBehaviour
         StoryNPCController npc = aktifKonukObjesi.GetComponent<StoryNPCController>();
         if (npc == null)
         {
-            Debug.LogWarning("[HikayeKonugu] '" + konuk.isim + "' prefabinda StoryNPCController YOK.");
+            DevLog.Warning("[HikayeKonugu] '" + konuk.isim + "' prefabinda StoryNPCController YOK.");
             return;
         }
 
         npc.InitializeKonuk(konuk, bahceKosesi, cikisNoktasi != null ? cikisNoktasi : bahceKosesi);
-        Debug.Log("✨ [KONUK] " + konuk.isim + " bahce kosesinde belirdi.");
+        DevLog.Info("✨ [KONUK] " + konuk.isim + " bahce kosesinde belirdi.");
     }
 
     /// <summary>StoryNPCController, konukla konusma bitince cagirir — konuk artik "tanisilmis"

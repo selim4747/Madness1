@@ -115,7 +115,7 @@ public class ShelfController : MonoBehaviour
         tamirIlerlemesi = 0f;
         GorseliGuncelle();
 
-        Debug.Log($"📚💥 [KİTAP İSYANI] {gameObject.name} devrildi!");
+        DevLog.Info($"📚💥 [KİTAP İSYANI] {gameObject.name} devrildi!");
     }
 
     /// <summary>RafIsyaniYoneticisi, gece bitip gunduz baslarken HALA devrik olan raflari
@@ -141,7 +141,7 @@ public class ShelfController : MonoBehaviour
         tamirIlerlemesi = 0f;
         GorseliGuncelle();
 
-        Debug.Log($"🛠️ [KİTAP İSYANI] {gameObject.name} tamir edildi.");
+        DevLog.Info($"🛠️ [KİTAP İSYANI] {gameObject.name} tamir edildi.");
     }
 
     private void GorseliGuncelle()

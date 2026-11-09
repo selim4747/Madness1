@@ -1,4 +1,4 @@
-﻿// OzelKitapDiyaloglariYoneticisi.cs — Bir kisi kendi KISIYE OZEL kitabini (KaraKitapOzelData)
+// OzelKitapDiyaloglariYoneticisi.cs — Bir kisi kendi KISIYE OZEL kitabini (KaraKitapOzelData)
 // satin aldiktan sonra, o kitaba dair ekstra sohbet satirlarini KALICI olarak acar.
 //
 // AKIS: CounterController, kisiye ozel bir kitap satildiginda KitapSatildi() cagirir — o
@@ -31,7 +31,7 @@ public class OzelKitapDiyaloglariYoneticisi : MonoBehaviour
         if (acilanDiyaloglar.ContainsKey(aliciIsmi)) return; // zaten acilmis, tekrar eklenmez
 
         acilanDiyaloglar[aliciIsmi] = new List<string>(kitap.kitapSonrasiDiyaloglar);
-        Debug.Log("📖 [KİTAP SONRASI] " + aliciIsmi + " için " + kitap.kitapSonrasiDiyaloglar.Count + " yeni diyalog açıldı.");
+        DevLog.Info("📖 [KİTAP SONRASI] " + aliciIsmi + " için " + kitap.kitapSonrasiDiyaloglar.Count + " yeni diyalog açıldı.");
     }
 
     /// <summary>MusteriSohbetRadari, normal havuzu olustururken bu isimde ek satir var mi diye sorar.

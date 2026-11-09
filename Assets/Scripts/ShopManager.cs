@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ShopManager : MonoBehaviour
@@ -136,7 +136,7 @@ public class ShopManager : MonoBehaviour
                         else
                         {
                             secilenKitap = KasaEtkilesim.Instance.oyundakiTumKitaplar[Random.Range(0, KasaEtkilesim.Instance.oyundakiTumKitaplar.Count)];
-                            Debug.Log("Patron, oyundaki tüm farklı kitapları tükettik! Mecburen aynı kitabı koydum. Acil yeni kitap yaz!");
+                            DevLog.Info("Patron, oyundaki tüm farklı kitapları tükettik! Mecburen aynı kitabı koydum. Acil yeni kitap yaz!");
                         }
 
                         // 4. ADIM: Seçilen eşsiz kitabı rafa yerleştir ve açılış stoğunu ver

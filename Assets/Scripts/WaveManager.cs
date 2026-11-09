@@ -1,4 +1,4 @@
-﻿// WaveManager.cs — Gece dalga sistemi (havuz + es zamanli sinir)
+// WaveManager.cs — Gece dalga sistemi (havuz + es zamanli sinir)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System.Collections;
@@ -48,7 +48,7 @@ public class WaveManager : MonoBehaviour
         nightActive = true;
         aliveEnemies.Clear();
 
-        if (isBossNight) BossController.Instance.SpawnBoss(day);
+        if (isBossNight) if (BossController.Instance != null) BossController.Instance.SpawnBoss(day);
 
         if (spawnRoutine != null) StopCoroutine(spawnRoutine);
         spawnRoutine = StartCoroutine(SpawnLoop(day));
@@ -77,7 +77,7 @@ public class WaveManager : MonoBehaviour
         if (chosen == null) return;
 
         Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        GameObject go = EnemyPool.Instance.Get(chosen.type, point.position);
+        GameObject go = EnemyPool.Instance != null ? EnemyPool.Instance.Get(chosen.type, point.position) : null;
         if (go == null) return;
 
         EnemyController enemy = go.GetComponent<EnemyController>();
@@ -111,7 +111,7 @@ public class WaveManager : MonoBehaviour
     public void OnEnemyKilled(EnemyController enemy)
     {
         aliveEnemies.Remove(enemy);
-        EnemyPool.Instance.Return(enemy.Type, enemy.gameObject);
+        if (EnemyPool.Instance != null) EnemyPool.Instance.Return(enemy.Type, enemy.gameObject);
 
         RemainingToKill = Mathf.Max(0, RemainingToKill - 1);
         CheckNightEnd();
@@ -129,14 +129,14 @@ public class WaveManager : MonoBehaviour
 
         bool allSpawned = spawnedSoFar >= TotalPoolTonight;
         bool allDead = aliveEnemies.Count == 0;
-        bool bossDone = !BossController.Instance.IsBossActive;
+        bool bossDone = BossController.Instance == null || !BossController.Instance.IsBossActive;
 
         if (allSpawned && allDead && bossDone)
         {
             nightActive = false;
             if (spawnRoutine != null) { StopCoroutine(spawnRoutine); spawnRoutine = null; }
 
-            GameManager.Instance.OnNightCleared();
+            if (GameManager.Instance != null) GameManager.Instance.OnNightCleared();
         }
     }
 
@@ -153,11 +153,11 @@ public class WaveManager : MonoBehaviour
             if (e == null) continue;
 
             e.ForceDespawn();
-            EnemyPool.Instance.Return(e.Type, e.gameObject);
+            if (EnemyPool.Instance != null) EnemyPool.Instance.Return(e.Type, e.gameObject);
         }
         aliveEnemies.Clear();
 
-        BossController.Instance.DespawnBoss();
+        if (BossController.Instance != null) BossController.Instance.DespawnBoss();
     }
 
     private void CleanupAliveList()
@@ -178,6 +178,6 @@ public class WaveManager : MonoBehaviour
             RemainingToKill += 15;
         }
 
-        Debug.Log("[TEST] Ayni anda max: " + maxConcurrentAlive + ", bu geceki toplam: " + TotalPoolTonight);
+        DevLog.Info("[TEST] Ayni anda max: " + maxConcurrentAlive + ", bu geceki toplam: " + TotalPoolTonight);
     }
 }

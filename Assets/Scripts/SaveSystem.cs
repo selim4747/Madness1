@@ -1,4 +1,4 @@
-﻿// SaveSystem.cs — 3 slotlu kayit + gun basi otomatik snapshot
+// SaveSystem.cs — 3 slotlu kayit + gun basi otomatik snapshot
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System;
@@ -196,7 +196,7 @@ public class SaveSystem : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError("[SaveSystem] Kayit yazilamadi: " + e.Message);
+            DevLog.Error("[SaveSystem] Kayit yazilamadi: " + e.Message);
         }
     }
 
@@ -207,12 +207,12 @@ public class SaveSystem : MonoBehaviour
         try
         {
             SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
-            if (data == null) Debug.LogWarning("[SaveSystem] Kayit bos: " + path);
+            if (data == null) DevLog.Warning("[SaveSystem] Kayit bos: " + path);
             return data;
         }
         catch (Exception e)
         {
-            Debug.LogError("[SaveSystem] Kayit bozuk, atlaniyor: " + e.Message);
+            DevLog.Error("[SaveSystem] Kayit bozuk, atlaniyor: " + e.Message);
             return null;
         }
     }

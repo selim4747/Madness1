@@ -29,7 +29,7 @@ public class AnaMenuyeDonButonu : MonoBehaviour
             if (slot < 0)
             {
                 slot = 0;
-                Debug.LogWarning("[AnaMenuyeDonButonu] ActiveSlot -1 idi (hicbir slot secilmemisti), 0. slota kaydediliyor.");
+                DevLog.Warning("[AnaMenuyeDonButonu] ActiveSlot -1 idi (hicbir slot secilmemisti), 0. slota kaydediliyor.");
             }
             SaveSystem.Instance.SaveToSlot(slot);
         }

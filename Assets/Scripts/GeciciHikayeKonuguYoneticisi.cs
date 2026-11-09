@@ -1,4 +1,4 @@
-﻿// GeciciHikayeKonuguYoneticisi.cs — Var olan DUZENLI musterilerden BELIRLI birinin, GECICI
+// GeciciHikayeKonuguYoneticisi.cs — Var olan DUZENLI musterilerden BELIRLI birinin, GECICI
 // olarak "hikaye konugu"na donustugu gunleri yonetir. AYNI ANDA EN FAZLA spawnNoktalari kadar
 // (onerilen: 3) konuk bulunabilir.
 //
@@ -111,7 +111,7 @@ public class GeciciHikayeKonuguYoneticisi : MonoBehaviour
     {
         if (hikaye.konukPrefab == null)
         {
-            Debug.LogWarning("[GeciciHikayeKonugu] '" + hikaye.hikayeId + "' spawn edilemedi — konukPrefab atanmamis.");
+            DevLog.Warning("[GeciciHikayeKonugu] '" + hikaye.hikayeId + "' spawn edilemedi — konukPrefab atanmamis.");
             return;
         }
 
@@ -122,12 +122,12 @@ public class GeciciHikayeKonuguYoneticisi : MonoBehaviour
         GeciciHikayeKonuguController controller = obj.GetComponent<GeciciHikayeKonuguController>();
         if (controller == null)
         {
-            Debug.LogWarning("[GeciciHikayeKonugu] '" + hikaye.hikayeId + "' prefabinda GeciciHikayeKonuguController YOK.");
+            DevLog.Warning("[GeciciHikayeKonugu] '" + hikaye.hikayeId + "' prefabinda GeciciHikayeKonuguController YOK.");
             return;
         }
 
         controller.Initialize(hikaye, segment);
-        Debug.Log("✨ [GECICI KONUK] " + hikaye.hedefMusteriIsmi + " bugunluk konuk oldu.");
+        DevLog.Info("✨ [GECICI KONUK] " + hikaye.hedefMusteriIsmi + " bugunluk konuk oldu.");
     }
 
     /// <summary>GeciciHikayeKonuguController, oyuncu bir secenek sectiginde cagirir.</summary>

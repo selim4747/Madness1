@@ -122,7 +122,7 @@ public class ProseduralHareketAnimasyonu : MonoBehaviour
         if (govde == null)
         {
             devreDisi = true;
-            Debug.LogWarning("[ProseduralHareketAnimasyonu] '" + gameObject.name + "' icin 'Govde' alani BOS — animasyon calismiyor.");
+            DevLog.Warning("[ProseduralHareketAnimasyonu] '" + gameObject.name + "' icin 'Govde' alani BOS — animasyon calismiyor.");
             return;
         }
 

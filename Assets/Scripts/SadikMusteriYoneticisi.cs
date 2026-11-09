@@ -194,7 +194,7 @@ public class SadikMusteriYoneticisi : MonoBehaviour
         iliskiPuanlari[musteriIsmi] = Mathf.Max(0, iliskiPuanlari[musteriIsmi] + miktar);
 
         // DEBUG: her puan kazanimini Console'a yazdir.
-        Debug.Log($"💛 [İLİŞKİ] {musteriIsmi}: +{miktar} puan (toplam: {iliskiPuanlari[musteriIsmi]})");
+        DevLog.Info($"💛 [İLİŞKİ] {musteriIsmi}: +{miktar} puan (toplam: {iliskiPuanlari[musteriIsmi]})");
 
         int yeniKademe = GetKademeIndeksi(musteriIsmi);
         if (yeniKademe <= oncekiKademe) return;

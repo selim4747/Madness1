@@ -18,6 +18,6 @@ public class KorumaliPanel : MonoBehaviour
         if (PanelYoneticisi.Instance != null)
             PanelYoneticisi.Instance.Kaydet(gameObject, korumali: true);
         else
-            Debug.LogWarning("[KorumaliPanel] '" + gameObject.name + "' icin PanelYoneticisi bulunamadi — sahnede bir yere PanelYoneticisi eklenmis mi kontrol et.");
+            DevLog.Warning("[KorumaliPanel] '" + gameObject.name + "' icin PanelYoneticisi bulunamadi — sahnede bir yere PanelYoneticisi eklenmis mi kontrol et.");
     }
 }

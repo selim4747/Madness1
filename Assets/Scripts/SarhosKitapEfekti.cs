@@ -48,7 +48,7 @@ public class SarhosKitapEfekti : MonoBehaviour
     private IEnumerator EfektRoutine()
     {
         EfektAktifMi = true;
-        Debug.Log("🍷 [SARHOŞ KİTAP] Efekt başladı!");
+        DevLog.Info("🍷 [SARHOŞ KİTAP] Efekt başladı!");
 
         if (PlayerController.Instance != null) PlayerController.Instance.SetTersKontrol(true);
         if (CameraFollow.Instance != null) CameraFollow.Instance.Shake(efektSuresi, kameraSarsintiGucu);
@@ -59,6 +59,6 @@ public class SarhosKitapEfekti : MonoBehaviour
         if (PlayerController.Instance != null) PlayerController.Instance.SetTersKontrol(false);
         aktifEfekt = null;
 
-        Debug.Log("🍷 [SARHOŞ KİTAP] Efekt bitti.");
+        DevLog.Info("🍷 [SARHOŞ KİTAP] Efekt bitti.");
     }
 }
