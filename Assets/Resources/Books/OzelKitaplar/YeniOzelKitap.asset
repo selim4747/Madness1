@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a504bb7d27c1445973a65093cf3bdd, type: 3}
+  m_Name: YeniOzelKitap
+  m_EditorClassIdentifier: Assembly-CSharp::KaraKitapOzelData
+  bookId: B001
+  kitapAdi: "\u0130simsiz Kitap"
+  kitapTuru: 0
+  nadirlik: 0
+  fiyat: 50
+  shopNumber: 1
+  bookCover: {fileID: 0}
+  loreBilgisi: "Bu kitab\u0131n hikayesi hen\xFCz yaz\u0131lmad\u0131..."
+  hedefMusteriIsmi: 
+  gorunmemeSuresiGun: 5
+  kitapSonrasiDiyaloglar: []
