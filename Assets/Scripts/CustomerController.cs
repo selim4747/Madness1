@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 using System;
 using System.Collections.Generic;
@@ -80,19 +80,17 @@ public class CustomerController : MonoBehaviour
 
     private float gardenGoingTimer = 0f;
     private const float MAX_GARDEN_GOING_SECONDS = 25f; // Bahce masasina bu surede varamazsa vazgecilir
-    private const float PARTIAL_PATH_ISINLAMA_SANIYE = 5f; // Yol PathPartial olarak sikisip kalirsa bu kadar sonra dogrudan isinlanir
+    private float PARTIAL_PATH_ISINLAMA_SANIYE => portalConfig != null ? portalConfig.partialPathIsinlamaSaniye : 5f;
     private float partialPathSuresi = 0f;
 
-    // GEÇİT IŞINLAMASI: haritada NavMesh'in aradan geçmediği iki dar bant (Y ekseni).
-    // NPC bu bantlardan birinin içine düşerse (yürüyerek geçemediği için), doğrudan
-    // bandın diğer tarafındaki güvenli Y konumuna ışınlanır — yol hesaplamaya calisilmaz.
-    private const float GECIT1_MIN_Y = 44.9f;
-    private const float GECIT1_MAX_Y = 45.1f;
-    private const float GECIT1_HEDEF_Y = 41f;
-
-    private const float GECIT2_MIN_Y = 41.9f;
-    private const float GECIT2_MAX_Y = 42.1f;
-    private const float GECIT2_HEDEF_Y = 46f;
+    // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
+    [SerializeField] private NavMeshPortalConfig portalConfig;
+    private float GECIT1_MIN_Y => portalConfig != null ? portalConfig.gecit1MinY : 44.9f;
+    private float GECIT1_MAX_Y => portalConfig != null ? portalConfig.gecit1MaxY : 45.1f;
+    private float GECIT1_HEDEF_Y => portalConfig != null ? portalConfig.gecit1HedefY : 41f;
+    private float GECIT2_MIN_Y => portalConfig != null ? portalConfig.gecit2MinY : 41.9f;
+    private float GECIT2_MAX_Y => portalConfig != null ? portalConfig.gecit2MaxY : 42.1f;
+    private float GECIT2_HEDEF_Y => portalConfig != null ? portalConfig.gecit2HedefY : 46f;
 
     // Isinlanma sonrasi yolu geri yukleyebilmek icin son verilen hedef saklanir.
     private Vector3 sonHedef;
@@ -232,19 +230,21 @@ public class CustomerController : MonoBehaviour
         // KİMLİK KONTROLÜ
         if (SecilenKimlik == null)
         {
-            Debug.LogError("🚨 HATA: Müşterinin kimliği yok! Inspector'dan CustomerData içine Karakter eklemeyi unuttun!");
+            DevLog.Error("🚨 HATA: Müşterinin kimliği yok! Inspector'dan CustomerData içine Karakter eklemeyi unuttun!");
             LeaveUnsatisfied();
             return;
         }
 
-        ShelfController[] tumRaflar = FindObjectsOfType<ShelfController>();
+        // FindObjectsOfType yerine ShelfRegistry kullan (performans + otomatik oluşturma)
+        var registry = ShelfRegistry.EnsureExists();
+        var tumRaflar = registry.GetActiveShelves();
+
         List<ShelfController> uygunRaflar = new List<ShelfController>();
 
         foreach (var raf in tumRaflar)
         {
-            if (raf.gameObject.activeInHierarchy)
+            if (raf != null && raf.gameObject.activeInHierarchy)
             {
-                // DİKKAT PATRON: Buradaki 'MevcutKitap' kelimesini senin ShelfController kodundaki kitap değişkeninin adıyla DOĞRUDAN değiştir!
                 BookData raftakiKitap = raf.raftakiKitap;
 
                 // Müşterinin zevkine uyuyor mu? (sevdigi turde OLMALI ve sevmedigi turde OLMAMALI)
@@ -268,7 +268,7 @@ public class CustomerController : MonoBehaviour
             state = State.GoingToShelf;
             Vector3 hedefNokta = targetShelf.ApproachPosition != Vector3.zero ? targetShelf.ApproachPosition : targetShelf.transform.position;
             MoveTo(hedefNokta);
-            Debug.Log($"🚶‍♂️ [BİLGİ] {SecilenKimlik.musteriIsmi} aradığı türü buldu, rafa gidiyor.");
+            DevLog.Info($"🚶‍♂️ [BİLGİ] {SecilenKimlik.musteriIsmi} aradığı türü buldu, rafa gidiyor.");
         }
         else
         {
@@ -284,12 +284,12 @@ public class CustomerController : MonoBehaviour
                 targetOzelKitap = ozelKitap;
                 state = State.GoingToShelf;
                 MoveTo(OzelRafController.Instance.ApproachPosition);
-                Debug.Log($"✨ [ÖZEL RAF] {SecilenKimlik.musteriIsmi} özel rafta '{ozelKitap.kitapAdi}' buldu, oraya gidiyor.");
+                DevLog.Info($"✨ [ÖZEL RAF] {SecilenKimlik.musteriIsmi} özel rafta '{ozelKitap.kitapAdi}' buldu, oraya gidiyor.");
                 return;
             }
 
             // Sevdiği tür yok, özel raf da yok/bos — kasaya gidip şikayet edecek!
-            Debug.LogWarning($"👀 [DİKKAT] {SecilenKimlik.musteriIsmi} sevdiği türü bulamadı, kasaya gidiyor!");
+            DevLog.Warning($"👀 [DİKKAT] {SecilenKimlik.musteriIsmi} sevdiği türü bulamadı, kasaya gidiyor!");
             CarriedBook = null;
             GoToCounter();
         }
@@ -322,7 +322,7 @@ public class CustomerController : MonoBehaviour
             {
                 state = State.WaitingAtShelf;
                 waitTimer = 0f;
-                Debug.Log($"📖 [EYLEM] {SecilenKimlik.musteriIsmi} kitabı inceliyor (5 Saniye)...");
+                DevLog.Info($"📖 [EYLEM] {SecilenKimlik.musteriIsmi} kitabı inceliyor (5 Saniye)...");
             }
             else if (state == State.GoingToCounter)
             {
@@ -330,7 +330,7 @@ public class CustomerController : MonoBehaviour
                 patienceTimer = 0f;
                 CounterArrivalTime = Time.time;
 
-                Debug.Log($"⏱️ [SIRA] {SecilenKimlik.musteriIsmi} kasaya vardı. Masaya kayıt yapılıyor!");
+                DevLog.Info($"⏱️ [SIRA] {SecilenKimlik.musteriIsmi} kasaya vardı. Masaya kayıt yapılıyor!");
 
                 // İŞTE KASANIN BUTONUNU ÇALIŞTIRACAK O HAYATİ BAĞLANTI:
                 CounterController kasa = CounterController.Instance;
@@ -340,7 +340,7 @@ public class CustomerController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("🚨 HATA: Sahnede CounterController bulunamadı! Kasa objeni kontrol et.");
+                    DevLog.Error("🚨 HATA: Sahnede CounterController bulunamadı! Kasa objeni kontrol et.");
                 }
             }
             else if (state == State.GoingToGarden)
@@ -349,17 +349,17 @@ public class CustomerController : MonoBehaviour
                 bahceTimer = 0f;
                 benimKalmaSurem = BahceYoneticisi.Instance != null
                                    ? BahceYoneticisi.Instance.RastgeleKalmaSuresi() : 25f;
-                Debug.Log($"🌳 [BAHÇE] {SecilenKimlik.musteriIsmi} masaya oturdu, sohbete açık ({benimKalmaSurem:F0} sn kalacak).");
+                DevLog.Info($"🌳 [BAHÇE] {SecilenKimlik.musteriIsmi} masaya oturdu, sohbete açık ({benimKalmaSurem:F0} sn kalacak).");
             }
             else if (state == State.GoingToStudyDesk)
             {
                 state = State.StudyingAtDesk;
                 calismaTimer = 0f;
-                Debug.Log($"📚 [ÖĞRENCİ] {SecilenKimlik.musteriIsmi} masaya oturdu, çalışıyor.");
+                DevLog.Info($"📚 [ÖĞRENCİ] {SecilenKimlik.musteriIsmi} masaya oturdu, çalışıyor.");
             }
             else if (state == State.Leaving)
             {
-                Debug.Log($"👋 [ÇIKIŞ] {SecilenKimlik.musteriIsmi} dükkanı terk etti.");
+                DevLog.Info($"👋 [ÇIKIŞ] {SecilenKimlik.musteriIsmi} dükkanı terk etti.");
                 OnFinished?.Invoke(this, false);
                 Destroy(gameObject);
             }
@@ -380,7 +380,7 @@ public class CustomerController : MonoBehaviour
             patienceTimer += Time.deltaTime;
             if (patienceTimer >= maxPatienceTime)
             {
-                Debug.LogWarning($"😡 [İSYAN] {SecilenKimlik.musteriIsmi} kasada ağaç oldu, dükkanı terk ediyor!");
+                DevLog.Warning($"😡 [İSYAN] {SecilenKimlik.musteriIsmi} kasada ağaç oldu, dükkanı terk ediyor!");
                 LeaveUnsatisfied();
             }
         }
@@ -402,7 +402,7 @@ public class CustomerController : MonoBehaviour
 
             if (calismaTimer >= beklemeSuresi)
             {
-                Debug.Log($"📚 [ÖĞRENCİ] {SecilenKimlik.musteriIsmi} çalışmayı bitirip kitabı rafa bırakıyor.");
+                DevLog.Info($"📚 [ÖĞRENCİ] {SecilenKimlik.musteriIsmi} çalışmayı bitirip kitabı rafa bırakıyor.");
                 PlayerProgressStats.AddStudyDeskSession();
 
                 // Kitabi RAFA GERI koy (TryTakeOne ile dengeli — stok dogru kalir).
@@ -432,7 +432,7 @@ public class CustomerController : MonoBehaviour
                 partialPathSuresi += Time.deltaTime;
                 if (partialPathSuresi >= PARTIAL_PATH_ISINLAMA_SANIYE && bahceMasasi != null)
                 {
-                    Debug.LogWarning($"⚡ [BAHÇE — KALICI PARTIAL] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : "Müşteri")} masaya giden yol NavMesh ile tam bağlı değil (PathPartial {PARTIAL_PATH_ISINLAMA_SANIYE} sn sürdü) — doğrudan masaya ışınlanıyor.");
+                    DevLog.Warning($"⚡ [BAHÇE — KALICI PARTIAL] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : "Müşteri")} masaya giden yol NavMesh ile tam bağlı değil (PathPartial {PARTIAL_PATH_ISINLAMA_SANIYE} sn sürdü) — doğrudan masaya ışınlanıyor.");
                     agent.Warp(bahceMasasi.position);
                     isinlanmaBeklemeKaresi = 3;
                     partialPathSuresi = 0f;
@@ -454,7 +454,7 @@ public class CustomerController : MonoBehaviour
                 bool durduMu = agent != null && agent.isStopped;
                 bool navMeshte = agent != null && agent.isOnNavMesh;
                 Vector3 hedefKonum = agent != null ? agent.destination : Vector3.zero;
-                Debug.LogWarning($"⚠️ [BAHÇE ZORLA TEMİZLEME] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : "Müşteri")} bahçe masasına ulaşamadı ({MAX_GARDEN_GOING_SECONDS} sn, pathStatus={durum}, kalanMesafe={kalanMesafe:F2}, hiz={hiz:F2}, isStopped={durduMu}, isOnNavMesh={navMeshte}, agent.destination=({hedefKonum.x:F2},{hedefKonum.y:F2}), mevcutPos=({transform.position.x:F2},{transform.position.y:F2}), hedefPos=({(bahceMasasi != null ? bahceMasasi.position.x.ToString("F2") : "?")},{(bahceMasasi != null ? bahceMasasi.position.y.ToString("F2") : "?")})), masa serbest bırakılıp normal çıkışa yönlendirildi.");
+                DevLog.Warning($"⚠️ [BAHÇE ZORLA TEMİZLEME] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : "Müşteri")} bahçe masasına ulaşamadı ({MAX_GARDEN_GOING_SECONDS} sn, pathStatus={durum}, kalanMesafe={kalanMesafe:F2}, hiz={hiz:F2}, isStopped={durduMu}, isOnNavMesh={navMeshte}, agent.destination=({hedefKonum.x:F2},{hedefKonum.y:F2}), mevcutPos=({transform.position.x:F2},{transform.position.y:F2}), hedefPos=({(bahceMasasi != null ? bahceMasasi.position.x.ToString("F2") : "?")},{(bahceMasasi != null ? bahceMasasi.position.y.ToString("F2") : "?")})), masa serbest bırakılıp normal çıkışa yönlendirildi.");
 
                 if (BahceYoneticisi.Instance != null && bahceMasasi != null) BahceYoneticisi.Instance.MasayiBirak(bahceMasasi);
                 bahceMasasi = null;
@@ -473,7 +473,7 @@ public class CustomerController : MonoBehaviour
             leavingTimer += Time.deltaTime;
             if (leavingTimer >= MAX_LEAVING_SECONDS)
             {
-                Debug.LogWarning($"⚠️ [ZORLA TEMİZLEME] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : "Müşteri")} kapıya ulaşamadı, {MAX_LEAVING_SECONDS} sn sonra zorla kaldırıldı.");
+                DevLog.Warning($"⚠️ [ZORLA TEMİZLEME] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : "Müşteri")} kapıya ulaşamadı, {MAX_LEAVING_SECONDS} sn sonra zorla kaldırıldı.");
                 Destroy(gameObject);
                 return;
             }
@@ -524,7 +524,7 @@ public class CustomerController : MonoBehaviour
 
         isinlanmaBeklemeKaresi = 3; // yol yeniden hesaplanana kadar varis kontrolunu atla
 
-        Debug.Log($"⚡ [IŞINLAMA] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : gameObject.name)} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
+        DevLog.Info($"⚡ [IŞINLAMA] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : gameObject.name)} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
     }
 
     private bool HedefeVardiMi()
@@ -567,7 +567,7 @@ public class CustomerController : MonoBehaviour
             targetOzelKitap = null;
 
             if (alinan != null)
-                Debug.Log($"✨ [ÖZEL RAF] {SecilenKimlik.musteriIsmi} '{alinan.kitapAdi}' kitabını eline aldı!");
+                DevLog.Info($"✨ [ÖZEL RAF] {SecilenKimlik.musteriIsmi} '{alinan.kitapAdi}' kitabını eline aldı!");
 
             // ONEMLI: bahce hakki artik BURADA denenmiyor — musteri ONCE kasaya gidip
             // GERCEKTEN islem gormeli (satin alsin ya da "kitap yok" diye gonderilsin).
@@ -603,7 +603,7 @@ public class CustomerController : MonoBehaviour
                         calismaMasasi = masa;
                         state = State.GoingToStudyDesk;
                         MoveTo(masa.position);
-                        Debug.Log($"📚 [ÖĞRENCİ] {SecilenKimlik.musteriIsmi} kitabı alıp çalışma masasına gidiyor ({calismaUcreti} Para).");
+                        DevLog.Info($"📚 [ÖĞRENCİ] {SecilenKimlik.musteriIsmi} kitabı alıp çalışma masasına gidiyor ({calismaUcreti} Para).");
                         return;
                     }
 
@@ -615,7 +615,7 @@ public class CustomerController : MonoBehaviour
 
             // NORMAL AKIS (2. Duzey ogrenci calismayi secmedi/masa yoktu, ya da baska musteri tipi)
             CarriedBook = targetShelf.raftakiKitap;
-            Debug.Log($"🛒 [ALIŞVERİŞ] {SecilenKimlik.musteriIsmi} kitabı eline aldı!");
+            DevLog.Info($"🛒 [ALIŞVERİŞ] {SecilenKimlik.musteriIsmi} kitabı eline aldı!");
         }
 
         // ONEMLI: bahce hakki artik kasadan SONRA denenir (bkz. CompleteSale() /
@@ -641,7 +641,7 @@ public class CustomerController : MonoBehaviour
         gardenGoingTimer = 0f;
         state = State.GoingToGarden;
         MoveTo(masa.position);
-        Debug.Log($"🌳 [BAHÇE] {SecilenKimlik.musteriIsmi} rafı ziyaret ettikten sonra bahçe masasına oturmaya gidiyor.");
+        DevLog.Info($"🌳 [BAHÇE] {SecilenKimlik.musteriIsmi} rafı ziyaret ettikten sonra bahçe masasına oturmaya gidiyor.");
         return true;
     }
 
@@ -662,7 +662,7 @@ public class CustomerController : MonoBehaviour
     {
         if (state != State.SittingInGarden && state != State.GoingToGarden) return;
 
-        Debug.Log($"🌳 [BAHÇE] {SecilenKimlik.musteriIsmi} bahçeden kalkıp ayrılıyor.");
+        DevLog.Info($"🌳 [BAHÇE] {SecilenKimlik.musteriIsmi} bahçeden kalkıp ayrılıyor.");
         PlayerProgressStats.AddGardenVisitServed();
         if (BahceYoneticisi.Instance != null && bahceMasasi != null) BahceYoneticisi.Instance.MasayiBirak(bahceMasasi);
         bahceMasasi = null;
@@ -696,7 +696,7 @@ public class CustomerController : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"⚠️ [NAVMESH] {gameObject.name} NavMesh uzerinde degil, 5 birim icinde gecerli nokta da bulunamadi — hareket edemiyor. Spawn noktasinin (kapiNoktasi) NavMesh ile kapli oldugundan emin ol.");
+                DevLog.Warning($"⚠️ [NAVMESH] {gameObject.name} NavMesh uzerinde degil, 5 birim icinde gecerli nokta da bulunamadi — hareket edemiyor. Spawn noktasinin (kapiNoktasi) NavMesh ile kapli oldugundan emin ol.");
                 return;
             }
         }
@@ -756,7 +756,7 @@ public class CustomerController : MonoBehaviour
         leavingTimer = 0f;
 
         MoveTo(CikisNoktasi()); // Gercek kapi noktasina yonelir
-        Debug.Log($"✅ [SATIŞ] {SecilenKimlik.musteriIsmi} ödemeyi yaptı ve mutlu ayrılıyor.");
+        DevLog.Info($"✅ [SATIŞ] {SecilenKimlik.musteriIsmi} ödemeyi yaptı ve mutlu ayrılıyor.");
     }
 
     /// <summary>bahceDenensin: SADECE kasada GERCEKTEN islem goren (kitap yoktu, kasiyer

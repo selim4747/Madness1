@@ -101,7 +101,7 @@ public class CounterController : MonoBehaviour
         // YENİ DEV YAPAY ZEKA: Müşterinin elinde kitap yoksa şikayet etmeye gelmiştir!
         if (book == null)
         {
-            Debug.Log($"🗣️ Kasiyer: Kusura bakmayın {(nearest.SecilenKimlik != null ? nearest.SecilenKimlik.musteriIsmi : "efendim")}, o türde kitabımız kalmamış!");
+            DevLog.Info($"🗣️ Kasiyer: Kusura bakmayın {(nearest.SecilenKimlik != null ? nearest.SecilenKimlik.musteriIsmi : "efendim")}, o türde kitabımız kalmamış!");
             nearest.LeaveUnsatisfied(bahceDenensin: true); // Şikayetini dinledik, adamı yolladık — bahçe hakkı olsun
             return true;
         }
@@ -117,7 +117,7 @@ public class CounterController : MonoBehaviour
             price = Mathf.RoundToInt(price * Mathf.Max(0.1f, nearest.SecilenKimlik.odemeCarpani));
 
         if (EconomyManager.Instance != null) EconomyManager.Instance.AddGold(price);
-        else Debug.LogWarning("💸 EconomyManager sahnede yok, para havaya uçtu!");
+        else DevLog.Warning("💸 EconomyManager sahnede yok, para havaya uçtu!");
 
         FloatingText.Spawn(nearest.transform.position, "+" + price, FloatingText.Renk.Altin);
 
@@ -153,7 +153,7 @@ public class CounterController : MonoBehaviour
         }
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlaySell();
-        else Debug.LogWarning("🔊 AudioManager sahnede yok, ses çalınamadı!");
+        else DevLog.Warning("🔊 AudioManager sahnede yok, ses çalınamadı!");
 
         nearest.CompleteSale();
         return true;
@@ -188,12 +188,4 @@ public class CounterController : MonoBehaviour
         return nearest;
     }
 
-    public void EnqueueCustomer(CustomerController customer)
-    {
-        customer.CounterArrivalTime = Time.time;
-    }
-
-    public void DequeueCustomer(CustomerController customer)
-    {
-    }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using System.Collections;
 using TMPro;
 using System;
 using UnityEngine.UI;
@@ -195,10 +196,29 @@ public class ShelfController : MonoBehaviour
         }
     }
 
+    
+    private void OnEnable()
+    {
+        // Registry henüz yoksa bir sonraki frame'de tekrar dene (Awake sırası güvenliği)
+        if (ShelfRegistry.Instance != null)
+            ShelfRegistry.Instance.Register(this);
+        else
+            StartCoroutine(RegisterLater());
+    }
+
+    private System.Collections.IEnumerator RegisterLater()
+    {
+        yield return null;
+        if (ShelfRegistry.Instance != null && isActiveAndEnabled)
+            ShelfRegistry.Instance.Register(this);
+    }
+
     private void OnDisable()
     {
         // Raf havuza donerken/deaktif olurken kayitli kalmasin
         if (PlayerInteraction.Instance != null) PlayerInteraction.Instance.UnregisterInfoShelf(this);
+        if (ShelfRegistry.Instance != null)
+            ShelfRegistry.Instance.Unregister(this);
     }
 
     // NOT: PC klavye kısayolu (E tuşu) kaldırıldı — Input System paketine geçince
