@@ -114,6 +114,8 @@ namespace Madness.Mods
         {
             Initialize();
 
+            // Harici modları önce kaldır; aynı ID'li built-in modun callback'leri yanlışlıkla silinmesin.
+            ModScriptLoader.UnloadAll(this);
             for (int i = builtInModules.Count - 1; i >= 0; i--)
             {
                 try { UnregisterModule(builtInModules[i]); }
@@ -125,9 +127,7 @@ namespace Madness.Mods
             {
                 foreach (IModModule module in BuiltInModCatalog.CreateEnabledModules())
                 {
-                    int before = modules.Count;
-                    RegisterModule(module);
-                    if (modules.Count > before) builtInModules.Add(module);
+                    if (RegisterModule(module)) builtInModules.Add(module);
                 }
             }
             catch (Exception ex)
@@ -147,30 +147,35 @@ namespace Madness.Mods
             if (OnModsChanged != null) OnModsChanged();
         }
 
-        public void RegisterModule(IModModule module)
+        public bool RegisterModule(IModModule module)
         {
-            if (module == null || string.IsNullOrWhiteSpace(module.Id)) return;
-            if (modules.Any(m => string.Equals(m.Id, module.Id, StringComparison.OrdinalIgnoreCase))) return;
-            modules.Add(module);
-            try
+            if (module == null || string.IsNullOrWhiteSpace(module.Id)) return false;
+            if (modules.Any(m => string.Equals(m.Id, module.Id, StringComparison.OrdinalIgnoreCase)))
             {
-                module.Register(this);
+                Debug.LogWarning("[ModRuntime] Aynı ID zaten yüklü, mod atlandı: " + module.Id);
+                return false;
             }
+            modules.Add(module);
+            try { module.Register(this); return true; }
             catch (Exception ex)
             {
-                // Kaydı patlayan mod listeden çıkarılır; ana oyun etkilenmez.
                 Debug.LogError("[ModRuntime] " + module.Id + " kaydedilemedi: " + ex);
-                ModEventBus.UnsubscribeOwner(module.Id);
-                modules.Remove(module);
+                CleanupModuleOwner(module.Id); modules.Remove(module); return false;
             }
         }
 
         public void UnregisterModule(IModModule module)
         {
-            if (module == null) return;
-            module.Unregister(this);
-            ModEventBus.UnsubscribeOwner(module.Id);
-            modules.Remove(module);
+            if (module == null || !modules.Contains(module)) return;
+            try { module.Unregister(this); } catch (Exception ex) { Debug.LogException(ex); }
+            CleanupModuleOwner(module.Id); modules.Remove(module);
+        }
+
+        private void CleanupModuleOwner(string owner)
+        {
+            ModEventBus.UnsubscribeOwner(owner);
+            ModContentOverride.RemoveOwner(owner);
+            ModContentRegistry.RemoveOwner(owner);
         }
 
         public void SetState(string modId, string stateJson, int schemaVersion = 1)
@@ -196,12 +201,25 @@ namespace Madness.Mods
         {
             states.Clear();
             if (data == null || data.modStates == null) return;
-            states.AddRange(data.modStates);
+            foreach (ModSaveEntry entry in data.modStates)
+                if (entry != null && !string.IsNullOrWhiteSpace(entry.modId)) states.Add(entry);
+            foreach (IModModule module in modules)
+            {
+                IModSaveAware aware = module as IModSaveAware;
+                if (aware == null) continue;
+                try { aware.OnSaveLoaded(this); } catch (Exception ex) { Debug.LogException(ex); }
+            }
         }
 
         public void WriteToSave(SaveData data)
         {
             if (data == null) return;
+            foreach (IModModule module in modules)
+            {
+                IModSaveAware aware = module as IModSaveAware;
+                if (aware == null) continue;
+                try { aware.OnBeforeSave(this); } catch (Exception ex) { Debug.LogException(ex); }
+            }
             data.modStates = new List<ModSaveEntry>(states);
         }
 

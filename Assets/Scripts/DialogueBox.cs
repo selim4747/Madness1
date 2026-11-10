@@ -1,10 +1,11 @@
-﻿// DialogueBox.cs — Evrensel diyalog kutusu (tum NPC'ler kullanir)
+// DialogueBox.cs — Evrensel diyalog kutusu (tum NPC'ler kullanir)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using Madness.Mods;
 
 [Serializable]
 public struct DialogueLine
@@ -182,7 +183,11 @@ public class DialogueBox : MonoBehaviour
         queue.Clear();
 
         if (lines != null)
+        {
+            string speaker = lines.Count > 0 ? lines[0].speakerName : "";
+            lines = ModDialogue.Apply("dialogue.show", speaker, lines);
             for (int i = 0; i < lines.Count; i++) queue.Enqueue(lines[i]);
+        }
 
         if (queue.Count == 0)
         {

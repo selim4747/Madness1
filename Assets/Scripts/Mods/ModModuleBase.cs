@@ -43,6 +43,6 @@ namespace Madness.Mods
             => ModAPI.LoadAsset<T>(Id, assetName);
 
         protected void RegisterContent(string contentId, UnityEngine.Object asset)
-            => ModAPI.RegisterContent(contentId, asset);
+            => ModAPI.RegisterContent(Id, contentId, asset);
     }
 }

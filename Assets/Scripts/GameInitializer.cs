@@ -1,4 +1,4 @@
-﻿// GameInitializer.cs — Sahnedeki tum sistemlerin baslatma noktasi
+// GameInitializer.cs — Sahnedeki tum sistemlerin baslatma noktasi
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using Madness.Mods;
@@ -19,6 +19,10 @@ public class GameInitializer : MonoBehaviour
 
         // Tum singleton'larin Awake'i bitsin diye bir kare bekle
         yield return null;
+
+        // Total-conversion mod normal oyun akışını tamamen devralır.
+        if (ModTotalConversion.TryStart())
+            yield break;
 
         bool loadedExistingSave = SaveSystem.Instance.ConsumePendingIntent();
 

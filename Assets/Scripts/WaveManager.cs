@@ -73,8 +73,7 @@ public class WaveManager : MonoBehaviour
 
             if (aliveEnemies.Count < maxConcurrentAlive)
             {
-                SpawnOne(day);
-                spawnedSoFar++;
+                if (SpawnOne(day)) spawnedSoFar++;
             }
 
             yield return new WaitForSeconds(spawnInterval * currentSpawnIntervalMultiplier);
@@ -82,20 +81,21 @@ public class WaveManager : MonoBehaviour
         spawnRoutine = null;
     }
 
-    private void SpawnOne(int day)
+    private bool SpawnOne(int day)
     {
         EnemyData chosen = PickWeightedEnemy(day);
-        if (chosen == null) return;
+        if (chosen == null || spawnPoints == null || spawnPoints.Length == 0) return false;
 
         Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];
         EnemySpawnContext spawnContext = ModEventBus.Publish(new EnemySpawnContext { EnemyType = chosen.type, Day = day, SpawnPosition = point.position });
-        if (spawnContext.Cancelled || spawnContext.CancelSpawn) return;
+        if (spawnContext.Cancelled || spawnContext.CancelSpawn) return false;
         GameObject go = EnemyPool.Instance != null ? EnemyPool.Instance.Get(spawnContext.EnemyType, spawnContext.SpawnPosition) : null;
-        if (go == null) return;
+        if (go == null) return false;
         EnemyController enemy = go.GetComponent<EnemyController>();
         enemy.Initialize(day, spawnContext.HealthMultiplier, spawnContext.DamageMultiplier);
         enemy.SetElite(spawnContext.IsElite);
         aliveEnemies.Add(enemy);
+        return true;
     }
 
     /// <summary>spawnWeight'e gore agirlikli secim; minDayToAppear filtresi uygulanir.</summary>

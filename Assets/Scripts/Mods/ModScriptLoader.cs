@@ -100,9 +100,11 @@ namespace Madness.Mods
                 IModModule module = Activator.CreateInstance(moduleType) as IModModule;
                 if (module == null) return;
 
-                runtime.RegisterModule(module);
-                loadedModules[manifest.id] = module;
-                Debug.Log("[ModScriptLoader] Mod yüklendi: " + manifest.id);
+                if (runtime.RegisterModule(module))
+                {
+                    loadedModules[manifest.id] = module;
+                    Debug.Log("[ModScriptLoader] Mod yüklendi: " + manifest.id);
+                }
             }
             catch (Exception ex)
             {

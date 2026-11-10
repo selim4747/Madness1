@@ -49,6 +49,7 @@ namespace MadnessExampleMods
     /// <summary>ExampleMods/csharp_example/MyMod.cs</summary>
     public sealed class MyCSharpMod : ModModuleBase
     {
+        public const float SalePriceMultiplier = 29.0f;
         public override string Id { get { return "my_csharp_mod"; } }
 
         protected override void OnRegister(ModRuntime runtime)
@@ -59,7 +60,7 @@ namespace MadnessExampleMods
             });
             Subscribe<SaleContext>(ctx =>
             {
-                ctx.Price = Mathf.RoundToInt(ctx.Price * 1.2f);
+                ctx.Price = Mathf.RoundToInt(ctx.Price * MyCSharpMod.SalePriceMultiplier);
             });
             Log("C# mod yüklendi — hasar ve satış kancaları aktif");
         }

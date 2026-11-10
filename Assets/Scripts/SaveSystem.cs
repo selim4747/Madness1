@@ -81,12 +81,14 @@ public class SaveSystem : MonoBehaviour
     /// <summary>MainMenu'deki "Devam Et" butonundan cagrilir.</summary>
     public static void RequestLoadSlot(int slot)
     {
+        if (slot < 0 || slot >= SlotCount) return;
         PendingLoadSlot = slot;
     }
 
     /// <summary>MainMenu'deki "Yeni Oyun" butonundan cagrilir.</summary>
     public static void RequestNewGame(int slot)
     {
+        if (slot < 0 || slot >= SlotCount) return;
         PendingLoadSlot = PendingNewGame;
         pendingNewGameSlot = slot;
     }
@@ -132,6 +134,7 @@ public class SaveSystem : MonoBehaviour
 
     public void SaveToSlot(int slot)
     {
+        if (!IsValidSlot(slot)) { DevLog.Warning("[SaveSystem] Geçersiz slot: " + slot); return; }
         GatherFromScene();
         Current.saveTimestamp = DateTime.Now.ToString("dd.MM.yyyy HH:mm");
         Current.totalPlayTimeSeconds += Time.unscaledTime - sessionStartTime;
@@ -155,6 +158,7 @@ public class SaveSystem : MonoBehaviour
 
     public void LoadFromSlot(int slot)
     {
+        if (!IsValidSlot(slot)) return;
         SaveData loaded = ReadJson(SlotPath(slot));
         if (loaded == null) return;
 
@@ -166,6 +170,7 @@ public class SaveSystem : MonoBehaviour
 
     public void DeleteSlot(int slot)
     {
+        if (!IsValidSlot(slot)) return;
         if (SlotExists(slot)) File.Delete(SlotPath(slot));
         if (ActiveSlot == slot) ActiveSlot = -1;
     }
@@ -173,6 +178,7 @@ public class SaveSystem : MonoBehaviour
     /// <summary>Yeni oyun. Statik sayaclar da sifirlanir — yoksa eski oyunun verisi sizar.</summary>
     public void StartFreshGame(int slot)
     {
+        if (!IsValidSlot(slot)) return;
         Current = new SaveData();
         ActiveSlot = slot;
         sessionStartTime = Time.unscaledTime;
@@ -184,8 +190,10 @@ public class SaveSystem : MonoBehaviour
     /// <summary>Slot ozeti (ana menude "Gun 14 — 21.07.2026 15:30"). Bossa null doner.</summary>
     public SaveData PeekSlot(int slot)
     {
-        return ReadJson(SlotPath(slot));
+        return IsValidSlot(slot) ? ReadJson(SlotPath(slot)) : null;
     }
+
+    private bool IsValidSlot(int slot) { return slot >= 0 && slot < SlotCount; }
 
     // ── Guvenli JSON okuma/yazma ──
 
@@ -193,7 +201,33 @@ public class SaveSystem : MonoBehaviour
     {
         try
         {
-            File.WriteAllText(path, JsonUtility.ToJson(data, prettyPrint));
+            string temp = path + ".tmp";
+            string backup = path + ".bak";
+            File.WriteAllText(temp, JsonUtility.ToJson(data, prettyPrint));
+            if (!File.Exists(path))
+            {
+                File.Move(temp, path);
+            }
+            else
+            {
+                try
+                {
+                    File.Replace(temp, path, backup);
+                }
+                catch (PlatformNotSupportedException)
+                {
+                    File.Copy(path, backup, true);
+                    File.Delete(path);
+                    File.Move(temp, path);
+                }
+                catch (IOException)
+                {
+                    // Bazı Android dosya sistemleri Replace'i desteklemez.
+                    File.Copy(path, backup, true);
+                    File.Delete(path);
+                    File.Move(temp, path);
+                }
+            }
         }
         catch (Exception e)
         {

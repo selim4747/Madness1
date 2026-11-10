@@ -4,6 +4,7 @@ using UnityEngine;
 // Bu dosyayı kendi Class Library projenizde derleyip Mod.dll olarak mod klasörüne koyun.
 public class MyMod : ModModuleBase
 {
+    public const float SalePriceMultiplier = 29.0f;
     public override string Id => "my_csharp_mod";
 
     protected override void OnRegister(ModRuntime runtime)
@@ -18,7 +19,7 @@ public class MyMod : ModModuleBase
         // Satışlar %20 daha karlı
         Subscribe<SaleContext>(ctx =>
         {
-            ctx.Price = Mathf.RoundToInt(ctx.Price * 1.2f);
+            ctx.Price = Mathf.RoundToInt(ctx.Price * SalePriceMultiplier);
         });
 
         Log("C# mod yüklendi — hasar ve satış kancaları aktif");

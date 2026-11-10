@@ -20,6 +20,9 @@ namespace Madness.Mods
             => ModEventBus.UnsubscribeOwner(owner);
 
         // --- Content ---
+        public static void RegisterContent(string owner, string id, UnityEngine.Object asset)
+            => ModContentOverride.Register(owner, id, asset);
+
         public static void RegisterContent(string id, UnityEngine.Object asset)
             => ModContentOverride.Register(id, asset);
 

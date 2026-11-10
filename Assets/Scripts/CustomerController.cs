@@ -55,6 +55,9 @@ public class CustomerController : MonoBehaviour
     private State state = State.Spawning;
 
     private Transform bahceMasasi;
+    private Vector3 moddedInitialTarget;
+    private bool hasModdedInitialTarget;
+
     private float bahceTimer = 0f;
     private float benimKalmaSurem = 25f; // her oturusta rastgele (25-70sn) yeniden belirlenir
     public bool BahcedeMi { get { return state == State.SittingInGarden; } }
@@ -266,7 +269,9 @@ public class CustomerController : MonoBehaviour
             // Sevdiği türü buldu!
             targetShelf = uygunRaflar[UnityEngine.Random.Range(0, uygunRaflar.Count)];
             state = State.GoingToShelf;
-            Vector3 hedefNokta = targetShelf.ApproachPosition != Vector3.zero ? targetShelf.ApproachPosition : targetShelf.transform.position;
+            Vector3 hedefNokta = hasModdedInitialTarget
+                ? moddedInitialTarget
+                : (targetShelf.ApproachPosition != Vector3.zero ? targetShelf.ApproachPosition : targetShelf.transform.position);
             MoveTo(hedefNokta);
             DevLog.Info($"🚶‍♂️ [BİLGİ] {SecilenKimlik.musteriIsmi} aradığı türü buldu, rafa gidiyor.");
         }
@@ -797,6 +802,12 @@ public class CustomerController : MonoBehaviour
         }
 
         MoveTo(CikisNoktasi());
+    }
+
+    public void SetModdedTargetPosition(Vector3 position)
+    {
+        moddedInitialTarget = position;
+        hasModdedInitialTarget = true;
     }
 
     // ==========================================

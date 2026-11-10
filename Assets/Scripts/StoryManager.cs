@@ -92,7 +92,9 @@ public class StoryManager : MonoBehaviour
     {
         if (doorPoint == null) return;
 
-        GameObject prefab = data.npcPrefabOverride != null ? data.npcPrefabOverride : storyNPCPrefab;
+        GameObject prefab = data.npcPrefabOverride != null
+            ? data.npcPrefabOverride
+            : Madness.Mods.ModContentOverride.GetPrefab("story_npc", storyNPCPrefab);
         if (prefab == null) return;
 
         GameObject go = Instantiate(prefab, doorPoint.position, Quaternion.identity);
@@ -104,9 +106,11 @@ public class StoryManager : MonoBehaviour
 
     private void SpawnDailyNPC()
     {
-        if (storyNPCPrefab == null || doorPoint == null) return;
+        if (doorPoint == null) return;
 
-        GameObject go = Instantiate(storyNPCPrefab, doorPoint.position, Quaternion.identity);
+        GameObject prefab = Madness.Mods.ModContentOverride.GetPrefab("story_npc", storyNPCPrefab);
+        if (prefab == null) return;
+        GameObject go = Instantiate(prefab, doorPoint.position, Quaternion.identity);
         StoryNPCController npc = go.GetComponent<StoryNPCController>();
 
         string[] lines = GetDailyTalkForCurrentDay();

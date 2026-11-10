@@ -104,6 +104,11 @@ public class CustomerSpawner : MonoBehaviour
 
         if (uretilecekPrefab == null) return;
 
+        string overrideId = secilenData == zenginCustomerData ? "customer_rich" :
+            secilenData == vipCustomerData ? "customer_vip" :
+            secilenData == ogrenciCustomerData ? "customer_student" : "customer_normal";
+        uretilecekPrefab = ModContentOverride.GetPrefab(overrideId, uretilecekPrefab);
+
         // Sadece aktif (açık) olan rafları filtrele
         List<Transform> aktifRaflar = new List<Transform>();
         foreach (var raf in raflar)
@@ -128,6 +133,7 @@ public class CustomerSpawner : MonoBehaviour
         if (controller != null)
         {
             controller.Baslat(kapiNoktasi, kasaNoktasi, secilenRaf, this, secilenData);
+            controller.SetModdedTargetPosition(spawnContext.TargetPosition);
             aktifMusteriler.Add(controller);
         }
     }

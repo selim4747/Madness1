@@ -1,4 +1,4 @@
-﻿// CounterController.cs — Kasa: bekleyen musteri kuyrugu ve anlik satis
+// CounterController.cs — Kasa: bekleyen musteri kuyrugu ve anlik satis
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using Madness.Mods;
@@ -120,6 +120,7 @@ public class CounterController : MonoBehaviour
         ModEventBus.Publish(saleContext);
         if (saleContext.Cancelled) { nearest.LeaveUnsatisfied(); return true; }
         price = Mathf.Max(0, saleContext.Price);
+        saleContext.Served = true;
         if (EconomyManager.Instance != null) EconomyManager.Instance.AddGold(price);
         else DevLog.Warning("💸 EconomyManager sahnede yok, para havaya uçtu!");
 

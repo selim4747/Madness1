@@ -147,6 +147,10 @@ namespace Madness.Mods
             if (manifest.id != manifest.id.Trim()) return "Mod id başında veya sonunda boşluk içeremez.";
             if (manifest.apiVersion != ModRuntime.CurrentApiVersion.ToString())
                 return "Mod, bu oyunun mod API sürümüyle uyumlu değil.";
+            if (manifest.totalConversion && string.IsNullOrWhiteSpace(manifest.mainScene) && string.IsNullOrWhiteSpace(manifest.worldScene))
+                return "Total conversion modunda mainScene veya worldScene belirtilmelidir.";
+            if (!string.IsNullOrWhiteSpace(manifest.entryScript) && HasParentSegment(manifest.entryScript.Replace('\\', '/')))
+                return "entryScript mod klasörü dışına çıkamaz.";
             return null;
         }
 

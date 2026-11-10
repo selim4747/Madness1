@@ -38,6 +38,13 @@ namespace Madness.Mods
         void Unregister(ModRuntime runtime);
     }
 
+    // Eski DLL modları bozulmadan kayıt yükleme bildirimini destekler.
+    public interface IModSaveAware
+    {
+        void OnSaveLoaded(ModRuntime runtime);
+        void OnBeforeSave(ModRuntime runtime);
+    }
+
     public abstract class ModContext
     {
         public string SourceModId { get; internal set; }
@@ -85,6 +92,7 @@ namespace Madness.Mods
         public GameObject Prefab;
         public Vector3 SpawnPosition;
         public Vector3 TargetPosition;
+        // Geriye dönük uyumluluk için tutulur; yeni modlar Cancelled kullanmalıdır.
         public bool CancelSpawn;
     }
 
@@ -95,6 +103,7 @@ namespace Madness.Mods
         public Vector3 SpawnPosition;
         public float HealthMultiplier = 1f;
         public float DamageMultiplier = 1f;
+        // Geriye dönük uyumluluk için tutulur; yeni modlar Cancelled kullanmalıdır.
         public bool CancelSpawn;
         public bool IsElite;
     }
