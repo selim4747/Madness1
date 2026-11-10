@@ -19,7 +19,7 @@ public class MainMenuController : MonoBehaviour
 
     private void Start()
     {
-        try { ModRuntime.EnsureExists(); ModImportUI.CreateIfPossible(); }
+        try { ModRuntime.EnsureExists(); } // Mod Ekle butonu artık sahnede elle: ModImportUI bileşeni
         catch (System.Exception ex) { Debug.LogException(ex); }
         for (int i = 0; i < slots.Length; i++)
             if (slots[i] != null) slots[i].Bind(this);

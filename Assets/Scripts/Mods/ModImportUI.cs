@@ -1,14 +1,35 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Madness.Mods
 {
     public sealed class ModImportUI : MonoBehaviour
     {
-        private Button importButton;
-        private Text statusText;
+        [Header("Kendi butonunu buraya sürükle")]
+        [SerializeField] private Button importButton;
+        [Header("İsteğe bağlı durum yazısı (ikisinden biri yeter)")]
+        [SerializeField] private Text statusText;
+        [SerializeField] private TMP_Text statusTextTMP;
         private bool busy;
+
+        private void Start()
+        {
+            // Sahnede elle bağlanmış buton varsa onu kullan; yoksa hiçbir şey oluşturma.
+            if (importButton != null)
+            {
+                importButton.onClick.RemoveListener(ChooseFile);
+                importButton.onClick.AddListener(ChooseFile);
+            }
+            if (statusText != null || statusTextTMP != null)
+                SetStatus("Kurulu mod: " + ModRuntime.EnsureExists().LoadedManifests.Count);
+        }
+
+        private void OnDestroy()
+        {
+            if (importButton != null) importButton.onClick.RemoveListener(ChooseFile);
+        }
 
         public static ModImportUI Create(Transform parent)
         {
@@ -156,6 +177,7 @@ namespace Madness.Mods
         private void SetStatus(string message)
         {
             if (statusText != null) statusText.text = message;
+            if (statusTextTMP != null) statusTextTMP.text = message;
         }
     }
 }

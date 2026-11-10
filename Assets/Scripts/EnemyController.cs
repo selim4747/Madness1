@@ -19,6 +19,7 @@ public class EnemyController : NavMeshMover
 
     public EnemyType Type { get { return data != null ? data.type : EnemyType.FastWeak; } }
     public bool IsAlive { get; private set; }
+    public bool IsElite { get; private set; }
 
     private float currentHealth;
     private float maxHealth;
@@ -36,6 +37,7 @@ public class EnemyController : NavMeshMover
         SetSpeed(data.moveSpeed);
         attackTimer = 0f;
         IsAlive = true;
+        IsElite = false;
 
         if (bodyRenderer != null) bodyRenderer.color = Color.white;
 
@@ -44,6 +46,13 @@ public class EnemyController : NavMeshMover
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj != null) player = playerObj.transform;
         }
+    }
+
+    /// <summary>Mod sistemi tarafindan elit isaretlenir (yalnizca gorsel ipucu + olum olayi).</summary>
+    public void SetElite(bool elite)
+    {
+        IsElite = elite;
+        if (elite && bodyRenderer != null) bodyRenderer.color = new Color(1f, 0.55f, 0.55f);
     }
 
     private void Update()
@@ -152,6 +161,9 @@ public class EnemyController : NavMeshMover
         DeathPuffEffect.Spawn(transform.position, new Color(0.6f, 0.15f, 0.15f));
 
         PlayerProgressStats.AddEnemyKilled();
+
+        try { ModEventBus.Publish(new EnemyKilledContext { EnemyType = Type, WasElite = IsElite, Position = transform.position }); }
+        catch (System.Exception ex) { Debug.LogException(ex); }
 
         if (WaveManager.Instance != null) WaveManager.Instance.OnEnemyKilled(this);
     }

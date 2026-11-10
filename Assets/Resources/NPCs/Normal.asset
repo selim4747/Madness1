@@ -41,6 +41,9 @@ MonoBehaviour:
     - "Polisiye raflar\u0131na her bakt\u0131\u011F\u0131mda akl\u0131ma o geliyor"
     - "Kitab\u0131m\u0131 rafta g\xF6rd\xFCm de... garip bir gurur, garip bir ac\u0131,
       ikisi bir arada."
+    - "Arkada\u015F\u0131m olmadan \xF6zg\u011Fr hayat\u0131n anlam\u0131 ne ki?.."
+    - "\xD6z\xFCr dilerim yastay\u0131m."
+    - "O \xE7ok iyi biriydi"
     tisortSprite: {fileID: 0}
     sosyal: 1
     bahceDiyaloglari:
@@ -164,7 +167,7 @@ MonoBehaviour:
     cinsiyet: 1
     yas: 30
     loreHikayesi: Luyot ailesinden, Feilin kuzeni
-    sevilenTurler: 0500000002000000
+    sevilenTurler: 050000000200000004000000
     sevmedigiTurler: 
     sabirCarpani: 1
     odemeCarpani: 1
@@ -179,9 +182,19 @@ MonoBehaviour:
     - "Bir g\xFCn belki ben de bir \u015Feyler ke\u015Ffederim, kim bilir."
     - "Onu tan\u0131mazd\u0131m pek ama duydum, \xFCz\xFCld\xFCm."
     - Ruhlar bence 4.boyut.
+    - "Sa\u011Fol g\xFCzel kitaplar"
     tisortSprite: {fileID: 0}
     sosyal: 1
-    bahceDiyaloglari: []
+    bahceDiyaloglari:
+    - id: 
+      metin: meraba
+      ekDiller: []
+      ses:
+        turkce: {fileID: 0}
+        ingilizce: {fileID: 0}
+      konular:
+      - uzay
+      secenekler: []
     gunlukKonusmaLimiti: 3
     ozelGunKarakteri: 0
     gorunecegiGunler: 

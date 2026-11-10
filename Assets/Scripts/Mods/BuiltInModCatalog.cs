@@ -26,14 +26,13 @@ namespace Madness.Mods
         {
             if (string.IsNullOrWhiteSpace(id) || factory == null)
                 throw new ArgumentException("Yerleşik mod kimliği ve factory zorunludur.");
-            if (Entries.ContainsKey(id))
-                throw new InvalidOperationException("Tekrarlanan yerleşik mod kimliği: " + id);
-            Entries.Add(id, new Entry
+            // Editörde "Domain Reload" kapalıyken tekrar kayıt oyunu bozmasın: aynı kimlik üzerine yazılır.
+            Entries[id] = new Entry
             {
                 Id = id,
                 Name = string.IsNullOrWhiteSpace(name) ? id : name,
                 Factory = factory
-            });
+            };
         }
 
         public static IReadOnlyList<string> GetAvailableIds()

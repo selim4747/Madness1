@@ -96,6 +96,14 @@ namespace Madness.Mods
         public float HealthMultiplier = 1f;
         public float DamageMultiplier = 1f;
         public bool CancelSpawn;
+        public bool IsElite;
+    }
+
+    public sealed class EnemyKilledContext : ModContext
+    {
+        public EnemyType EnemyType;
+        public bool WasElite;
+        public Vector3 Position;
     }
 
     public sealed class DamageContext : ModContext

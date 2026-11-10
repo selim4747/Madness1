@@ -94,6 +94,7 @@ public class WaveManager : MonoBehaviour
         if (go == null) return;
         EnemyController enemy = go.GetComponent<EnemyController>();
         enemy.Initialize(day, spawnContext.HealthMultiplier, spawnContext.DamageMultiplier);
+        enemy.SetElite(spawnContext.IsElite);
         aliveEnemies.Add(enemy);
     }
 
