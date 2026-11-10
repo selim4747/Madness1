@@ -16,6 +16,10 @@ namespace Madness.Mods
         public int loadOrder = 0;
         public string entryScript = "";
         public string worldScene = "";
+        // totalConversion = true ise ModTotalConversion bu modun sahnesini oyun başlangıcında yükler.
+        public bool totalConversion = false;
+        // totalConversion için giriş sahnesi. Boşsa worldScene kullanılır.
+        public string mainScene = "";
         public List<string> dependencies = new List<string>();
     }
 

@@ -13,9 +13,19 @@ namespace Madness.Mods
 
         private void Start()
         {
-            font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            font = LoadBuiltinFont();
             ModRuntime.EnsureExists();
             Rebuild();
+        }
+
+        // Unity 2022.2+ içinde "Arial.ttf" geçersiz (exception atar); "LegacyRuntime.ttf" kullanılır.
+        private static Font LoadBuiltinFont()
+        {
+            try { return Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"); }
+            catch (System.Exception) { }
+            try { return Font.CreateDynamicFontFromOSFont("Arial", 16); }
+            catch (System.Exception) { }
+            return null;
         }
 
         public void Rebuild()

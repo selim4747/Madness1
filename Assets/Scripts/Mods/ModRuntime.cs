@@ -18,7 +18,12 @@ namespace Madness.Mods
         private readonly List<ModManifest> loadedManifests = new List<ModManifest>();
         private readonly List<IModModule> modules = new List<IModModule>();
         private readonly List<ModSaveEntry> states = new List<ModSaveEntry>();
+        private readonly List<IModModule> builtInModules = new List<IModModule>();
         private bool initialized;
+
+        // false yapılırsa mod klasöründeki .dll dosyaları hiç yüklenmez (config.json ve gömülü modlar çalışır).
+        // Not: .dll mod, oyunun yetkileriyle kod çalıştırır; sadece güvendiğin modları yükle.
+        public static bool AllowDllMods = true;
 
         private void Awake()
         {
@@ -48,6 +53,8 @@ namespace Madness.Mods
             {
                 Directory.CreateDirectory(ModsDirectory);
                 ScanManifests();
+                ModIL2CPPNotice.ShowOnce();
+                ReloadModSelection();
             }
             catch (Exception ex)
             {
@@ -96,6 +103,47 @@ namespace Madness.Mods
         {
             Initialize();
             ScanManifests();
+            ReloadModSelection();
+        }
+
+        /// <summary>
+        /// Mod seçimini baştan uygular: gömülü modları (oyuncunun seçtiklerini), config.json
+        /// ayarlarını ve (izin varsa) .dll modlarını yeniden kurar. Bir modun hatası oyunu durdurmaz.
+        /// </summary>
+        public void ReloadModSelection()
+        {
+            Initialize();
+
+            for (int i = builtInModules.Count - 1; i >= 0; i--)
+            {
+                try { UnregisterModule(builtInModules[i]); }
+                catch (Exception ex) { Debug.LogException(ex); }
+            }
+            builtInModules.Clear();
+
+            try
+            {
+                foreach (IModModule module in BuiltInModCatalog.CreateEnabledModules())
+                {
+                    int before = modules.Count;
+                    RegisterModule(module);
+                    if (modules.Count > before) builtInModules.Add(module);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("[ModRuntime] Gömülü modlar kurulamadı: " + ex);
+            }
+
+            try { ModConfigApplier.ApplyAll(this); }
+            catch (Exception ex) { Debug.LogError("[ModRuntime] config.json uygulanamadı: " + ex); }
+
+            if (AllowDllMods)
+            {
+                try { ModScriptLoader.LoadAll(this); }
+                catch (Exception ex) { Debug.LogError("[ModRuntime] DLL modları yüklenemedi: " + ex); }
+            }
+
             if (OnModsChanged != null) OnModsChanged();
         }
 
@@ -104,7 +152,17 @@ namespace Madness.Mods
             if (module == null || string.IsNullOrWhiteSpace(module.Id)) return;
             if (modules.Any(m => string.Equals(m.Id, module.Id, StringComparison.OrdinalIgnoreCase))) return;
             modules.Add(module);
-            module.Register(this);
+            try
+            {
+                module.Register(this);
+            }
+            catch (Exception ex)
+            {
+                // Kaydı patlayan mod listeden çıkarılır; ana oyun etkilenmez.
+                Debug.LogError("[ModRuntime] " + module.Id + " kaydedilemedi: " + ex);
+                ModEventBus.UnsubscribeOwner(module.Id);
+                modules.Remove(module);
+            }
         }
 
         public void UnregisterModule(IModModule module)
