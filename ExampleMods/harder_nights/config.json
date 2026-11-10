@@ -1,0 +1,9 @@
+{
+  "nightPoolMultiplier": 1.5,
+  "spawnIntervalMultiplier": 0.8,
+  "enemyHealthMultiplier": 1.25,
+  "enemyDamageMultiplier": 1.1,
+  "playerDamageTakenMultiplier": 1.0,
+  "goldGainMultiplier": 1.0,
+  "dayDurationMultiplier": 1.0
+}

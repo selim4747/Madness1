@@ -55,6 +55,8 @@ public class CustomerSaveEntry
 [Serializable]
 public class SaveData
 {
+    // Modlar ana kayıt şemasını değiştirmeden kendi durumlarını isim alanında saklar.
+    public List<Madness.Mods.ModSaveEntry> modStates = new List<Madness.Mods.ModSaveEntry>();
     // --- OTURUM DURUMU (Ana Menu'ye donunce ayni saniyeden devam icin) ---
     public bool oturumDurumuVar = false;
     public float playerX = 0f;

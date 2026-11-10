@@ -1,6 +1,7 @@
 ﻿// EconomyManager.cs — Merkezi para sistemi
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using System;
 using TMPro; // TextMeshPro kullanıyorsan bu şart! (Eski text ise UnityEngine.UI yap)
 
@@ -62,8 +63,10 @@ public class EconomyManager : MonoBehaviour
 
     public bool TrySpendGold(int amount)
     {
+        GoldContext context = ModEventBus.Publish(new GoldContext { Amount = amount, Reason = "spend" });
+        if (context.Cancelled) return false;
+        amount = Mathf.Max(0, context.Amount);
         if (!CanAfford(amount)) return false;
-
         Gold -= amount;
         if (OnGoldChanged != null) OnGoldChanged(Gold);
         return true;
@@ -72,7 +75,10 @@ public class EconomyManager : MonoBehaviour
     public void AddGold(int amount)
     {
         if (amount <= 0) return;
-
+        GoldContext context = ModEventBus.Publish(new GoldContext { Amount = amount, Reason = "add" });
+        if (context.Cancelled) return;
+        amount = Mathf.Max(0, context.Amount);
+        if (amount <= 0) return;
         Gold += amount;
         PlayerProgressStats.AddGoldToday(amount);   // basarim sayaci beslenir
 

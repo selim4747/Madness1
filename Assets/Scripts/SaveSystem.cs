@@ -1,6 +1,7 @@
 // SaveSystem.cs — 3 slotlu kayit + gun basi otomatik snapshot
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using System;
 using System.IO;
 using System.Collections;
@@ -222,6 +223,7 @@ public class SaveSystem : MonoBehaviour
 
     private void ApplyToScene()
     {
+        ModRuntime.EnsureExists().ApplySave(Current);
         PlayerProgressStats.ApplySave(Current);
         BookCatalogUI.ApplySaveStatic(Current);
 
@@ -251,6 +253,7 @@ public class SaveSystem : MonoBehaviour
 
     private void GatherFromScene()
     {
+        ModRuntime.EnsureExists().WriteToSave(Current);
         PlayerProgressStats.WriteToSave(Current);
         BookCatalogUI.WriteToSaveStatic(Current);
 

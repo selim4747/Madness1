@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Madness.Mods
+{
+    [Serializable]
+    public sealed class ModManifest
+    {
+        public string id = "";
+        public string name = "";
+        public string version = "1.0.0";
+        public string apiVersion = "1";
+        public string author = "";
+        public bool enabled = true;
+        public int loadOrder = 0;
+        public string entryScript = "";
+        public string worldScene = "";
+        public List<string> dependencies = new List<string>();
+    }
+
+    [Serializable]
+    public sealed class ModSaveEntry
+    {
+        public string modId = "";
+        public int schemaVersion = 1;
+        public string stateJson = "{}";
+    }
+
+    public interface IModModule
+    {
+        string Id { get; }
+        void Register(ModRuntime runtime);
+        void Unregister(ModRuntime runtime);
+    }
+
+    public abstract class ModContext
+    {
+        public string SourceModId { get; internal set; }
+        public bool Cancelled { get; set; }
+        public string CancelReason { get; set; }
+    }
+
+    public sealed class PhaseChangedContext : ModContext
+    {
+        public GamePhase PreviousPhase;
+        public GamePhase NextPhase;
+    }
+
+    public sealed class DayContext : ModContext
+    {
+        public int Day;
+        public float DurationSeconds;
+    }
+
+    public sealed class NightContext : ModContext
+    {
+        public int Day;
+        public bool IsBossNight;
+        public float PoolMultiplier = 1f;
+        public float SpawnIntervalMultiplier = 1f;
+    }
+
+    public sealed class GoldContext : ModContext
+    {
+        public int Amount;
+        public string Reason;
+    }
+
+    public sealed class SaleContext : ModContext
+    {
+        public CustomerController Customer;
+        public BookData Book;
+        public int Price;
+        public bool Served;
+    }
+
+    public sealed class CustomerSpawnContext : ModContext
+    {
+        public CustomerData Profile;
+        public GameObject Prefab;
+        public Vector3 SpawnPosition;
+        public Vector3 TargetPosition;
+        public bool CancelSpawn;
+    }
+
+    public sealed class EnemySpawnContext : ModContext
+    {
+        public EnemyType EnemyType;
+        public int Day;
+        public Vector3 SpawnPosition;
+        public float HealthMultiplier = 1f;
+        public float DamageMultiplier = 1f;
+        public bool CancelSpawn;
+    }
+
+    public sealed class DamageContext : ModContext
+    {
+        public object Target;
+        public object Source;
+        public float Amount;
+        public bool InvulnerabilityApplies = true;
+    }
+
+    public sealed class WorldLoadContext : ModContext
+    {
+        public string WorldId;
+        public string SceneName;
+        public bool Additive;
+        public bool CancelLoad;
+    }
+}

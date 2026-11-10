@@ -1,6 +1,7 @@
 // GameManager.cs — Merkezi oyun akisi kontrolcusu
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using System;
 
 public class GameManager : MonoBehaviour
@@ -141,8 +142,9 @@ public class GameManager : MonoBehaviour
         CurrentDay++;
         PlayerProgressStats.SetHighestDay(CurrentDay);   // tek gercek kaynak
         PlayerProgressStats.ResetDailyCounters();
-
-        DayTimeRemaining = dayDurationSeconds;
+        DayContext dayContext = ModEventBus.Publish(new DayContext { Day = CurrentDay, DurationSeconds = dayDurationSeconds });
+        if (dayContext.Cancelled) return;
+        DayTimeRemaining = Mathf.Max(0f, dayContext.DurationSeconds);
         IsDayTimeUp = false;
 
         PhaseTransition.Instance.PlayNightToDay(() =>
@@ -166,7 +168,9 @@ public class GameManager : MonoBehaviour
     /// <summary>Tutorial bitince veya kayit yuklenince ilk gunu baslatir.</summary>
     public void StartFirstDay()
     {
-        DayTimeRemaining = dayDurationSeconds;
+        DayContext dayContext = ModEventBus.Publish(new DayContext { Day = CurrentDay, DurationSeconds = dayDurationSeconds });
+        if (dayContext.Cancelled) return;
+        DayTimeRemaining = Mathf.Max(0f, dayContext.DurationSeconds);
         IsDayTimeUp = false;
         PlayerProgressStats.ResetDailyCounters();
 
@@ -206,8 +210,11 @@ public class GameManager : MonoBehaviour
 
     public void SetPhase(GamePhase phase)
     {
-        CurrentPhase = phase;
-        OnPhaseChanged?.Invoke(phase);
+        GamePhase previous = CurrentPhase;
+        PhaseChangedContext context = ModEventBus.Publish(new PhaseChangedContext { PreviousPhase = previous, NextPhase = phase });
+        if (context.Cancelled) return;
+        CurrentPhase = context.NextPhase;
+        OnPhaseChanged?.Invoke(CurrentPhase);
     }
 
     // ── Kayit koprusu ──

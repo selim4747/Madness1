@@ -1,6 +1,7 @@
 ﻿// PlayerStats.cs — Oyuncunun cani ve statlari
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using UnityEngine.UI;
 using System;
 
@@ -84,10 +85,11 @@ public class PlayerStats : MonoBehaviour
     public void TakeDamage(float amount)
     {
         if (IsDead) return;
-        if (Time.time < invulnerableUntil) return;   // kisa dokunulmazlik
-
+        DamageContext damageContext = ModEventBus.Publish(new DamageContext { Target = this, Amount = amount });
+        if (damageContext.Cancelled) return;
+        amount = Mathf.Max(0f, damageContext.Amount);
+        if (damageContext.InvulnerabilityApplies && Time.time < invulnerableUntil) return;
         invulnerableUntil = Time.time + invulnerabilitySeconds;
-
         CurrentHealth -= Mathf.Max(1, Mathf.RoundToInt(amount));
         CurrentHealth = Mathf.Max(0, CurrentHealth);
 

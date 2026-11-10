@@ -1,6 +1,7 @@
 ﻿// EnemyController.cs — Canavar yapay zekasi (NavMesh, havuz uyumlu)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 
 public class EnemyController : NavMeshMover
 {
@@ -26,11 +27,11 @@ public class EnemyController : NavMeshMover
     private Transform player;
 
     /// <summary>Havuzdan alinip sahneye konunca cagrilir.</summary>
-    public void Initialize(int day)
+    public void Initialize(int day, float healthMultiplier = 1f, float damageMultiplier = 1f)
     {
-        maxHealth = data.GetHealthForDay(day);
+        maxHealth = data.GetHealthForDay(day) * Mathf.Max(0f, healthMultiplier);
         currentHealth = maxHealth;
-        currentDamage = data.GetDamageForDay(day);
+        currentDamage = data.GetDamageForDay(day) * Mathf.Max(0f, damageMultiplier);
 
         SetSpeed(data.moveSpeed);
         attackTimer = 0f;
@@ -122,6 +123,9 @@ public class EnemyController : NavMeshMover
     public void TakeDamage(float amount)
     {
         if (!IsAlive) return;
+        DamageContext damageContext = ModEventBus.Publish(new DamageContext { Target = this, Amount = amount });
+        if (damageContext.Cancelled) return;
+        amount = Mathf.Max(0f, damageContext.Amount);
 
         currentHealth -= amount;
         StartCoroutine(FlashHit());

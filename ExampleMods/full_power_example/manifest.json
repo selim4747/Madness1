@@ -1,0 +1,9 @@
+{
+  "id": "full_power_example",
+  "name": "Full Power Example",
+  "version": "1.0.0",
+  "apiVersion": "1",
+  "enabled": true,
+  "entryScript": "Mod.dll",
+  "loadOrder": 1
+}

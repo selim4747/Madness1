@@ -1,6 +1,7 @@
 ﻿// GameInitializer.cs — Sahnedeki tum sistemlerin baslatma noktasi
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using System.Collections;
 
 public class GameInitializer : MonoBehaviour
@@ -11,6 +12,9 @@ public class GameInitializer : MonoBehaviour
 
     private IEnumerator Start()
     {
+        // Mod servisleri mevcut sahne yöneticilerinden önce hazır edilir.
+        ModRuntime.EnsureExists();
+        ModWorldService.EnsureExists();
         ApplyMobileSettings();
 
         // Tum singleton'larin Awake'i bitsin diye bir kare bekle

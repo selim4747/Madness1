@@ -3,6 +3,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Madness.Mods;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class MainMenuController : MonoBehaviour
 
     private void Start()
     {
+        try { ModRuntime.EnsureExists(); ModImportUI.CreateIfPossible(); }
+        catch (System.Exception ex) { Debug.LogException(ex); }
         for (int i = 0; i < slots.Length; i++)
             if (slots[i] != null) slots[i].Bind(this);
 

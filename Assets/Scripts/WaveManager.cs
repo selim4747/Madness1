@@ -1,6 +1,7 @@
 // WaveManager.cs — Gece dalga sistemi (havuz + es zamanli sinir)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -30,6 +31,7 @@ public class WaveManager : MonoBehaviour
     private int spawnedSoFar;
     private bool nightActive;
     private Coroutine spawnRoutine;
+    private float currentSpawnIntervalMultiplier = 1f;
 
     private void Awake()
     {
@@ -40,8 +42,17 @@ public class WaveManager : MonoBehaviour
     /// <summary>GameManager gece basladiginda cagirir.</summary>
     public void StartNight(int day, bool isBossNight)
     {
+        NightContext nightContext = ModEventBus.Publish(new NightContext
+        {
+            Day = day,
+            IsBossNight = isBossNight
+        });
+        if (nightContext.Cancelled) return;
+        day = Mathf.Max(1, nightContext.Day);
+        isBossNight = nightContext.IsBossNight;
+        currentSpawnIntervalMultiplier = Mathf.Max(0.05f, nightContext.SpawnIntervalMultiplier);
         // Dusman Sayisi = 8 x 1.07^(gun-1)
-        TotalPoolTonight = Mathf.RoundToInt(basePoolSize * Mathf.Pow(growthPerDay, day - 1));
+        TotalPoolTonight = Mathf.RoundToInt(basePoolSize * Mathf.Pow(growthPerDay, day - 1) * Mathf.Max(0f, nightContext.PoolMultiplier));
         RemainingToKill = TotalPoolTonight;
 
         spawnedSoFar = 0;
@@ -66,7 +77,7 @@ public class WaveManager : MonoBehaviour
                 spawnedSoFar++;
             }
 
-            yield return new WaitForSeconds(spawnInterval);
+            yield return new WaitForSeconds(spawnInterval * currentSpawnIntervalMultiplier);
         }
         spawnRoutine = null;
     }
@@ -77,11 +88,12 @@ public class WaveManager : MonoBehaviour
         if (chosen == null) return;
 
         Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        GameObject go = EnemyPool.Instance != null ? EnemyPool.Instance.Get(chosen.type, point.position) : null;
+        EnemySpawnContext spawnContext = ModEventBus.Publish(new EnemySpawnContext { EnemyType = chosen.type, Day = day, SpawnPosition = point.position });
+        if (spawnContext.Cancelled || spawnContext.CancelSpawn) return;
+        GameObject go = EnemyPool.Instance != null ? EnemyPool.Instance.Get(spawnContext.EnemyType, spawnContext.SpawnPosition) : null;
         if (go == null) return;
-
         EnemyController enemy = go.GetComponent<EnemyController>();
-        enemy.Initialize(day);
+        enemy.Initialize(day, spawnContext.HealthMultiplier, spawnContext.DamageMultiplier);
         aliveEnemies.Add(enemy);
     }
 

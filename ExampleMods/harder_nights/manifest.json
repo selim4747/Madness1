@@ -1,0 +1,9 @@
+{
+  "id": "harder_nights",
+  "name": "Harder Nights",
+  "version": "1.0.0",
+  "apiVersion": "1",
+  "author": "Example",
+  "enabled": true,
+  "loadOrder": 50
+}

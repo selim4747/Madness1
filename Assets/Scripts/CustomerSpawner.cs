@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Madness.Mods;
 
 public class CustomerSpawner : MonoBehaviour
 {
@@ -116,8 +117,12 @@ public class CustomerSpawner : MonoBehaviour
         if (aktifRaflar.Count == 0) return;
 
         Transform secilenRaf = aktifRaflar[UnityEngine.Random.Range(0, aktifRaflar.Count)];
-
-        GameObject yeniMusteri = Instantiate(uretilecekPrefab, kapiNoktasi.position, Quaternion.identity);
+        CustomerSpawnContext spawnContext = ModEventBus.Publish(new CustomerSpawnContext
+        { Profile = secilenData, Prefab = uretilecekPrefab, SpawnPosition = kapiNoktasi.position, TargetPosition = secilenRaf.position });
+        if (spawnContext.Cancelled || spawnContext.CancelSpawn || spawnContext.Prefab == null || spawnContext.Profile == null) return;
+        secilenData = spawnContext.Profile;
+        uretilecekPrefab = spawnContext.Prefab;
+        GameObject yeniMusteri = Instantiate(uretilecekPrefab, spawnContext.SpawnPosition, Quaternion.identity);
         CustomerController controller = yeniMusteri.GetComponent<CustomerController>();
 
         if (controller != null)

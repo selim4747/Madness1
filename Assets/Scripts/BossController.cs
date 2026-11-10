@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using Madness.Mods;
 
 public class BossController : NavMeshMover
 {
@@ -139,6 +140,9 @@ public class BossController : NavMeshMover
     public void TakeDamage(float amount)
     {
         if (!IsBossActive) return;
+        DamageContext damageContext = ModEventBus.Publish(new DamageContext { Target = this, Amount = amount });
+        if (damageContext.Cancelled) return;
+        amount = Mathf.Max(0f, damageContext.Amount);
 
         currentHealth -= amount;
         if (OnHealthRatioChanged != null) OnHealthRatioChanged(HealthRatio);

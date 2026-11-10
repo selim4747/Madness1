@@ -38,6 +38,7 @@ public class BahceCumlesi
     public SesKlipSeti ses;
 
     [Tooltip("Bu cumlenin ait oldugu 1 VEYA DAHA FAZLA konu. Birden fazla konu = digerlerine dogal kopru.")]
+    [BahceKonusu] // Inspector'da serbest yazim yerine acilir liste (tanimliKonular) cikar; listeden "+ Yeni konu ekle" ile eklenir.
     public List<string> konular = new List<string>();
 
     [Tooltip("Oyuncuya sunulacak secenekler (2-4 tane onerilir). Bos birakilirsa bu cumle bir 'yaprak' olur — konusma orada dogal olarak biter (ya da sonraki 'ilgili konu' aramasina duser).")]

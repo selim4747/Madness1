@@ -1,6 +1,7 @@
 ﻿// CounterController.cs — Kasa: bekleyen musteri kuyrugu ve anlik satis
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
+using Madness.Mods;
 using System;
 using System.Collections.Generic;
 
@@ -108,14 +109,17 @@ public class CounterController : MonoBehaviour
 
         // SATIR 69 ÇÖKME ZIRHLARI (Manager'lar yoksa bile oyun patlamaz!)
         int price = book.GetFinalPrice();
-
         // KISILIK: comert musteri fazla, pazarlikci az oder.
         // NOT: KaraKitapOzelData (kisiye ozel kitap) icin bu carpan UYGULANMAMALI —
         // "fiyati ne olursa olsun bariyer degil, tam fiyat oder" tasarim karari henuz
         // burada kodlanmadi (Kara Kitap Satici satis akisi kurulunca eklenecek).
         if (nearest.SecilenKimlik != null)
             price = Mathf.RoundToInt(price * Mathf.Max(0.1f, nearest.SecilenKimlik.odemeCarpani));
-
+        SaleContext saleContext = new SaleContext { Customer = nearest, Book = book, Price = price };
+        saleContext.Price = price;
+        ModEventBus.Publish(saleContext);
+        if (saleContext.Cancelled) { nearest.LeaveUnsatisfied(); return true; }
+        price = Mathf.Max(0, saleContext.Price);
         if (EconomyManager.Instance != null) EconomyManager.Instance.AddGold(price);
         else DevLog.Warning("💸 EconomyManager sahnede yok, para havaya uçtu!");
 
