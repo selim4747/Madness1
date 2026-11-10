@@ -43,12 +43,19 @@ namespace Madness.Mods
             foreach (ModManifest manifest in runtime.LoadedManifests)
             {
                 if (!manifest.enabled) continue;
+                string dependencyError = runtime.GetDependencyError(manifest);
+                if (!string.IsNullOrEmpty(dependencyError))
+                {
+                    runtime.ReportDiagnostic(manifest.id, dependencyError, true);
+                    continue;
+                }
                 try
                 {
                     LoadOne(runtime, manifest);
                 }
                 catch (Exception ex)
                 {
+                    runtime.ReportDiagnostic(manifest.id, "DLL yüklenemedi: " + ex.Message, true);
                     Debug.LogError("[ModScriptLoader] " + manifest.id + " yüklenemedi: " + ex);
                 }
             }
@@ -71,11 +78,18 @@ namespace Madness.Mods
             if (IsIL2CPP) return;
 
             string modDir = Path.Combine(runtime.ModsDirectory, manifest.id);
-            if (!Directory.Exists(modDir)) return;
+            if (!Directory.Exists(modDir))
+            {
+                runtime.ReportDiagnostic(manifest.id, "Mod klasörü bulunamadı.", true);
+                return;
+            }
 
             string dllPath = ResolveEntryPath(modDir, manifest.entryScript);
             if (string.IsNullOrEmpty(dllPath) || !File.Exists(dllPath))
+            {
+                runtime.ReportDiagnostic(manifest.id, "entryScript DLL bulunamadı: " + manifest.entryScript, true);
                 return;
+            }
 
             if (!dllPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
@@ -93,6 +107,7 @@ namespace Madness.Mods
                 Type moduleType = FindModuleType(asm, manifest.id);
                 if (moduleType == null)
                 {
+                    runtime.ReportDiagnostic(manifest.id, "DLL içinde IModModule bulunamadı.", true);
                     Debug.LogWarning("[ModScriptLoader] IModModule bulunamadı: " + manifest.id);
                     return;
                 }

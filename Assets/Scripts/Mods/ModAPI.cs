@@ -46,6 +46,19 @@ namespace Madness.Mods
         public static string GetState(string modId)
             => ModRuntime.EnsureExists().GetState(modId);
 
+        // --- Panel ayarları (save'den bağımsız) ---
+        public static string GetSetting(string modId, string key, string fallback = "")
+            => ModSettingsStore.Get(modId, key, fallback);
+
+        public static bool GetSettingBool(string modId, string key, bool fallback = false)
+            => ModSettingsStore.GetBool(modId, key, fallback);
+
+        public static float GetSettingFloat(string modId, string key, float fallback = 0f)
+            => ModSettingsStore.GetFloat(modId, key, fallback);
+
+        public static void SetSetting(string modId, string key, string value)
+            => ModSettingsStore.Set(modId, key, value);
+
         // --- World ---
         public static bool TryGetAnchor(string id, out Vector3 position)
             => ModWorldRegistry.TryGetPosition(id, out position);

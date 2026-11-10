@@ -5,5 +5,16 @@
   "apiVersion": "1",
   "enabled": true,
   "entryScript": "Mod.dll",
-  "loadOrder": 100
+  "loadOrder": 100,
+  "settings": [
+    {
+      "key": "salePriceMultiplier",
+      "label": "Satış kazancı çarpanı",
+      "type": "float",
+      "defaultValue": "29.0",
+      "min": 0.1,
+      "max": 100.0,
+      "restartRequired": true
+    }
+  ]
 }

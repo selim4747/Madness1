@@ -9,6 +9,7 @@ public class MyMod : ModModuleBase
 
     protected override void OnRegister(ModRuntime runtime)
     {
+        float salePriceMultiplier = ModAPI.GetSettingFloat(Id, "salePriceMultiplier", SalePriceMultiplier);
         // Oyuncu %40 daha az hasar alır
         Subscribe<DamageContext>(ctx =>
         {
@@ -19,7 +20,7 @@ public class MyMod : ModModuleBase
         // Satışlar %20 daha karlı
         Subscribe<SaleContext>(ctx =>
         {
-            ctx.Price = Mathf.RoundToInt(ctx.Price * SalePriceMultiplier);
+            ctx.Price = Mathf.RoundToInt(ctx.Price * salePriceMultiplier);
         });
 
         Log("C# mod yüklendi — hasar ve satış kancaları aktif");

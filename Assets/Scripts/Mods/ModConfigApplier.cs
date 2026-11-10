@@ -34,12 +34,14 @@ namespace Madness.Mods
             foreach (var manifest in runtime.LoadedManifests)
             {
                 if (!manifest.enabled) continue;
+                if (!string.IsNullOrEmpty(runtime.GetDependencyError(manifest))) continue;
                 string path = Path.Combine(runtime.ModsDirectory, manifest.id, "config.json");
                 if (!File.Exists(path)) continue;
                 try
                 {
                     SimpleConfig cfg = JsonUtility.FromJson<SimpleConfig>(File.ReadAllText(path));
                     if (cfg == null) continue;
+                    ApplySavedSettings(manifest.id, cfg);
                     string configOwner = manifest.id + "__config";
                     RegisterConfigHooks(configOwner, cfg);
                     appliedOwners.Add(configOwner);
@@ -50,6 +52,19 @@ namespace Madness.Mods
                     Debug.LogError("[ModConfig] " + manifest.id + " config okunamadı: " + ex.Message);
                 }
             }
+        }
+
+        private static void ApplySavedSettings(string modId, SimpleConfig cfg)
+        {
+            cfg.nightPoolMultiplier = ModSettingsStore.GetFloat(modId, "nightPoolMultiplier", cfg.nightPoolMultiplier);
+            cfg.spawnIntervalMultiplier = ModSettingsStore.GetFloat(modId, "spawnIntervalMultiplier", cfg.spawnIntervalMultiplier);
+            cfg.goldGainMultiplier = ModSettingsStore.GetFloat(modId, "goldGainMultiplier", cfg.goldGainMultiplier);
+            cfg.goldSpendMultiplier = ModSettingsStore.GetFloat(modId, "goldSpendMultiplier", cfg.goldSpendMultiplier);
+            cfg.playerDamageTakenMultiplier = ModSettingsStore.GetFloat(modId, "playerDamageTakenMultiplier", cfg.playerDamageTakenMultiplier);
+            cfg.enemyDamageTakenMultiplier = ModSettingsStore.GetFloat(modId, "enemyDamageTakenMultiplier", cfg.enemyDamageTakenMultiplier);
+            cfg.enemyHealthMultiplier = ModSettingsStore.GetFloat(modId, "enemyHealthMultiplier", cfg.enemyHealthMultiplier);
+            cfg.enemyDamageMultiplier = ModSettingsStore.GetFloat(modId, "enemyDamageMultiplier", cfg.enemyDamageMultiplier);
+            cfg.dayDurationMultiplier = ModSettingsStore.GetFloat(modId, "dayDurationMultiplier", cfg.dayDurationMultiplier);
         }
 
         private static void RegisterConfigHooks(string owner, SimpleConfig cfg)

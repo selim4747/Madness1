@@ -9,6 +9,7 @@ namespace Madness.Mods
     {
         public string id = "";
         public string name = "";
+        public string description = "";
         public string version = "1.0.0";
         public string apiVersion = "1";
         public string author = "";
@@ -21,6 +22,42 @@ namespace Madness.Mods
         // totalConversion için giriş sahnesi. Boşsa worldScene kullanılır.
         public string mainScene = "";
         public List<string> dependencies = new List<string>();
+        public List<ModSettingDefinition> settings = new List<ModSettingDefinition>();
+    }
+
+    [Serializable]
+    public sealed class ModSettingDefinition
+    {
+        // Desteklenen tipler: bool, int, float, string, dropdown.
+        public string key = "";
+        public string label = "";
+        public string type = "float";
+        public string defaultValue = "";
+        public float min = 0f;
+        public float max = 100f;
+        public List<string> options = new List<string>();
+        public bool restartRequired = true;
+    }
+
+    [Serializable]
+    public sealed class ModSettingValue
+    {
+        public string key = "";
+        public string value = "";
+    }
+
+    [Serializable]
+    public sealed class ModSettingsFile
+    {
+        public List<ModSettingValue> values = new List<ModSettingValue>();
+    }
+
+    [Serializable]
+    public sealed class ModDiagnostic
+    {
+        public string modId = "";
+        public string message = "";
+        public bool error;
     }
 
     [Serializable]

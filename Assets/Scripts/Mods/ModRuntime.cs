@@ -13,12 +13,14 @@ namespace Madness.Mods
         public const int CurrentApiVersion = 1;
         public string ModsDirectory { get; private set; }
         public IReadOnlyList<ModManifest> LoadedManifests { get { return loadedManifests; } }
+        public IReadOnlyList<ModDiagnostic> Diagnostics { get { return diagnostics; } }
         public event Action OnModsChanged;
 
         private readonly List<ModManifest> loadedManifests = new List<ModManifest>();
         private readonly List<IModModule> modules = new List<IModModule>();
         private readonly List<ModSaveEntry> states = new List<ModSaveEntry>();
         private readonly List<IModModule> builtInModules = new List<IModModule>();
+        private readonly List<ModDiagnostic> diagnostics = new List<ModDiagnostic>();
         private bool initialized;
 
         // false yapılırsa mod klasöründeki .dll dosyaları hiç yüklenmez (config.json ve gömülü modlar çalışır).
@@ -65,6 +67,7 @@ namespace Madness.Mods
         private void ScanManifests()
         {
             loadedManifests.Clear();
+            diagnostics.Clear();
             string[] files = Directory.GetFiles(ModsDirectory, "manifest.json", SearchOption.AllDirectories)
                 .Where(file => !IsImportArtifact(file)).ToArray();
             for (int i = 0; i < files.Length; i++)
@@ -74,11 +77,13 @@ namespace Madness.Mods
                     ModManifest manifest = JsonUtility.FromJson<ModManifest>(File.ReadAllText(files[i]));
                     if (manifest == null || string.IsNullOrWhiteSpace(manifest.id))
                     {
+                        ReportDiagnostic("", "Kimliksiz manifest atlandı: " + files[i], true);
                         Debug.LogWarning("[ModRuntime] Kimliksiz manifest atlandı: " + files[i]);
                         continue;
                     }
                     if (manifest.apiVersion != CurrentApiVersion.ToString())
                     {
+                        ReportDiagnostic(manifest.id, "API sürümü uyumsuz: " + manifest.apiVersion, true);
                         Debug.LogWarning("[ModRuntime] API uyumsuzluğu nedeniyle atlandı: " + manifest.id);
                         continue;
                     }
@@ -87,6 +92,7 @@ namespace Madness.Mods
                 }
                 catch (Exception ex)
                 {
+                    ReportDiagnostic("", "Manifest okunamadı: " + ex.Message, true);
                     Debug.LogError("[ModRuntime] Manifest okunamadı: " + files[i] + " - " + ex.Message);
                 }
             }
@@ -96,7 +102,7 @@ namespace Madness.Mods
         private bool IsImportArtifact(string file)
         {
             string normalized = file.Replace('\\', '/');
-            return normalized.Contains("/.staging/") || normalized.Contains("/.backup/");
+            return normalized.Contains("/.staging/") || normalized.Contains("/.backup/") || normalized.Contains("/.trash/");
         }
 
         public void RescanMods()
@@ -145,6 +151,125 @@ namespace Madness.Mods
             }
 
             if (OnModsChanged != null) OnModsChanged();
+        }
+
+        public void ReportDiagnostic(string modId, string message, bool error)
+        {
+            diagnostics.Add(new ModDiagnostic { modId = modId ?? "", message = message ?? "", error = error });
+            if (error) Debug.LogWarning("[ModRuntime] " + (string.IsNullOrEmpty(modId) ? "" : modId + ": ") + message);
+        }
+
+        public bool IsBuiltIn(string modId) { return BuiltInModCatalog.Contains(modId); }
+
+        public string GetModDirectory(string modId)
+        {
+            if (string.IsNullOrWhiteSpace(modId)) return null;
+            string path = Path.Combine(ModsDirectory, modId);
+            return Directory.Exists(path) ? path : null;
+        }
+
+        public string GetDependencyError(ModManifest manifest)
+        {
+            if (manifest == null || manifest.dependencies == null) return null;
+            for (int i = 0; i < manifest.dependencies.Count; i++)
+            {
+                string dependency = manifest.dependencies[i];
+                if (string.IsNullOrWhiteSpace(dependency)) continue;
+                ModManifest found = loadedManifests.FirstOrDefault(m => string.Equals(m.id, dependency, StringComparison.OrdinalIgnoreCase));
+                if (found == null) return "Eksik bağımlılık: " + dependency;
+                if (!found.enabled) return "Kapalı bağımlılık: " + dependency;
+            }
+            return null;
+        }
+
+        public string GetModStatus(ModManifest manifest)
+        {
+            if (manifest == null) return "Bilinmiyor";
+            if (!manifest.enabled) return "Kapalı";
+            string dependencyError = GetDependencyError(manifest);
+            if (!string.IsNullOrEmpty(dependencyError)) return "Bağımlılık hatası";
+            if (!AllowDllMods && !string.IsNullOrWhiteSpace(manifest.entryScript)) return "DLL devre dışı";
+            if (!string.IsNullOrWhiteSpace(manifest.entryScript))
+            {
+                string dir = GetModDirectory(manifest.id);
+                string path = string.IsNullOrEmpty(dir) ? null : Path.Combine(dir, manifest.entryScript.Replace('/', Path.DirectorySeparatorChar));
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return "DLL bulunamadı";
+            }
+            return "Hazır";
+        }
+
+        public bool SetExternalModEnabled(string modId, bool enabled)
+        {
+            if (IsBuiltIn(modId)) return false;
+            ModManifest manifest = loadedManifests.FirstOrDefault(m => string.Equals(m.id, modId, StringComparison.OrdinalIgnoreCase));
+            string path = GetManifestPath(modId);
+            if (manifest == null || string.IsNullOrEmpty(path)) return false;
+            manifest.enabled = enabled;
+            if (!WriteManifest(path, manifest)) return false;
+            RescanMods();
+            return true;
+        }
+
+        public bool SetModLoadOrder(string modId, int loadOrder)
+        {
+            if (IsBuiltIn(modId)) return false;
+            ModManifest manifest = loadedManifests.FirstOrDefault(m => string.Equals(m.id, modId, StringComparison.OrdinalIgnoreCase));
+            string path = GetManifestPath(modId);
+            if (manifest == null || string.IsNullOrEmpty(path)) return false;
+            manifest.loadOrder = Mathf.Clamp(loadOrder, -10000, 10000);
+            if (!WriteManifest(path, manifest)) return false;
+            RescanMods();
+            return true;
+        }
+
+        public bool DeleteExternalMod(string modId, out string message)
+        {
+            message = "";
+            if (IsBuiltIn(modId)) { message = "Yerleşik modlar silinemez."; return false; }
+            string source = GetModDirectory(modId);
+            if (string.IsNullOrEmpty(source)) { message = "Mod klasörü bulunamadı."; return false; }
+            try
+            {
+                ModScriptLoader.UnloadAll(this);
+                string trash = Path.Combine(ModsDirectory, ".trash");
+                Directory.CreateDirectory(trash);
+                Directory.Move(source, Path.Combine(trash, modId + "_" + DateTime.UtcNow.Ticks));
+                ModSettingsStore.Delete(modId);
+                RescanMods();
+                message = "Mod geri dönüşüm klasörüne taşındı.";
+                return true;
+            }
+            catch (Exception ex) { message = "Mod silinemedi: " + ex.Message; return false; }
+        }
+
+        private string GetManifestPath(string modId)
+        {
+            if (string.IsNullOrWhiteSpace(ModsDirectory) || string.IsNullOrWhiteSpace(modId)) return null;
+            string[] files = Directory.GetFiles(ModsDirectory, "manifest.json", SearchOption.AllDirectories);
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (IsImportArtifact(files[i])) continue;
+                try
+                {
+                    ModManifest item = JsonUtility.FromJson<ModManifest>(File.ReadAllText(files[i]));
+                    if (item != null && string.Equals(item.id, modId, StringComparison.OrdinalIgnoreCase)) return files[i];
+                }
+                catch { }
+            }
+            return null;
+        }
+
+        private bool WriteManifest(string path, ModManifest manifest)
+        {
+            try
+            {
+                string temp = path + ".tmp";
+                File.WriteAllText(temp, JsonUtility.ToJson(manifest, true));
+                if (File.Exists(path)) File.Delete(path);
+                File.Move(temp, path);
+                return true;
+            }
+            catch (Exception ex) { ReportDiagnostic(manifest == null ? "" : manifest.id, "Manifest yazılamadı: " + ex.Message, true); return false; }
         }
 
         public bool RegisterModule(IModModule module)

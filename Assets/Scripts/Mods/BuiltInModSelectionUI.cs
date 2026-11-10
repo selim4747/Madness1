@@ -52,6 +52,13 @@ namespace Madness.Mods
             Rebuild();
         }
 
+        private void OnDisable()
+        {
+            if (listRoot == null) return;
+            for (int i = listRoot.childCount - 1; i >= 0; i--)
+                Destroy(listRoot.GetChild(i).gameObject);
+        }
+
         [ContextMenu("Düzeni Uygula")]
         public void ApplyLayout()
         {

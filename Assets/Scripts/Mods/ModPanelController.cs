@@ -42,6 +42,9 @@ namespace Madness.Mods
         {
             if (panel == null) { Debug.LogWarning("[ModPanelController] Panel atanmamış."); return; }
             if (panel == gameObject) Debug.LogWarning("[ModPanelController] Bu bileşen panelin kendisinde olmamalı; kapanınca çalışmayı bırakır.");
+            BuiltInModSelectionUI legacyPanel = panel.GetComponent<BuiltInModSelectionUI>();
+            if (legacyPanel != null) legacyPanel.enabled = false;
+            ModManagerUI.Attach(panel);
             if (openButton != null) openButton.onClick.AddListener(Open);
             if (closeButton != null) closeButton.onClick.AddListener(Close);
             try { BuildDimmer(); } catch (System.Exception ex) { Debug.LogException(ex); }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -151,6 +152,20 @@ namespace Madness.Mods
                 return "Total conversion modunda mainScene veya worldScene belirtilmelidir.";
             if (!string.IsNullOrWhiteSpace(manifest.entryScript) && HasParentSegment(manifest.entryScript.Replace('\\', '/')))
                 return "entryScript mod klasörü dışına çıkamaz.";
+            if (manifest.dependencies != null && manifest.dependencies.Any(d => string.Equals(d, manifest.id, StringComparison.OrdinalIgnoreCase)))
+                return "Mod kendisine bağımlı olamaz.";
+            if (manifest.settings != null)
+            {
+                HashSet<string> settingKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (ModSettingDefinition setting in manifest.settings)
+                {
+                    if (setting == null || string.IsNullOrWhiteSpace(setting.key)) return "Mod ayarlarında boş anahtar bulunamaz.";
+                    if (!settingKeys.Add(setting.key)) return "Mod ayarlarında tekrar eden anahtar var: " + setting.key;
+                    if (setting.type != "bool" && setting.type != "int" && setting.type != "float" && setting.type != "string" && setting.type != "dropdown")
+                        return "Desteklenmeyen mod ayarı tipi: " + setting.type;
+                    if (setting.min > setting.max) return "Mod ayarı min değeri max değerinden büyük: " + setting.key;
+                }
+            }
             return null;
         }
 

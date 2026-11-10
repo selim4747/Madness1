@@ -41,6 +41,9 @@ namespace Madness.Mods
         public static string GetDisplayName(string id)
             => Entries.TryGetValue(id ?? "", out Entry entry) ? entry.Name : id;
 
+        public static bool Contains(string id)
+            => Entries.ContainsKey(id ?? "");
+
         public static bool IsEnabled(string id)
         {
             if (!Entries.ContainsKey(id ?? "")) return false;
