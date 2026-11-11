@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System;
 using System.Collections.Generic;
@@ -89,13 +89,7 @@ public class CustomerController : MonoBehaviour
 
     // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
     [SerializeField] private NavMeshPortalConfig portalConfig;
-    private float GECIT1_MIN_Y => portalConfig != null ? portalConfig.gecit1MinY : 44.9f;
-    private float GECIT1_MAX_Y => portalConfig != null ? portalConfig.gecit1MaxY : 45.1f;
-    private float GECIT1_HEDEF_Y => portalConfig != null ? portalConfig.gecit1HedefY : 41f;
-    private float GECIT2_MIN_Y => portalConfig != null ? portalConfig.gecit2MinY : 41.9f;
-    private float GECIT2_MAX_Y => portalConfig != null ? portalConfig.gecit2MaxY : 42.1f;
-    private float GECIT2_HEDEF_Y => portalConfig != null ? portalConfig.gecit2HedefY : 46f;
-
+    
     // Isinlanma sonrasi yolu geri yukleyebilmek icin son verilen hedef saklanir.
     private Vector3 sonHedef;
     private bool hedefVar = false;
@@ -222,7 +216,10 @@ public class CustomerController : MonoBehaviour
         kapiNoktasi = param1 as Transform;
         gecitNoktasi = param6 as Transform;
 
-        // NPC once ortak gecit noktasina yurur; varinca raf/kasa hedefi belirlenir.
+        // ONEMLI: Bahce sansi ARTIK BURADA denenmiyor — musteri once MUTLAKA bir rafa
+        // gidip gelmeli (kitap alsin almasin farketmez), bahce zari HandleArrivedAtShelf()
+        // icinde, raf ziyaretinden SONRA atiliyor. Boylece kimse "masaya gidip gelmeden"
+        // dogrudan bahceye gitmiyor.
         if (gecitNoktasi != null)
         {
             state = State.GoingToGate;
@@ -495,53 +492,6 @@ public class CustomerController : MonoBehaviour
         }
     }
 
-    /// <summary>Haritadaki iki dar geçit bandını (Y ekseni) her frame kontrol eder. NPC bu
-    /// bantların icindeyse (NavMesh aradan gecmedigi icin yurumesi imkansiz), bandin
-    /// karsi tarafindaki bilinen guvenli Y konumuna dogrudan isinlanir.</summary>
-    private void GecitIsinlamasiniKontrolEt()
-    {
-        if (agent == null || !agent.isOnNavMesh) return;
-
-        float mevcutY = transform.position.y;
-        float hedefY;
-
-        if (mevcutY >= GECIT1_MIN_Y && mevcutY <= GECIT1_MAX_Y)
-        {
-            hedefY = GECIT1_HEDEF_Y;
-        }
-        else if (mevcutY >= GECIT2_MIN_Y && mevcutY <= GECIT2_MAX_Y)
-        {
-            hedefY = GECIT2_HEDEF_Y;
-        }
-        else
-        {
-            return;
-        }
-
-        Vector3 istenenPozisyon = new Vector3(transform.position.x, hedefY, transform.position.z);
-        UnityEngine.AI.NavMeshHit hit;
-        if (UnityEngine.AI.NavMesh.SamplePosition(istenenPozisyon, out hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
-        {
-            agent.Warp(hit.position);
-        }
-        else
-        {
-            agent.Warp(istenenPozisyon);
-        }
-
-        // KRITIK: Warp() mevcut yolu SILER — NPC hedefini unutup olduğu yerde kalir.
-        // Isinlanmadan hemen sonra son hedefi TEKRAR vererek yola aninda devam etmesini saglariz.
-        if (hedefVar && agent.isOnNavMesh)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(sonHedef);
-        }
-
-        isinlanmaBeklemeKaresi = 3; // yol yeniden hesaplanana kadar varis kontrolunu atla
-
-        DevLog.Info($"⚡ [IŞINLAMA] {(SecilenKimlik != null ? SecilenKimlik.musteriIsmi : gameObject.name)} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
-    }
-
     private bool HedefeVardiMi()
     {
         if (agent.pathPending) return false;
@@ -693,7 +643,7 @@ public class CustomerController : MonoBehaviour
     /// verdigi kapiNoktasi varsa onu kullanir, yoksa eski sabit yedek degere duser.</summary>
     private Vector3 CikisNoktasi()
     {
-        return kapiNoktasi != null ? kapiNoktasi.position : new Vector3(0, -15, 0);
+        return gecitNoktasi != null ? gecitNoktasi.position : (kapiNoktasi != null ? kapiNoktasi.position : new Vector3(0, -15, 0));
     }
 
     public void MoveTo(Vector3 hedef)

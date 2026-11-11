@@ -1,10 +1,10 @@
-// ThiefController.cs — Hirsiz yapay zekasi
+﻿// ThiefController.cs — Hirsiz yapay zekasi
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 
 public class ThiefController : NavMeshMover
 {
-    private enum State { GoingToShelf, Fleeing, Caught }
+    private enum State { GoingToShelf, Fleeing, Caught, GoingToGate }
 
     [Header("Gorsel")]
     [SerializeField] private GameObject alertIcon;
@@ -21,22 +21,15 @@ public class ThiefController : NavMeshMover
     private State state;
     private ShelfController targetShelf;
     private Transform doorPoint;
+    private Transform gecitNoktasi;
     private bool hasStolen;
 
-    // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
-    [SerializeField] private NavMeshPortalConfig portalConfig;
-    private float GECIT1_MIN_Y => portalConfig != null ? portalConfig.gecit1MinY : 44.9f;
-    private float GECIT1_MAX_Y => portalConfig != null ? portalConfig.gecit1MaxY : 45.1f;
-    private float GECIT1_HEDEF_Y => portalConfig != null ? portalConfig.gecit1HedefY : 41f;
-    private float GECIT2_MIN_Y => portalConfig != null ? portalConfig.gecit2MinY : 41.9f;
-    private float GECIT2_MAX_Y => portalConfig != null ? portalConfig.gecit2MaxY : 42.1f;
-    private float GECIT2_HEDEF_Y => portalConfig != null ? portalConfig.gecit2HedefY : 46f;
-
-    public void Initialize(Transform door, ShelfController shelf)
+    public void Initialize(Transform door, ShelfController shelf, Transform gate = null)
     {
         doorPoint = door;
+        gecitNoktasi = gate;
         targetShelf = shelf;
-        state = State.GoingToShelf;
+        state = gecitNoktasi != null ? State.GoingToGate : State.GoingToShelf;
         hasStolen = false;
 
         if (alertIcon != null) alertIcon.SetActive(true);
@@ -61,59 +54,13 @@ public class ThiefController : NavMeshMover
             }
         }
 
-        MoveTo(targetShelf.ApproachPosition);
-    }
-
-    /// <summary>Haritadaki iki dar geçit bandını (Y ekseni) her frame kontrol eder. NPC bu
-    /// bantların icindeyse (NavMesh aradan gecmedigi icin yurumesi imkansiz), bandin
-    /// karsi tarafindaki bilinen guvenli Y konumuna dogrudan isinlanir.</summary>
-    private void GecitIsinlamasiniKontrolEt()
-    {
-        if (agent == null || !agent.isOnNavMesh) return;
-
-        float mevcutY = transform.position.y;
-        float hedefY;
-
-        if (mevcutY >= GECIT1_MIN_Y && mevcutY <= GECIT1_MAX_Y)
-        {
-            hedefY = GECIT1_HEDEF_Y;
-        }
-        else if (mevcutY >= GECIT2_MIN_Y && mevcutY <= GECIT2_MAX_Y)
-        {
-            hedefY = GECIT2_HEDEF_Y;
-        }
-        else
-        {
-            return;
-        }
-
-        Vector3 istenenPozisyon = new Vector3(transform.position.x, hedefY, transform.position.z);
-        UnityEngine.AI.NavMeshHit hit;
-        if (UnityEngine.AI.NavMesh.SamplePosition(istenenPozisyon, out hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
-        {
-            agent.Warp(hit.position);
-        }
-        else
-        {
-            agent.Warp(istenenPozisyon);
-        }
-
-        // KRITIK: Warp() mevcut yolu SILER — hedefi tekrar vererek yola aninda devam ettir.
-        // (NavMeshMover.HedefiGeriYukle() zaten SonHedef'i tekrar verip bekleme sayacini
-        // 3'e ayarliyor — CustomerController'daki gibi elle sonHedef/hedefVar tutmaya
-        // gerek yok, o mekanizma zaten base class'ta hazir.)
-        HedefiGeriYukle();
-
-        DevLog.Info($"⚡ [IŞINLAMA] {gameObject.name} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
+        MoveTo(gecitNoktasi != null ? gecitNoktasi.position : targetShelf.ApproachPosition);
     }
 
     private void Update()
     {
-        // Her frame ONCE: isinlanma bekleme sayacini azalt, sonra geçit kontrolu yap.
-        // (CustomerController/StoryNPCController ile ayni sira — sayaci azaltmadan
-        // once HasArrived kontrol edilirse, Warp sonrasi sahte-varis olusabilirdi.)
+        // NavMesh hedef yolu hesaplanirken varis kontrolunu bekleme sayaci korur.
         IsinlanmaSayaciniAzalt();
-        GecitIsinlamasiniKontrolEt();
 
         if (state == State.Caught) return;
 
@@ -126,7 +73,12 @@ public class ThiefController : NavMeshMover
 
         if (!HasArrived) return;
 
-        if (state == State.GoingToShelf)
+        if (state == State.GoingToGate)
+        {
+            state = State.GoingToShelf;
+            MoveTo(targetShelf != null ? targetShelf.ApproachPosition : transform.position);
+        }
+        else if (state == State.GoingToShelf)
         {
             StealAndFlee();
         }
@@ -156,7 +108,8 @@ public class ThiefController : NavMeshMover
         // burada sadece kacis anindaki carpani uyguluyoruz.
         SetSpeed(defaultSpeed * kacisHizCarpani);
 
-        if (doorPoint != null) MoveTo(doorPoint.position);
+        if (gecitNoktasi != null) MoveTo(gecitNoktasi.position);
+        else if (doorPoint != null) MoveTo(doorPoint.position);
     }
 
     /// <summary>Kapiya ulasti — kitap gitti.</summary>

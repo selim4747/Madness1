@@ -10,6 +10,7 @@ public class ThiefSpawner : MonoBehaviour
     [Header("Referanslar")]
     [SerializeField] private GameObject thiefPrefab;
     [SerializeField] private Transform doorPoint;
+    [SerializeField] private Transform gecitNoktasi;
 
     [Header("Zamanlama")]
     [SerializeField] private float minGapSeconds = 60f;
@@ -80,6 +81,6 @@ public class ThiefSpawner : MonoBehaviour
         if (shelf == null) return;   // calacak kitap yok
 
         GameObject go = Instantiate(thiefPrefab, doorPoint.position, Quaternion.identity);
-        go.GetComponent<ThiefController>().Initialize(doorPoint, shelf);
+        go.GetComponent<ThiefController>().Initialize(doorPoint, shelf, gecitNoktasi);
     }
 }
