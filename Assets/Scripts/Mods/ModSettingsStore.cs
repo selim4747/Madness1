@@ -20,6 +20,7 @@ namespace Madness.Mods
 
         private static string PathFor(string modId)
         {
+            if (!ModRuntime.IsSafeModId(modId)) return null;
             return Path.Combine(SettingsDirectory, modId + ".settings.json");
         }
 
@@ -77,7 +78,7 @@ namespace Madness.Mods
             try
             {
                 string path = PathFor(modId);
-                if (File.Exists(path)) File.Delete(path);
+                if (!string.IsNullOrEmpty(path) && File.Exists(path)) File.Delete(path);
             }
             catch (Exception ex) { Debug.LogWarning("[ModSettings] Ayar dosyası silinemedi: " + ex.Message); }
         }
@@ -91,7 +92,7 @@ namespace Madness.Mods
             try
             {
                 string path = PathFor(modId);
-                if (!File.Exists(path)) return values;
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return values;
                 ModSettingsFile file = JsonUtility.FromJson<ModSettingsFile>(File.ReadAllText(path));
                 if (file != null && file.values != null)
                     foreach (ModSettingValue item in file.values)
@@ -111,10 +112,16 @@ namespace Madness.Mods
                 foreach (KeyValuePair<string, string> pair in values)
                     file.values.Add(new ModSettingValue { key = pair.Key, value = pair.Value });
                 string path = PathFor(modId);
+                if (string.IsNullOrEmpty(path)) return;
                 string temp = path + ".tmp";
+                string backup = path + ".bak";
                 File.WriteAllText(temp, JsonUtility.ToJson(file, true));
-                if (File.Exists(path)) File.Delete(path);
-                File.Move(temp, path);
+                if (File.Exists(path))
+                {
+                    try { File.Replace(temp, path, backup, true); }
+                    catch { File.Copy(path, backup, true); File.Delete(path); File.Move(temp, path); }
+                }
+                else File.Move(temp, path);
             }
             catch (Exception ex) { Debug.LogError("[ModSettings] Ayarlar yazılamadı (" + modId + "): " + ex.Message); }
         }

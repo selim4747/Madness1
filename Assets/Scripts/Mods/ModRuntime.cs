@@ -11,6 +11,17 @@ namespace Madness.Mods
     {
         public static ModRuntime Instance { get; private set; }
         public const int CurrentApiVersion = 1;
+
+        public static bool IsSafeModId(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id) || id.Length > 64 || id != id.Trim() || id.Contains("..")) return false;
+            for (int i = 0; i < id.Length; i++)
+            {
+                char c = id[i];
+                if (!(char.IsLetterOrDigit(c) || c == '_' || c == '-' || c == '.')) return false;
+            }
+            return true;
+        }
         public string ModsDirectory { get; private set; }
         public IReadOnlyList<ModManifest> LoadedManifests { get { return loadedManifests; } }
         public IReadOnlyList<ModDiagnostic> Diagnostics { get { return diagnostics; } }
@@ -87,8 +98,17 @@ namespace Madness.Mods
                         Debug.LogWarning("[ModRuntime] API uyumsuzluğu nedeniyle atlandı: " + manifest.id);
                         continue;
                     }
-                    if (!loadedManifests.Any(m => string.Equals(m.id, manifest.id, StringComparison.OrdinalIgnoreCase)))
-                        loadedManifests.Add(manifest);
+                    if (!IsSafeModId(manifest.id))
+                    {
+                        ReportDiagnostic(manifest.id, "Güvensiz mod ID nedeniyle atlandı.", true);
+                        continue;
+                    }
+                    if (loadedManifests.Any(m => string.Equals(m.id, manifest.id, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        ReportDiagnostic(manifest.id, "Aynı ID'ye sahip birden fazla manifest bulundu; mod çakışması.", true);
+                        continue;
+                    }
+                    loadedManifests.Add(manifest);
                 }
                 catch (Exception ex)
                 {
@@ -163,14 +183,21 @@ namespace Madness.Mods
 
         public string GetModDirectory(string modId)
         {
-            if (string.IsNullOrWhiteSpace(modId)) return null;
+            if (!IsSafeModId(modId)) return null;
             string path = Path.Combine(ModsDirectory, modId);
             return Directory.Exists(path) ? path : null;
         }
 
         public string GetDependencyError(ModManifest manifest)
         {
-            if (manifest == null || manifest.dependencies == null) return null;
+            if (manifest == null) return "Mod manifesti yok.";
+            return GetDependencyError(manifest, new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+        }
+
+        private string GetDependencyError(ModManifest manifest, HashSet<string> visiting)
+        {
+            if (manifest.dependencies == null) return null;
+            if (!visiting.Add(manifest.id)) return "Bağımlılık döngüsü: " + manifest.id;
             for (int i = 0; i < manifest.dependencies.Count; i++)
             {
                 string dependency = manifest.dependencies[i];
@@ -178,6 +205,8 @@ namespace Madness.Mods
                 ModManifest found = loadedManifests.FirstOrDefault(m => string.Equals(m.id, dependency, StringComparison.OrdinalIgnoreCase));
                 if (found == null) return "Eksik bağımlılık: " + dependency;
                 if (!found.enabled) return "Kapalı bağımlılık: " + dependency;
+                string nested = GetDependencyError(found, new HashSet<string>(visiting, StringComparer.OrdinalIgnoreCase));
+                if (!string.IsNullOrEmpty(nested)) return nested;
             }
             return null;
         }
@@ -194,6 +223,11 @@ namespace Madness.Mods
                 string dir = GetModDirectory(manifest.id);
                 string path = string.IsNullOrEmpty(dir) ? null : Path.Combine(dir, manifest.entryScript.Replace('/', Path.DirectorySeparatorChar));
                 if (string.IsNullOrEmpty(path) || !File.Exists(path)) return "DLL bulunamadı";
+                if (ModScriptLoader.IsIL2CPP) return "IL2CPP desteklenmiyor";
+                if (ModScriptLoader.IsLoaded(manifest.id)) return "Yüklendi";
+                for (int i = diagnostics.Count - 1; i >= 0; i--)
+                    if (string.Equals(diagnostics[i].modId, manifest.id, StringComparison.OrdinalIgnoreCase) && diagnostics[i].error) return "Yükleme hatası";
+                return "Hazır";
             }
             return "Hazır";
         }
@@ -264,9 +298,14 @@ namespace Madness.Mods
             try
             {
                 string temp = path + ".tmp";
+                string backup = path + ".bak";
                 File.WriteAllText(temp, JsonUtility.ToJson(manifest, true));
-                if (File.Exists(path)) File.Delete(path);
-                File.Move(temp, path);
+                if (File.Exists(path))
+                {
+                    try { File.Replace(temp, path, backup, true); }
+                    catch { File.Copy(path, backup, true); File.Delete(path); File.Move(temp, path); }
+                }
+                else File.Move(temp, path);
                 return true;
             }
             catch (Exception ex) { ReportDiagnostic(manifest == null ? "" : manifest.id, "Manifest yazılamadı: " + ex.Message, true); return false; }

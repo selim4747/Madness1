@@ -137,15 +137,8 @@ namespace Madness.Mods
         {
             if (manifest == null) return "manifest.json okunamadı.";
             if (string.IsNullOrWhiteSpace(manifest.id)) return "Manifest içinde mod id bulunmalıdır.";
-            if (manifest.id.Length > 64 || manifest.id.IndexOfAny(InvalidIdChars) >= 0 || manifest.id.Contains(".."))
-                return "Mod id geçersiz dosya adı içeriyor.";
-            for (int i = 0; i < manifest.id.Length; i++)
-            {
-                char c = manifest.id[i];
-                if (!(char.IsLetterOrDigit(c) || c == '_' || c == '-' || c == '.'))
-                    return "Mod id yalnızca harf, rakam, nokta, alt çizgi ve tire içerebilir.";
-            }
-            if (manifest.id != manifest.id.Trim()) return "Mod id başında veya sonunda boşluk içeremez.";
+            if (!ModRuntime.IsSafeModId(manifest.id) || manifest.id.IndexOfAny(InvalidIdChars) >= 0)
+                return "Mod id yalnızca güvenli harf, rakam, nokta, alt çizgi ve tire içerebilir.";
             if (manifest.apiVersion != ModRuntime.CurrentApiVersion.ToString())
                 return "Mod, bu oyunun mod API sürümüyle uyumlu değil.";
             if (manifest.totalConversion && string.IsNullOrWhiteSpace(manifest.mainScene) && string.IsNullOrWhiteSpace(manifest.worldScene))
@@ -164,6 +157,8 @@ namespace Madness.Mods
                     if (setting.type != "bool" && setting.type != "int" && setting.type != "float" && setting.type != "string" && setting.type != "dropdown")
                         return "Desteklenmeyen mod ayarı tipi: " + setting.type;
                     if (setting.min > setting.max) return "Mod ayarı min değeri max değerinden büyük: " + setting.key;
+                    if (setting.type == "dropdown" && (setting.options == null || setting.options.Count == 0)) return "Dropdown ayarı seçenek içermiyor: " + setting.key;
+                    if ((setting.type == "int" || setting.type == "float") && !float.TryParse(setting.defaultValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _)) return "Sayısal ayarın varsayılan değeri geçersiz: " + setting.key;
                 }
             }
             return null;

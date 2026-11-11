@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 100554852}
   - component: {fileID: 100554851}
   - component: {fileID: 100554850}
+  - component: {fileID: 100554853}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -303,14 +304,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100554848}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21dac85a9e394be1b476490939369f0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Madness.Mods.BuiltInModSelectionUI
   listRoot: {fileID: 888966082}
   statusText: {fileID: 0}
-  statusTextTMP: {fileID: 0}
+  statusTextTMP: {fileID: 62944958}
   overrideRect: 1
   panelSize: {x: 560, y: 640}
   panelPosition: {x: 0, y: 0}
@@ -366,6 +367,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100554848}
   m_CullTransparentMesh: 1
+--- !u!114 &100554853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100554848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2c3c5c7e8c4a5e9f4b3d6a1c2e8f90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Madness.Mods.ModManagerUI
+  hierarchyPanel: {fileID: 100554849}
+  listRoot: {fileID: 888966082}
+  statusText: {fileID: 0}
+  scrollRect: {fileID: 0}
+  panelImage: {fileID: 100554851}
+  allowRuntimeBuild: 1
+  includeBuiltIn: 1
+  configurePanelRect: 0
+  panelSize: {x: 700, y: 800}
+  panelPosition: {x: 0, y: 0}
+  createScrollRectWhenMissing: 1
+  keepGeneratedContentUnderHierarchyPanel: 1
+  listPadding:
+    m_Left: 20
+    m_Right: 20
+    m_Top: 20
+    m_Bottom: 20
+  listSpacing: 8
+  rowHeight: 88
+  rowPadding: 10
+  settingHeight: 30
+  titleWidth: 260
+  controlWidth: 180
+  rowColor: {r: 0.08, g: 0.1, b: 0.14, a: 0.95}
+  buttonColor: {r: 0.16, g: 0.28, b: 0.4, a: 1}
+  controlColor: {r: 0.18, g: 0.2, b: 0.24, a: 1}
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  secondaryTextColor: {r: 0.75, g: 0.8, b: 0.85, a: 1}
+  accentColor: {r: 0.25, g: 0.8, b: 0.4, a: 1}
+  titleFontSize: 18
+  bodyFontSize: 14
+  detailFontSize: 13
+  buttonFontSize: 14
 --- !u!1 &140340808
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,7 +672,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1546133520}
-  - {fileID: 1629385460}
   m_Father: {fileID: 1209107899}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4478,7 +4523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1463635823}
-  - component: {fileID: 1463635822}
+  - component: {fileID: 1463635824}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -4486,21 +4531,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1463635822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1463635821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b6f4d16477fe4fb497063ef3ee512cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Madness.Mods.ModImportUI
-  importButton: {fileID: 1146004420}
-  statusText: {fileID: 0}
-  statusTextTMP: {fileID: 62944958}
 --- !u!4 &1463635823
 Transform:
   m_ObjectHideFlags: 0
@@ -4516,6 +4546,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1463635824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463635821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b6f4d16477fe4fb497063ef3ee512cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Madness.Mods.ModImportUI
+  importButton: {fileID: 1146004420}
+  statusText: {fileID: 0}
+  statusTextTMP: {fileID: 62944958}
 --- !u!1 &1479135837
 GameObject:
   m_ObjectHideFlags: 0
@@ -5045,143 +5090,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1546133519}
   m_CullTransparentMesh: 1
---- !u!1 &1629385459
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1629385460}
-  - component: {fileID: 1629385462}
-  - component: {fileID: 1629385461}
-  m_Layer: 5
-  m_Name: DurumRapor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1629385460
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629385459}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 215616201}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -125}
-  m_SizeDelta: {x: 600, y: 124}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1629385461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629385459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: 
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 4
-  m_VerticalAlignment: 256
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &1629385462
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629385459}
-  m_CullTransparentMesh: 1
 --- !u!1 &1719936358
 GameObject:
   m_ObjectHideFlags: 0
@@ -5675,11 +5583,11 @@ MonoBehaviour:
   sfxSource: {fileID: 1947603073}
   dayMusic: {fileID: 8300000, guid: 04cb040bd55ccf448bf5bc950e6fee44, type: 3}
   nightMusic: {fileID: 8300000, guid: a0d88a530854fd64bb675e16c3713d8d, type: 3}
-  menuMusic: {fileID: 8300000, guid: c4c95d710156f5543a29444c4e2cee9e, type: 3}
-  sellSound: {fileID: 0}
-  purchaseSound: {fileID: 0}
+  menuMusic: {fileID: 8300000, guid: 04cb040bd55ccf448bf5bc950e6fee44, type: 3}
+  sellSound: {fileID: 8300000, guid: 4ea74312dee5cac40b6ad50306d5f6ab, type: 3}
+  purchaseSound: {fileID: 8300000, guid: 4ea74312dee5cac40b6ad50306d5f6ab, type: 3}
   alarmSound: {fileID: 0}
-  achievementSound: {fileID: 0}
+  achievementSound: {fileID: 8300000, guid: 4ea74312dee5cac40b6ad50306d5f6ab, type: 3}
   sellSoundVaryasyonlari: []
   purchaseSoundVaryasyonlari: []
   alarmSoundVaryasyonlari: []

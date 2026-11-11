@@ -16,6 +16,11 @@ namespace Madness.Mods
         private static readonly Dictionary<string, IModModule> loadedModules =
             new Dictionary<string, IModModule>(StringComparer.OrdinalIgnoreCase);
 
+        public static bool IsLoaded(string modId)
+        {
+            return !string.IsNullOrWhiteSpace(modId) && loadedModules.ContainsKey(modId);
+        }
+
         public static bool IsIL2CPP
         {
             get
@@ -113,7 +118,11 @@ namespace Madness.Mods
                 }
 
                 IModModule module = Activator.CreateInstance(moduleType) as IModModule;
-                if (module == null) return;
+                if (module == null || !string.Equals(module.Id, manifest.id, StringComparison.OrdinalIgnoreCase))
+                {
+                    runtime.ReportDiagnostic(manifest.id, "DLL modül ID'si manifest ID'siyle eşleşmiyor.", true);
+                    return;
+                }
 
                 if (runtime.RegisterModule(module))
                 {
@@ -123,6 +132,7 @@ namespace Madness.Mods
             }
             catch (Exception ex)
             {
+                runtime.ReportDiagnostic(manifest.id, "DLL yüklenemedi: " + ex.Message, true);
                 Debug.LogError("[ModScriptLoader] DLL yüklenemedi (" + dllPath + "): " + ex.Message);
             }
 #endif
@@ -132,8 +142,9 @@ namespace Madness.Mods
         {
             if (!string.IsNullOrWhiteSpace(entryScript))
             {
-                string candidate = Path.Combine(modDir, entryScript.Replace('/', Path.DirectorySeparatorChar));
-                if (File.Exists(candidate)) return candidate;
+                string candidate = Path.GetFullPath(Path.Combine(modDir, entryScript.Replace('/', Path.DirectorySeparatorChar)));
+                string root = Path.GetFullPath(modDir).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                if (candidate.StartsWith(root, StringComparison.OrdinalIgnoreCase) && File.Exists(candidate)) return candidate;
             }
             string[] defaults = { "Mod.dll", "main.dll", "mod.dll" };
             foreach (string name in defaults)
@@ -154,7 +165,6 @@ namespace Madness.Mods
                 types = ex.Types.Where(t => t != null).ToArray();
             }
 
-            Type best = null;
             foreach (Type t in types)
             {
                 if (t == null || t.IsAbstract || t.IsInterface) continue;
@@ -164,11 +174,10 @@ namespace Madness.Mods
                     var probe = Activator.CreateInstance(t) as IModModule;
                     if (probe != null && string.Equals(probe.Id, expectedId, StringComparison.OrdinalIgnoreCase))
                         return t;
-                    if (best == null) best = t;
                 }
                 catch { }
             }
-            return best;
+            return null;
         }
 #endif
     }
