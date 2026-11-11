@@ -1,4 +1,4 @@
-// StoryManager.cs — Hikaye olaylarinin merkezi yoneticisi (diyalog + cutscene)
+﻿// StoryManager.cs — Hikaye olaylarinin merkezi yoneticisi (diyalog + cutscene)
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System;
@@ -21,6 +21,7 @@ public class StoryManager : MonoBehaviour
     [Header("Gunluk NPC (Afor) — ozel gun yoksa bu calisir")]
     [SerializeField] private GameObject storyNPCPrefab;
     [SerializeField] private Transform doorPoint;
+    [SerializeField] private Transform gatewayPoint;
     [SerializeField] private Transform counterPoint;
     [SerializeField] private string dailyNPCName = "Afor";
 
@@ -101,7 +102,7 @@ public class StoryManager : MonoBehaviour
         StoryNPCController npc = go.GetComponent<StoryNPCController>();
 
         bool willBuy = !data.isFinale && UnityEngine.Random.value < 0.5f;
-        npc.InitializeStory(data, doorPoint, counterPoint, willBuy);
+        npc.InitializeStory(data, doorPoint, counterPoint, willBuy, gatewayPoint);
     }
 
     private void SpawnDailyNPC()
@@ -116,7 +117,7 @@ public class StoryManager : MonoBehaviour
         string[] lines = GetDailyTalkForCurrentDay();
 
         bool willBuy = UnityEngine.Random.value < 0.5f;
-        npc.InitializeDaily(dailyNPCName, lines, doorPoint, counterPoint, willBuy);
+        npc.InitializeDaily(dailyNPCName, lines, doorPoint, counterPoint, willBuy, gatewayPoint);
     }
 
     /// <summary>100 gunu 10'ar gunluk bloklara boler (gun 1-10 -> blok 0, 11-20 -> blok 1, ...)

@@ -71,7 +71,8 @@ public class CustomerController : MonoBehaviour
     private float calismaTimer = 0f;
 
     private Transform kapiNoktasi; // ayrilirken kullanilan cikis/spawn noktasi
-    private Transform gecitNoktasi; // NPC'lerin ilk durak olarak yurudugu ortak kapi noktasi
+    private Transform gecitNoktasi; // giris/cikis kapisi
+    private bool cikistaGecitGecildi;
 
     private float waitTimer = 0f;
     public float maxWaitTime = 5f; // Rafta inceleme süresi
@@ -80,7 +81,7 @@ public class CustomerController : MonoBehaviour
     public float maxPatienceTime = 30f; // Kasada sabretme süresi
 
     private float leavingTimer = 0f;
-    private const float MAX_LEAVING_SECONDS = 20f; // Kapiya bu surede varamazsa zorla kaldirilir
+    private const float MAX_LEAVING_SECONDS = 60f; // Kapiya bu surede varamazsa zorla kaldirilir
 
     private float gardenGoingTimer = 0f;
     private const float MAX_GARDEN_GOING_SECONDS = 25f; // Bahce masasina bu surede varamazsa vazgecilir
@@ -223,7 +224,7 @@ public class CustomerController : MonoBehaviour
         if (gecitNoktasi != null)
         {
             state = State.GoingToGate;
-            MoveTo(gecitNoktasi.position);
+            MoveThroughGate(gecitNoktasi.position);
         }
         else
         {
@@ -328,6 +329,7 @@ public class CustomerController : MonoBehaviour
             if (state == State.GoingToGate)
             {
                 state = State.Spawning;
+                RestoreNormalBraking();
                 RafAraVeyaKasayaGit();
             }
             else if (state == State.GoingToShelf)
@@ -371,7 +373,18 @@ public class CustomerController : MonoBehaviour
             }
             else if (state == State.Leaving)
             {
-                DevLog.Info($"👋 [ÇIKIŞ] {SecilenKimlik.musteriIsmi} dükkanı terk etti.");
+                if (gecitNoktasi != null && !cikistaGecitGecildi)
+                {
+                    cikistaGecitGecildi = true;
+                    RestoreNormalBraking();
+                    Vector3 bahceCikis = CikisNoktasi();
+                    if (Vector3.Distance(transform.position, bahceCikis) > 0.15f)
+                    {
+                        MoveTo(bahceCikis);
+                        return;
+                    }
+                }
+                DevLog.Info($"👋 [ÇIKIŞ] {SecilenKimlik.musteriIsmi} bahçe çıkış noktasına ulaştı.");
                 OnFinished?.Invoke(this, false);
                 Destroy(gameObject);
             }
@@ -428,7 +441,7 @@ public class CustomerController : MonoBehaviour
                 state = State.Leaving;
                 leavingTimer = 0f;
                 OnFinished?.Invoke(this, false);
-                MoveTo(CikisNoktasi());
+                CikisaYuru();
             }
         }
 
@@ -474,7 +487,7 @@ public class CustomerController : MonoBehaviour
                 state = State.Leaving;
                 leavingTimer = 0f;
                 OnFinished?.Invoke(this, false);
-                MoveTo(CikisNoktasi());
+                CikisaYuru();
             }
         }
 
@@ -636,14 +649,40 @@ public class CustomerController : MonoBehaviour
         state = State.Leaving;
         leavingTimer = 0f;
         OnFinished?.Invoke(this, false);
-        MoveTo(CikisNoktasi());
+        CikisaYuru();
     }
 
     /// <summary>Ayrilirken (satis/isyan/bahce zaman asimi) gidilecek gercek nokta — spawner'in
     /// verdigi kapiNoktasi varsa onu kullanir, yoksa eski sabit yedek degere duser.</summary>
     private Vector3 CikisNoktasi()
     {
-        return gecitNoktasi != null ? gecitNoktasi.position : (kapiNoktasi != null ? kapiNoktasi.position : new Vector3(0, -15, 0));
+        // kapiNoktasi bahçe tarafındaki başlangıç/sonlanma noktasıdır.
+        return kapiNoktasi != null ? kapiNoktasi.position : new Vector3(0, -15, 0);
+    }
+    private void CikisaYuru()
+    {
+        state = State.Leaving;
+        leavingTimer = 0f;
+        cikistaGecitGecildi = false;
+        if (gecitNoktasi != null) MoveThroughGate(gecitNoktasi.position);
+        else MoveTo(CikisNoktasi());
+    }
+    private void MoveThroughGate(Vector3 target)
+    {
+        if (agent != null)
+        {
+            agent.autoBraking = false;
+            agent.stoppingDistance = 0f;
+        }
+        MoveTo(target);
+    }
+    private void RestoreNormalBraking()
+    {
+        if (agent != null)
+        {
+            agent.autoBraking = true;
+            agent.stoppingDistance = 0.1f;
+        }
     }
 
     public void MoveTo(Vector3 hedef)
@@ -720,7 +759,7 @@ public class CustomerController : MonoBehaviour
         state = State.Leaving;
         leavingTimer = 0f;
 
-        MoveTo(CikisNoktasi()); // Gercek kapi noktasina yonelir
+        CikisaYuru(); // Önce geçit, ardından bahçe tarafındaki spawn/çıkış noktası
         DevLog.Info($"✅ [SATIŞ] {SecilenKimlik.musteriIsmi} ödemeyi yaptı ve mutlu ayrılıyor.");
     }
 
@@ -761,7 +800,7 @@ public class CustomerController : MonoBehaviour
             CarriedBook = null;
         }
 
-        MoveTo(CikisNoktasi());
+        CikisaYuru();
     }
 
     public void SetModdedTargetPosition(Vector3 position)
@@ -877,7 +916,7 @@ public class CustomerController : MonoBehaviour
                 {
                     Transform masa = BahceYoneticisi.Instance.MasaAyir(this);
                     if (masa != null) { bahceMasasi = masa; MoveTo(masa.position); }
-                    else { state = State.Leaving; MoveTo(CikisNoktasi()); }
+                    else { state = State.Leaving; CikisaYuru(); }
                 }
                 break;
 
@@ -896,7 +935,8 @@ public class CustomerController : MonoBehaviour
                 break;
 
             case State.Leaving:
-                MoveTo(CikisNoktasi());
+                if (gecitNoktasi != null && !cikistaGecitGecildi) MoveThroughGate(gecitNoktasi.position);
+                else MoveTo(CikisNoktasi());
                 break;
 
             default:

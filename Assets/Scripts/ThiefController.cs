@@ -22,6 +22,7 @@ public class ThiefController : NavMeshMover
     private ShelfController targetShelf;
     private Transform doorPoint;
     private Transform gecitNoktasi;
+    private bool cikistaGecitGecildi;
     private bool hasStolen;
 
     public void Initialize(Transform door, ShelfController shelf, Transform gate = null)
@@ -54,7 +55,8 @@ public class ThiefController : NavMeshMover
             }
         }
 
-        MoveTo(gecitNoktasi != null ? gecitNoktasi.position : targetShelf.ApproachPosition);
+        if (gecitNoktasi != null) MoveThroughGate(gecitNoktasi.position);
+        else MoveTo(targetShelf.ApproachPosition);
     }
 
     private void Update()
@@ -65,9 +67,9 @@ public class ThiefController : NavMeshMover
         if (state == State.Caught) return;
 
         // Gece basladiysa hirsiz kacar
-        if (GameManager.Instance.CurrentPhase != GamePhase.Day)
+        if (GameManager.Instance.CurrentPhase != GamePhase.Day && state != State.Fleeing)
         {
-            Escape();
+            StartFleeing();
             return;
         }
 
@@ -76,6 +78,7 @@ public class ThiefController : NavMeshMover
         if (state == State.GoingToGate)
         {
             state = State.GoingToShelf;
+            RestoreNormalBraking();
             MoveTo(targetShelf != null ? targetShelf.ApproachPosition : transform.position);
         }
         else if (state == State.GoingToShelf)
@@ -84,6 +87,16 @@ public class ThiefController : NavMeshMover
         }
         else if (state == State.Fleeing)
         {
+            if (gecitNoktasi != null && !cikistaGecitGecildi)
+            {
+                cikistaGecitGecildi = true;
+                RestoreNormalBraking();
+                if (doorPoint != null && Vector3.Distance(transform.position, doorPoint.position) > 0.15f)
+                {
+                    MoveTo(doorPoint.position);
+                    return;
+                }
+            }
             Escape();
         }
     }
@@ -101,18 +114,28 @@ public class ThiefController : NavMeshMover
             }
         }
 
-        state = State.Fleeing;
-
-        // Yakalanmaktan kacinmak icin kacis hizi normal yurume hizindan daha yuksek.
-        // defaultSpeed, NavMeshMover.Awake() icinde zaten agent.speed'e uygulanmisti;
-        // burada sadece kacis anindaki carpani uyguluyoruz.
-        SetSpeed(defaultSpeed * kacisHizCarpani);
-
-        if (gecitNoktasi != null) MoveTo(gecitNoktasi.position);
-        else if (doorPoint != null) MoveTo(doorPoint.position);
+        StartFleeing();
     }
 
-    /// <summary>Kapiya ulasti — kitap gitti.</summary>
+    private void StartFleeing()
+    {
+        if (state == State.Fleeing) return;
+        state = State.Fleeing;
+        cikistaGecitGecildi = false;
+        SetSpeed(defaultSpeed * kacisHizCarpani);
+        if (gecitNoktasi != null) MoveThroughGate(gecitNoktasi.position);
+        else if (doorPoint != null) MoveTo(doorPoint.position);
+    }
+    private void MoveThroughGate(Vector3 target)
+    {
+        if (agent != null) { agent.autoBraking = false; agent.stoppingDistance = 0f; }
+        MoveTo(target);
+    }
+    private void RestoreNormalBraking()
+    {
+        if (agent != null) { agent.autoBraking = true; agent.stoppingDistance = stoppingDistance; }
+    }
+    /// <summary>Bahçe tarafındaki çıkış noktasına ulaştı — kitap gitti.</summary>
     private void Escape()
     {
         if (hasStolen)

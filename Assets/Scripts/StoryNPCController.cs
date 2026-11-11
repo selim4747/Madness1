@@ -1,4 +1,4 @@
-// StoryNPCController.cs — Afor ve diger lore karakterleri
+﻿// StoryNPCController.cs — Afor ve diger lore karakterleri
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using System.Collections;
@@ -33,23 +33,15 @@ public class StoryNPCController : NavMeshMover
     private HikayeKonuguData konukData;    // hikaye konuguysa dolu (bahce kosesinde bekleyen)
     private Transform doorPoint;
     private Transform counterPoint;
+    private Transform gatewayPoint;
+    private bool enteringViaGate;
+    private bool leavingViaGate;
     private bool willBuy;
     private bool isFinale;
     private bool dialogueShown;
     private ShelfController targetShelf;
     private BookData carriedBook;
 
-    // GEÇİT IŞINLAMASI: haritada NavMesh'in aradan geçmediği iki dar bant (Y ekseni).
-    // NPC bu bantlardan birinin içine düşerse (yürüyerek geçemediği için), doğrudan
-    // bandın diğer tarafındaki güvenli Y konumuna ışınlanır — yol hesaplamaya calisilmaz.
-    // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
-    [SerializeField] private NavMeshPortalConfig portalConfig;
-    private float GECIT1_MIN_Y => portalConfig != null ? portalConfig.gecit1MinY : 44.9f;
-    private float GECIT1_MAX_Y => portalConfig != null ? portalConfig.gecit1MaxY : 45.1f;
-    private float GECIT1_HEDEF_Y => portalConfig != null ? portalConfig.gecit1HedefY : 41f;
-    private float GECIT2_MIN_Y => portalConfig != null ? portalConfig.gecit2MinY : 41.9f;
-    private float GECIT2_MAX_Y => portalConfig != null ? portalConfig.gecit2MaxY : 42.1f;
-    private float GECIT2_HEDEF_Y => portalConfig != null ? portalConfig.gecit2HedefY : 46f;
 
     public string NpcName { get { return npcName; } }
     public BookData CarriedBook { get { return carriedBook; } }
@@ -85,13 +77,16 @@ public class StoryNPCController : NavMeshMover
     }
 
     /// <summary>Ozel gun diyalogu (StoryDialogueData) — kamera bu NPC'ye odaklanir.</summary>
-    public void InitializeStory(StoryDialogueData data, Transform door, Transform counter, bool shouldBuy)
+    public void InitializeStory(StoryDialogueData data, Transform door, Transform counter, bool shouldBuy, Transform gate = null)
     {
         storyData = data;
         npcName = data.speakerName;
         dialogueLines = null;
         doorPoint = door;
         counterPoint = counter;
+        gatewayPoint = gate;
+        enteringViaGate = gate != null;
+        leavingViaGate = false;
         willBuy = shouldBuy;
         isFinale = data.isFinale;
         dialogueShown = false;
@@ -101,7 +96,8 @@ public class StoryNPCController : NavMeshMover
         UpdateFesGorseli();
 
         state = State.Entering;
-        MoveTo(counterPoint.position);
+        if (enteringViaGate) MoveThroughGate(gatewayPoint.position);
+        else MoveTo(counterPoint.position);
     }
 
     /// <summary>Sabit sohbet metniyle gunluk NPC (Afor'un her gunku ziyareti) — kamera odaklanmaz.</summary>
@@ -126,13 +122,16 @@ public class StoryNPCController : NavMeshMover
         state = State.WaitingAtCounter;
     }
 
-    public void InitializeDaily(string name, string[] lines, Transform door, Transform counter, bool shouldBuy)
+    public void InitializeDaily(string name, string[] lines, Transform door, Transform counter, bool shouldBuy, Transform gate = null)
     {
         storyData = null;
         npcName = name;
         dialogueLines = lines;
         doorPoint = door;
         counterPoint = counter;
+        gatewayPoint = gate;
+        enteringViaGate = gate != null;
+        leavingViaGate = false;
         willBuy = shouldBuy;
         isFinale = false;
         dialogueShown = false;
@@ -142,7 +141,8 @@ public class StoryNPCController : NavMeshMover
         UpdateFesGorseli();
 
         state = State.Entering;
-        MoveTo(counterPoint.position);
+        if (enteringViaGate) MoveThroughGate(gatewayPoint.position);
+        else MoveTo(counterPoint.position);
     }
 
     /// <summary>Fes 24. gunden sonra Afor'daysa, gorunumunu ona gore ayarlar.
@@ -169,52 +169,10 @@ public class StoryNPCController : NavMeshMover
         if (aforFesGorseli != null) aforFesGorseli.SetActive(fesOnda);
     }
 
-    /// <summary>Haritadaki iki dar geçit bandını (Y ekseni) her frame kontrol eder. NPC bu
-    /// bantların icindeyse (NavMesh aradan gecmedigi icin yurumesi imkansiz), bandin
-    /// karsi tarafindaki bilinen guvenli Y konumuna dogrudan isinlanir.</summary>
-    private void GecitIsinlamasiniKontrolEt()
-    {
-        if (agent == null || !agent.isOnNavMesh) return;
-
-        float mevcutY = transform.position.y;
-        float hedefY;
-
-        if (mevcutY >= GECIT1_MIN_Y && mevcutY <= GECIT1_MAX_Y)
-        {
-            hedefY = GECIT1_HEDEF_Y;
-        }
-        else if (mevcutY >= GECIT2_MIN_Y && mevcutY <= GECIT2_MAX_Y)
-        {
-            hedefY = GECIT2_HEDEF_Y;
-        }
-        else
-        {
-            return;
-        }
-
-        Vector3 istenenPozisyon = new Vector3(transform.position.x, hedefY, transform.position.z);
-        UnityEngine.AI.NavMeshHit hit;
-        if (UnityEngine.AI.NavMesh.SamplePosition(istenenPozisyon, out hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
-        {
-            agent.Warp(hit.position);
-        }
-        else
-        {
-            agent.Warp(istenenPozisyon);
-        }
-
-        // KRITIK: Warp() mevcut yolu SILER — hedefi tekrar vererek yola aninda devam ettir.
-        HedefiGeriYukle();
-
-        DevLog.Info($"⚡ [IŞINLAMA] {npcName} geçit ({mevcutY:F2}) bandından Y={hedefY} konumuna ışınlandı.");
-    }
-
     private void Update()
     {
         IsinlanmaSayaciniAzalt();
 
-        // GEÇİT IŞINLAMASI: her frame en once bu kontrol edilir.
-        GecitIsinlamasiniKontrolEt();
 
         // Yon (flipX) ve animasyon — bos ise dokunmadan gecer.
         if (bodyRenderer != null && Mathf.Abs(CurrentVelocity.x) > 0.05f)
@@ -248,8 +206,13 @@ public class StoryNPCController : NavMeshMover
         switch (state)
         {
             case State.Entering:
-                // Artik kasaya varinca diyalog OTOMATIK acilmiyor — oyuncu yaklasana kadar bekliyor.
-                state = State.WaitingAtCounter;
+                if (enteringViaGate)
+                {
+                    enteringViaGate = false;
+                    RestoreNormalBraking();
+                    MoveTo(counterPoint.position);
+                }
+                else state = State.WaitingAtCounter;
                 break;
 
             case State.GoingToShelf:
@@ -267,6 +230,16 @@ public class StoryNPCController : NavMeshMover
                 break;
 
             case State.Leaving:
+                if (gatewayPoint != null && !leavingViaGate)
+                {
+                    leavingViaGate = true;
+                    RestoreNormalBraking();
+                    if (doorPoint != null && Vector3.Distance(transform.position, doorPoint.position) > 0.15f)
+                    {
+                        MoveTo(doorPoint.position);
+                        break;
+                    }
+                }
                 Destroy(gameObject);
                 break;
         }
@@ -484,11 +457,22 @@ public class StoryNPCController : NavMeshMover
         GoToGardenOrLeave();
     }
 
+    private void MoveThroughGate(Vector3 target)
+    {
+        if (agent != null) { agent.autoBraking = false; agent.stoppingDistance = 0f; }
+        MoveTo(target);
+    }
+    private void RestoreNormalBraking()
+    {
+        if (agent != null) { agent.autoBraking = true; agent.stoppingDistance = stoppingDistance; }
+    }
     private void LeaveNow()
     {
         state = State.Leaving;
+        leavingViaGate = false;
         if (talkIcon != null) talkIcon.SetActive(false);
-        if (doorPoint != null) MoveTo(doorPoint.position);
+        if (gatewayPoint != null) MoveThroughGate(gatewayPoint.position);
+        else if (doorPoint != null) MoveTo(doorPoint.position);
 
         // Bahce masasindaysa (gun sonu zorla ayrilma gibi durumlarda), masayi geri birak —
         // yoksa Afor bir daha asla bahceye oturamaz (masasi ebediyen "dolu" gorunur).
