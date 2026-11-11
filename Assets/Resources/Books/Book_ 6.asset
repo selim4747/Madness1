@@ -20,4 +20,6 @@ MonoBehaviour:
   shopNumber: 7
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "\xD6nceki K\xFCt\xFCphanecinin a\u015F\u0131k oldu\u011Fu k\u0131z
-    taraf\u0131ndan yaz\u0131ld\u0131. Tar\u0131n\u0131n neden b\xF6yle"
+    taraf\u0131ndan yaz\u0131ld\u0131. Tar\u0131n\u0131n delirme nedenlerini ele
+    ald\u0131\u011F\u0131 bir kitap. B\xFCt\xFCn kazanc\u0131 \xF6\u011Frenci bursu
+    olarak ba\u011F\u0131\u015Flanmaktad\u0131r."

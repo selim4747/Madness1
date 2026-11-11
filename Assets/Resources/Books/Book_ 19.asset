@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Book_ 19
   m_EditorClassIdentifier: Assembly-CSharp::BookData
   bookId: shop1_book20
-  kitapAdi: "\u0130simsiz Kitap"
-  kitapTuru: 0
+  kitapAdi: "Zamans\u0131z kovulma"
+  kitapTuru: 4
   nadirlik: 0
   fiyat: 14
   shopNumber: 1
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
-  loreBilgisi: "Bu kitab\u0131n hikayesi hen\xFCz yaz\u0131lmad\u0131..."
+  loreBilgisi: "Bir zaman polisinin biriyle dost olup onun zaman \xE7izgisini de\u011Fi\u015Ftirmesine
+    g\xF6z yummas\u0131n\u0131n hikayesi"

@@ -32765,6 +32765,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 421619071463009785, guid: 34460963316b94e3abe9cdf741a5f921, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3229387356264188642, guid: 34460963316b94e3abe9cdf741a5f921, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5921290617905273793, guid: 34460963316b94e3abe9cdf741a5f921, type: 3}
       propertyPath: m_Name
       value: Raf

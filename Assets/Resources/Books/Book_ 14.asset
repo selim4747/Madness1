@@ -19,4 +19,5 @@ MonoBehaviour:
   fiyat: 100
   shopNumber: 1
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
-  loreBilgisi: "Bu kitab\u0131n hikayesi hen\xFCz yaz\u0131lmad\u0131..."
+  loreBilgisi: "Kendini klonlay\u0131p \xF6l\xFCmden ka\xE7mak i\xE7in klonlar\u0131n\u0131
+    kullanan bir adam\u0131n hkayesi"
