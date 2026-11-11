@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Book_
   m_EditorClassIdentifier: Assembly-CSharp::BookData
   bookId: shop1_book01
-  kitapAdi: "Bleroda iki a\u015F\u0131k"
+  kitapAdi: "Buzlarda iki a\u015F\u0131k"
   kitapTuru: 0
   nadirlik: 0
   fiyat: 15
   shopNumber: 1
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
-  loreBilgisi: "Bir a\u015Fk hikayesi"
+  loreBilgisi: "Buz okyanusunun dibinde bir a\u015Fk hikayesi"

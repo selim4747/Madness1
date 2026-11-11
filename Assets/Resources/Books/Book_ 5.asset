@@ -17,6 +17,6 @@ MonoBehaviour:
   kitapTuru: 3
   nadirlik: 0
   fiyat: 17
-  shopNumber: 1
+  shopNumber: 6
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
-  loreBilgisi: "OyunBozan\u0131n baz\u0131 vukuatlar\u0131"
+  loreBilgisi: "\xDCnl\xFC seri katil OyunBozan\u0131n baz\u0131 vukuatlar\u0131"

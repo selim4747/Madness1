@@ -17,7 +17,7 @@ MonoBehaviour:
   kitapTuru: 6
   nadirlik: 0
   fiyat: 10
-  shopNumber: 1
+  shopNumber: 7
   bookCover: {fileID: 8623426918726067336, guid: 76de2aa07454d76479b7bfda3c3b426a, type: 3}
   loreBilgisi: "\xD6nceki K\xFCt\xFCphanecinin a\u015F\u0131k oldu\u011Fu k\u0131z
-    taraf\u0131ndan yaz\u0131ld\u0131\n"
+    taraf\u0131ndan yaz\u0131ld\u0131. Tar\u0131n\u0131n neden b\xF6yle"
