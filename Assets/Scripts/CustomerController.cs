@@ -51,7 +51,7 @@ public class CustomerController : MonoBehaviour
     private BookData targetOzelKitap; // OzelRafController'dan hedeflenen kitap (targetShelf yerine)
 
     // Müşterinin o anki ruh hali ve eylemi
-    private enum State { Spawning, GoingToShelf, WaitingAtShelf, GoingToCounter, WaitingAtCounter, GoingToGarden, SittingInGarden, GoingToStudyDesk, StudyingAtDesk, Leaving }
+    private enum State { Spawning, GoingToShelf, WaitingAtShelf, GoingToCounter, WaitingAtCounter, GoingToGarden, SittingInGarden, GoingToStudyDesk, StudyingAtDesk, Leaving, GoingToGate }
     private State state = State.Spawning;
 
     private Transform bahceMasasi;
@@ -70,7 +70,8 @@ public class CustomerController : MonoBehaviour
     private Transform calismaMasasi;
     private float calismaTimer = 0f;
 
-    private Transform kapiNoktasi; // spawner'in Baslat()'a gonderdigi gercek kapi/spawn noktasi
+    private Transform kapiNoktasi; // ayrilirken kullanilan cikis/spawn noktasi
+    private Transform gecitNoktasi; // NPC'lerin ilk durak olarak yurudugu ortak kapi noktasi
 
     private float waitTimer = 0f;
     public float maxWaitTime = 5f; // Rafta inceleme süresi
@@ -215,17 +216,22 @@ public class CustomerController : MonoBehaviour
         }
     }
 
-    public void Baslat(object param1 = null, object param2 = null, object param3 = null, object param4 = null, object param5 = null)
+    public void Baslat(object param1 = null, object param2 = null, object param3 = null, object param4 = null, object param5 = null, object param6 = null)
     {
-        // Spawner'in gonderdigi gercek kapi/spawn noktasini sakla — ayrilirken (satis/isyan/
-        // bahce zaman asimi) buraya donecek, sabit/hayali bir koordinata degil.
+        // Cikis/spawn noktasi ile giris icindeki ortak gecit noktasi ayri tutulur.
         kapiNoktasi = param1 as Transform;
+        gecitNoktasi = param6 as Transform;
 
-        // ONEMLI: Bahce sansi ARTIK BURADA denenmiyor — musteri once MUTLAKA bir rafa
-        // gidip gelmeli (kitap alsin almasin farketmez), bahce zari HandleArrivedAtShelf()
-        // icinde, raf ziyaretinden SONRA atiliyor. Boylece kimse "masaya gidip gelmeden"
-        // dogrudan bahceye gitmiyor.
-        RafAraVeyaKasayaGit();
+        // NPC once ortak gecit noktasina yurur; varinca raf/kasa hedefi belirlenir.
+        if (gecitNoktasi != null)
+        {
+            state = State.GoingToGate;
+            MoveTo(gecitNoktasi.position);
+        }
+        else
+        {
+            RafAraVeyaKasayaGit();
+        }
     }
 
     private void RafAraVeyaKasayaGit()
@@ -311,7 +317,6 @@ public class CustomerController : MonoBehaviour
         if (agent == null || !agent.isActiveAndEnabled || agent.pathPending) return;
 
         // GEÇİT IŞINLAMASI: yol hesaplaması beklemeden, her frame önce bu kontrol edilir.
-        GecitIsinlamasiniKontrolEt();
 
         // Yon (flipX) ve animasyon — Animator/bodyRenderer bos ise dokunmadan gecer, hata vermez.
         if (bodyRenderer != null && Mathf.Abs(agent.velocity.x) > 0.05f)
@@ -323,7 +328,12 @@ public class CustomerController : MonoBehaviour
         // KUSURSUZ VARIŞ SENSÖRÜ
         if (HedefeVardiMi())
         {
-            if (state == State.GoingToShelf)
+            if (state == State.GoingToGate)
+            {
+                state = State.Spawning;
+                RafAraVeyaKasayaGit();
+            }
+            else if (state == State.GoingToShelf)
             {
                 state = State.WaitingAtShelf;
                 waitTimer = 0f;
@@ -896,6 +906,10 @@ public class CustomerController : MonoBehaviour
     {
         switch (state)
         {
+            case State.GoingToGate:
+                if (gecitNoktasi != null) MoveTo(gecitNoktasi.position);
+                else RafAraVeyaKasayaGit();
+                break;
             case State.GoingToShelf:
             case State.WaitingAtShelf:
                 // Hedef raf bilgisi kaydedilmedigi icin en uygun rafi yeniden bulur

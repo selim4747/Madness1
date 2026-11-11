@@ -25,6 +25,7 @@ public class CustomerSpawner : MonoBehaviour
 
     [Header("Noktalar")]
     public Transform kapiNoktasi;
+    public Transform gecitNoktasi; // ortak hedef: tum musteriler once buraya yurur
     public Transform kasaNoktasi;
     public List<Transform> raflar = new List<Transform>();
 
@@ -132,7 +133,7 @@ public class CustomerSpawner : MonoBehaviour
 
         if (controller != null)
         {
-            controller.Baslat(kapiNoktasi, kasaNoktasi, secilenRaf, this, secilenData);
+            controller.Baslat(kapiNoktasi, kasaNoktasi, secilenRaf, this, secilenData, gecitNoktasi);
             controller.SetModdedTargetPosition(spawnContext.TargetPosition);
             aktifMusteriler.Add(controller);
         }
