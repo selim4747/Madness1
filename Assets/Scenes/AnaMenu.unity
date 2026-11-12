@@ -361,7 +361,7 @@ MonoBehaviour:
   listPadding:
     m_Left: 20
     m_Right: 20
-    m_Top: -250
+    m_Top: -360
     m_Bottom: 20
   listSpacing: 10
   rowHeight: 88
