@@ -267,7 +267,6 @@ GameObject:
   - component: {fileID: 100554849}
   - component: {fileID: 100554852}
   - component: {fileID: 100554851}
-  - component: {fileID: 100554850}
   - component: {fileID: 100554853}
   m_Layer: 5
   m_Name: Panel
@@ -297,38 +296,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 700, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &100554850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100554848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21dac85a9e394be1b476490939369f0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Madness.Mods.BuiltInModSelectionUI
-  listRoot: {fileID: 888966082}
-  statusText: {fileID: 0}
-  statusTextTMP: {fileID: 62944958}
-  overrideRect: 1
-  panelSize: {x: 560, y: 640}
-  panelPosition: {x: 0, y: 0}
-  overridePanelColor: 0
-  panelImage: {fileID: 0}
-  panelColor: {r: 0.2746084, g: 0.33243504, b: 0.4811321, a: 0.98}
-  autoLayout: 1
-  paddingLeft: 28
-  paddingRight: 28
-  paddingTop: 90
-  paddingBottom: 28
-  rowSpacing: 14
-  rowHeight: 72
-  rowOnColor: {r: 0.16, g: 0.55, b: 0.3, a: 1}
-  rowOffColor: {r: 0.3, g: 0.32, b: 0.38, a: 1}
-  rowTextColor: {r: 1, g: 1, b: 1, a: 1}
-  rowFontSize: 28
 --- !u!114 &100554851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2744,10 +2711,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 100554849}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &888966083
 MonoBehaviour:
