@@ -353,15 +353,15 @@ MonoBehaviour:
   panelImage: {fileID: 100554851}
   allowRuntimeBuild: 1
   includeBuiltIn: 1
-  configurePanelRect: 0
-  panelSize: {x: 700, y: 800}
+  configurePanelRect: 1
+  panelSize: {x: 800, y: 900}
   panelPosition: {x: 0, y: 0}
   createScrollRectWhenMissing: 1
   keepGeneratedContentUnderHierarchyPanel: 1
   listPadding:
     m_Left: 20
     m_Right: 20
-    m_Top: 20
+    m_Top: -250
     m_Bottom: 20
   listSpacing: 8
   rowHeight: 88
@@ -377,7 +377,7 @@ MonoBehaviour:
   accentColor: {r: 0.25, g: 0.8, b: 0.4, a: 1}
   titleFontSize: 18
   bodyFontSize: 14
-  detailFontSize: 13
+  detailFontSize: 14
   buttonFontSize: 14
 --- !u!1 &140340808
 GameObject:

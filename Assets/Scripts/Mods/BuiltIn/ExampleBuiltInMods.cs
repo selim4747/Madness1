@@ -15,7 +15,6 @@ namespace MadnessExampleMods
             TryRegister("harder_nights", "Harder Nights", "1.0.0", () => new HarderNightsMod());
             TryRegister("my_csharp_mod", "My C# Mod", "1.0.0", () => new MyCSharpMod());
             TryRegister("full_power_example", "Full Power Example", "1.0.0", () => new FullPowerExampleMod());
-            TryRegister("night_anomalies", "Night Anomalies: Elites, Oaths & Shockwave", "0.1.0", () => new NightAnomaliesMod());
         }
 
         // Bir kaydın hatası diğerlerini ve oyunu etkilemez.
