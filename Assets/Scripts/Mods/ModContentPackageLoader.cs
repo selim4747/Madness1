@@ -96,6 +96,7 @@ namespace Madness.Mods
                     }
                     else
                     {
+                        if (ctx.Lines == null) ctx.Lines = new List<DialogueLine>();
                         ctx.Lines.AddRange(ConvertLines(patch.lines));
                     }
                     if (!string.IsNullOrWhiteSpace(patch.speakerName)) ctx.SpeakerName = patch.speakerName;
