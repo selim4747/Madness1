@@ -52,9 +52,9 @@ namespace Madness.Store
         private void Start()
         {
             // Kat ve portal objeleri servis objesinden sonra etkinleşmiş olabilir.
-            StoreFloor[] sceneFloors = FindObjectsByType<StoreFloor>(FindObjectsSortMode.None);
+            StoreFloor[] sceneFloors = FindObjectsByType<StoreFloor>();
             for (int i = 0; i < sceneFloors.Length; i++) RegisterFloor(sceneFloors[i]);
-            StoreFloorPortal[] scenePortals = FindObjectsByType<StoreFloorPortal>(FindObjectsSortMode.None);
+            StoreFloorPortal[] scenePortals = FindObjectsByType<StoreFloorPortal>();
             for (int i = 0; i < scenePortals.Length; i++) RegisterPortal(scenePortals[i]);
             ValidateInfrastructure(true);
         }
