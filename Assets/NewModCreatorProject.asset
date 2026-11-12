@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: NewModCreatorProject
+  m_EditorClassIdentifier: Assembly-CSharp:Madness.Mods:ModCreatorProject
+  id: my_mod
+  displayName: Yeni Mod
+  description: 
+  version: 1.0.0
+  author: 
+  loadOrder: 0
+  enabledByDefault: 1
+  totalConversion: 0
+  mainScene: {fileID: 0}
+  dllPath: 
+  settings: []
+  assets: []
+  dialogues: []
+  scenes: []
