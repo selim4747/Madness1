@@ -363,7 +363,7 @@ MonoBehaviour:
     m_Right: 20
     m_Top: -250
     m_Bottom: 20
-  listSpacing: 8
+  listSpacing: 10
   rowHeight: 88
   rowPadding: 10
   settingHeight: 30
