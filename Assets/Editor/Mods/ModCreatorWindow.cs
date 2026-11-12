@@ -19,6 +19,8 @@ namespace Madness.Mods.Editor
         private ModCreatorProject project;
         private Vector2 scroll;
         private string lastResult = "";
+        private int activeTab;
+        private string searchText = "";
 
         [MenuItem("Madness/Mod Creator", priority = 20)]
         public static void Open()
@@ -48,14 +50,54 @@ namespace Madness.Mods.Editor
                 return;
             }
 
+            DrawProjectSummary();
+            DrawToolbar();
             scroll = EditorGUILayout.BeginScrollView(scroll);
-            DrawIdentity();
-            DrawSettings();
-            DrawAssets();
-            DrawDialogues();
-            DrawScenes();
-            DrawBuildActions();
+            switch (activeTab)
+            {
+                case 0: DrawIdentity(); break;
+                case 1: DrawSettings(); break;
+                case 2: DrawAssets(); break;
+                case 3: DrawDialogues(); break;
+                case 4: DrawScenes(); break;
+                default: DrawBuildActions(); break;
+            }
             EditorGUILayout.EndScrollView();
+        }
+
+        private void DrawProjectSummary()
+        {
+            int assetCount = project.assets == null ? 0 : project.assets.Count;
+            int dialogueCount = project.dialogues == null ? 0 : project.dialogues.Count;
+            int sceneCount = project.scenes == null ? 0 : project.scenes.Count;
+            int settingCount = project.settings == null ? 0 : project.settings.Count;
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.LabelField(string.IsNullOrWhiteSpace(project.displayName) ? "Yeni Mod" : project.displayName, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ID: " + (string.IsNullOrWhiteSpace(project.id) ? "(belirlenmedi)" : project.id));
+            EditorGUILayout.LabelField("İçerik: " + assetCount + "  |  Ayar: " + settingCount + "  |  Diyalog: " + dialogueCount + "  |  Sahne: " + sceneCount);
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawToolbar()
+        {
+            string[] tabs = { "Kimlik", "Ayarlar", "İçerikler", "Diyaloglar", "Sahneler", "Paketle" };
+            activeTab = GUILayout.Toolbar(activeTab, tabs);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Filtre", GUILayout.Width(42));
+            searchText = EditorGUILayout.TextField(searchText, GUI.skin.FindStyle("ToolbarSeachTextField") ?? EditorStyles.textField);
+            if (GUILayout.Button("Temizle", GUILayout.Width(55))) searchText = "";
+            EditorGUILayout.EndHorizontal();
+            if (!string.IsNullOrWhiteSpace(searchText))
+                EditorGUILayout.HelpBox("Filtre yalnızca içerik, ayar ve diyalog listelerinde kullanılır.", MessageType.None);
+        }
+
+        private bool MatchesSearch(params string[] values)
+        {
+            if (string.IsNullOrWhiteSpace(searchText)) return true;
+            string query = searchText.Trim();
+            for (int i = 0; i < values.Length; i++)
+                if (!string.IsNullOrEmpty(values[i]) && values[i].IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            return false;
         }
 
         private void DrawIdentity()
@@ -88,11 +130,13 @@ namespace Madness.Mods.Editor
         {
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("2. Mod paneli ayarları", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Anahtar kod tarafındaki addır; etiket oyuncunun gördüğü addır. Burada tanımlanan ayarlar oyun içindeki mod panelinde görünür.", MessageType.Info);
             if (project.settings == null) project.settings = new List<ModSettingDefinition>();
             for (int i = 0; i < project.settings.Count; i++)
             {
                 ModSettingDefinition setting = project.settings[i];
                 if (setting == null) { project.settings[i] = new ModSettingDefinition(); setting = project.settings[i]; }
+                if (!MatchesSearch(setting.key, setting.label, setting.type)) continue;
                 EditorGUILayout.BeginVertical("box");
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Ayar " + (i + 1), EditorStyles.boldLabel);
@@ -100,13 +144,17 @@ namespace Madness.Mods.Editor
                 EditorGUILayout.EndHorizontal();
                 setting.key = EditorGUILayout.TextField("Anahtar", setting.key);
                 setting.label = EditorGUILayout.TextField("Panel etiketi", setting.label);
-                setting.type = EditorGUILayout.TextField("Tip (bool/int/float/string/dropdown)", setting.type);
+                string[] settingTypes = { "bool", "int", "float", "string", "dropdown" };
+                int typeIndex = Array.IndexOf(settingTypes, setting.type);
+                if (typeIndex < 0) typeIndex = 2;
+                setting.type = settingTypes[EditorGUILayout.Popup("Tip", typeIndex, settingTypes)];
                 setting.defaultValue = EditorGUILayout.TextField("Varsayılan", setting.defaultValue);
                 if (setting.type == "int" || setting.type == "float")
                 {
                     setting.min = EditorGUILayout.FloatField("Minimum", setting.min);
                     setting.max = EditorGUILayout.FloatField("Maksimum", setting.max);
                 }
+                if (setting.type == "dropdown") DrawDropdownOptions(setting);
                 setting.restartRequired = EditorGUILayout.Toggle("Yeniden başlatma gerekli", setting.restartRequired);
                 EditorGUILayout.EndVertical();
             }
@@ -114,15 +162,32 @@ namespace Madness.Mods.Editor
             MarkDirty();
         }
 
+        private void DrawDropdownOptions(ModSettingDefinition setting)
+        {
+            if (setting.options == null) setting.options = new List<string>();
+            EditorGUILayout.LabelField("Seçenekler", EditorStyles.miniBoldLabel);
+            for (int i = 0; i < setting.options.Count; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                setting.options[i] = EditorGUILayout.TextField("Seçenek " + (i + 1), setting.options[i]);
+                if (GUILayout.Button("Sil", GUILayout.Width(45))) { setting.options.RemoveAt(i); i--; }
+                EditorGUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("Dropdown seçeneği ekle")) setting.options.Add("newOption");
+        }
+
         private void DrawAssets()
         {
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("3. Asset / görünüm / yeni içerik", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Kaynak asset, pakete koyacağınız yeni dosyadır. Hedef ID boşsa yeni içerik eklenir; hedef ID doluysa mevcut içerik o asset ile değiştirilir.", MessageType.Info);
             if (project.assets == null) project.assets = new List<ModCreatorAssetEntry>();
             for (int i = 0; i < project.assets.Count; i++)
             {
                 ModCreatorAssetEntry entry = project.assets[i];
                 if (entry == null) { project.assets[i] = new ModCreatorAssetEntry(); entry = project.assets[i]; }
+                string assetPath = entry.asset == null ? "" : AssetDatabase.GetAssetPath(entry.asset);
+                if (!MatchesSearch(entry.id, entry.replaceId, entry.kind.ToString(), assetPath)) continue;
                 EditorGUILayout.BeginVertical("box");
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("İçerik " + (i + 1), EditorStyles.boldLabel);
@@ -131,8 +196,9 @@ namespace Madness.Mods.Editor
                 entry.id = EditorGUILayout.TextField("İçerik ID", entry.id);
                 entry.asset = EditorGUILayout.ObjectField("Asset", entry.asset, typeof(UnityEngine.Object), false);
                 entry.kind = (ModCreatorAssetKind)EditorGUILayout.EnumPopup("Tür", entry.kind);
-                entry.replaceId = EditorGUILayout.TextField("Değiştirilecek ID (opsiyonel)", entry.replaceId);
-                EditorGUILayout.HelpBox(string.IsNullOrWhiteSpace(entry.replaceId) ? "Yeni içerik olarak eklenir. Mod kodu ModAPI.GetModContent<T>(ID) ile alabilir." : "Mevcut içerik ID'sinin yerine geçer.", MessageType.None);
+                if (entry.asset != null) EditorGUILayout.LabelField("Kaynak yolu", assetPath);
+                entry.replaceId = EditorGUILayout.TextField("Hedef / değiştirilecek ID", entry.replaceId);
+                EditorGUILayout.HelpBox(string.IsNullOrWhiteSpace(entry.replaceId) ? "İŞLEM: Yeni içerik ekle\nKULLANIM: ModAPI.GetModContent<T>(ID) veya registry üzerinden alınır." : "İŞLEM: Mevcut içeriği değiştir\nHEDEF: " + entry.replaceId, MessageType.None);
                 EditorGUILayout.EndVertical();
             }
             if (GUILayout.Button("Asset ekle")) project.assets.Add(new ModCreatorAssetEntry());
@@ -143,17 +209,20 @@ namespace Madness.Mods.Editor
         {
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("4. Diyalog değişiklikleri", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("Event ID, değiştirmek istediğiniz diyalog olayının hedefidir. Satırları değiştir seçiliyse eski satırlar silinir; değilse yeni satırlar sona eklenir.", MessageType.Info);
             if (project.dialogues == null) project.dialogues = new List<ModCreatorDialogueEntry>();
             for (int i = 0; i < project.dialogues.Count; i++)
             {
                 ModCreatorDialogueEntry entry = project.dialogues[i];
                 if (entry == null) { project.dialogues[i] = new ModCreatorDialogueEntry(); entry = project.dialogues[i]; }
+                if (!MatchesSearch(entry.eventId, entry.speakerName)) continue;
                 EditorGUILayout.BeginVertical("box");
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Diyalog " + (i + 1), EditorStyles.boldLabel);
                 if (GUILayout.Button("Sil", GUILayout.Width(45))) { project.dialogues.RemoveAt(i); i--; EditorGUILayout.EndHorizontal(); EditorGUILayout.EndVertical(); continue; }
                 EditorGUILayout.EndHorizontal();
                 entry.eventId = EditorGUILayout.TextField("Event ID", entry.eventId);
+                EditorGUILayout.LabelField("Hedef olay", string.IsNullOrWhiteSpace(entry.eventId) ? "(belirlenmedi)" : entry.eventId);
                 entry.speakerName = EditorGUILayout.TextField("Konuşmacı override", entry.speakerName);
                 entry.replaceAllLines = EditorGUILayout.Toggle("Mevcut satırları değiştir", entry.replaceAllLines);
                 if (entry.lines == null) entry.lines = new List<ModCreatorDialogueLine>();
@@ -338,6 +407,21 @@ namespace Madness.Mods.Editor
                 if (item == null || item.asset == null) return "Asset listesinde boş asset var.";
                 if (string.IsNullOrWhiteSpace(item.id) || !ids.Add(item.id)) return "Asset ID boş veya tekrar ediyor: " + (item == null ? "null" : item.id);
             }
+            if (project.settings == null) project.settings = new List<ModSettingDefinition>();
+            HashSet<string> settingKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (ModSettingDefinition setting in project.settings)
+            {
+                if (setting == null || string.IsNullOrWhiteSpace(setting.key)) return "Ayar anahtarı boş bırakılamaz.";
+                if (!settingKeys.Add(setting.key)) return "Ayar anahtarı tekrar ediyor: " + setting.key;
+                if (setting.type == "dropdown" && (setting.options == null || setting.options.Count == 0)) return "Dropdown ayarında en az bir seçenek olmalı: " + setting.key;
+                if ((setting.type == "int" || setting.type == "float") && setting.min > setting.max) return "Ayar minimumu maksimumdan büyük olamaz: " + setting.key;
+                if ((setting.type == "int" || setting.type == "float") && !float.TryParse(setting.defaultValue, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out _))
+                    return "Sayısal ayarın varsayılan değeri geçersiz: " + setting.key;
+            }
+            if (project.dialogues == null) project.dialogues = new List<ModCreatorDialogueEntry>();
+            foreach (ModCreatorDialogueEntry dialogue in project.dialogues)
+                if (dialogue == null || string.IsNullOrWhiteSpace(dialogue.eventId)) return "Diyalog Event ID boş bırakılamaz.";
+            if (project.scenes == null) project.scenes = new List<ModCreatorSceneEntry>();
             if (!string.IsNullOrEmpty(project.dllPath) && !File.Exists(project.dllPath)) return "DLL dosyası bulunamadı: " + project.dllPath;
             if (project.totalConversion && project.mainScene == null) return "Total conversion için ana sahne seçin.";
             return null;
