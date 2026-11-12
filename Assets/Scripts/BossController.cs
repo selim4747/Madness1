@@ -47,9 +47,11 @@ public class BossController : NavMeshMover
     public void SpawnBoss(int day)
     {
         currentDay = day;
-        maxHealth = data.GetHealthForDay(day);
+        BossSpawnContext spawnContext = ModEventBus.Publish(new BossSpawnContext { Day = day });
+        if (spawnContext.Cancelled) return;
+        maxHealth = data.GetHealthForDay(day) * Mathf.Max(0f, spawnContext.HealthMultiplier);
         currentHealth = maxHealth;
-        currentDamage = data.GetDamageForDay(day);
+        currentDamage = data.GetDamageForDay(day) * Mathf.Max(0f, spawnContext.DamageMultiplier);
 
         CurrentPhase = 1;
         IsBossActive = true;

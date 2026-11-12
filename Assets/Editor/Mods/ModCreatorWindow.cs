@@ -132,6 +132,7 @@ namespace Madness.Mods.Editor
             EditorGUILayout.LabelField("2. Mod paneli ayarları", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("Anahtar kod tarafındaki addır; etiket oyuncunun gördüğü addır. Burada tanımlanan ayarlar oyun içindeki mod panelinde görünür.", MessageType.Info);
             if (project.settings == null) project.settings = new List<ModSettingDefinition>();
+            if (GUILayout.Button("Hazır gameplay ayarlarını ekle")) AddGameplayPresetSettings();
             for (int i = 0; i < project.settings.Count; i++)
             {
                 ModSettingDefinition setting = project.settings[i];
@@ -160,6 +161,33 @@ namespace Madness.Mods.Editor
             }
             if (GUILayout.Button("Ayar ekle")) project.settings.Add(new ModSettingDefinition { key = "newSetting", label = "Yeni ayar", type = "float", defaultValue = "1" });
             MarkDirty();
+        }
+
+        private void AddGameplayPresetSettings()
+        {
+            AddSettingIfMissing("nightPoolMultiplier", "Gece düşman sayısı çarpanı", "float", "1", 0f, 10f);
+            AddSettingIfMissing("spawnIntervalMultiplier", "Düşman doğma aralığı çarpanı", "float", "1", 0.05f, 10f);
+            AddSettingIfMissing("goldGainMultiplier", "Kazanç çarpanı", "float", "1", 0f, 100f);
+            AddSettingIfMissing("goldSpendMultiplier", "Harcama çarpanı", "float", "1", 0f, 100f);
+            AddSettingIfMissing("playerDamageTakenMultiplier", "Oyuncu hasar çarpanı", "float", "1", 0f, 10f);
+            AddSettingIfMissing("enemyDamageTakenMultiplier", "Düşman hasar alma çarpanı", "float", "1", 0f, 10f);
+            AddSettingIfMissing("enemyHealthMultiplier", "Düşman can çarpanı", "float", "1", 0f, 100f);
+            AddSettingIfMissing("enemyDamageMultiplier", "Düşman hasar verme çarpanı", "float", "1", 0f, 100f);
+            AddSettingIfMissing("bossHealthMultiplier", "Boss can çarpanı", "float", "1", 0f, 100f);
+            AddSettingIfMissing("bossDamageMultiplier", "Boss hasar çarpanı", "float", "1", 0f, 100f);
+            AddSettingIfMissing("dayDurationMultiplier", "Gün süresi çarpanı", "float", "1", 0.05f, 10f);
+            AddSettingIfMissing("disableEnemySpawns", "Düşman doğmasını kaldır", "bool", "false", 0f, 1f);
+            AddSettingIfMissing("disableCustomerSpawns", "Müşteri doğmasını kaldır", "bool", "false", 0f, 1f);
+            AddSettingIfMissing("disableSales", "Satışları kaldır", "bool", "false", 0f, 1f);
+            AddSettingIfMissing("disableWorldLoads", "Dünya/sahne yüklemelerini kaldır", "bool", "false", 0f, 1f);
+            MarkDirty();
+        }
+
+        private void AddSettingIfMissing(string key, string label, string type, string defaultValue, float min, float max)
+        {
+            for (int i = 0; i < project.settings.Count; i++)
+                if (project.settings[i] != null && string.Equals(project.settings[i].key, key, StringComparison.OrdinalIgnoreCase)) return;
+            project.settings.Add(new ModSettingDefinition { key = key, label = label, type = type, defaultValue = defaultValue, min = min, max = max, restartRequired = true });
         }
 
         private void DrawDropdownOptions(ModSettingDefinition setting)

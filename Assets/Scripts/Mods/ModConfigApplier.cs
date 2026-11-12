@@ -23,7 +23,13 @@ namespace Madness.Mods
             public float enemyDamageTakenMultiplier = 1f;
             public float enemyHealthMultiplier = 1f;
             public float enemyDamageMultiplier = 1f;
+            public float bossHealthMultiplier = 1f;
+            public float bossDamageMultiplier = 1f;
             public float dayDurationMultiplier = 1f;
+            public bool disableEnemySpawns = false;
+            public bool disableCustomerSpawns = false;
+            public bool disableSales = false;
+            public bool disableWorldLoads = false;
         }
 
         public static void ApplyAll(ModRuntime runtime)
@@ -36,10 +42,13 @@ namespace Madness.Mods
                 if (!manifest.enabled) continue;
                 if (!string.IsNullOrEmpty(runtime.GetDependencyError(manifest))) continue;
                 string path = Path.Combine(runtime.ModsDirectory, manifest.id, "config.json");
-                if (!File.Exists(path)) continue;
+                bool hasManifestSettings = manifest.settings != null && manifest.settings.Count > 0;
+                if (!File.Exists(path) && !hasManifestSettings) continue;
                 try
                 {
-                    SimpleConfig cfg = JsonUtility.FromJson<SimpleConfig>(File.ReadAllText(path));
+                    SimpleConfig cfg = File.Exists(path)
+                        ? JsonUtility.FromJson<SimpleConfig>(File.ReadAllText(path))
+                        : new SimpleConfig();
                     if (cfg == null) continue;
                     ApplySavedSettings(manifest.id, cfg);
                     string configOwner = manifest.id + "__config";
@@ -64,7 +73,13 @@ namespace Madness.Mods
             cfg.enemyDamageTakenMultiplier = ModSettingsStore.GetFloat(modId, "enemyDamageTakenMultiplier", cfg.enemyDamageTakenMultiplier);
             cfg.enemyHealthMultiplier = ModSettingsStore.GetFloat(modId, "enemyHealthMultiplier", cfg.enemyHealthMultiplier);
             cfg.enemyDamageMultiplier = ModSettingsStore.GetFloat(modId, "enemyDamageMultiplier", cfg.enemyDamageMultiplier);
+            cfg.bossHealthMultiplier = ModSettingsStore.GetFloat(modId, "bossHealthMultiplier", cfg.bossHealthMultiplier);
+            cfg.bossDamageMultiplier = ModSettingsStore.GetFloat(modId, "bossDamageMultiplier", cfg.bossDamageMultiplier);
             cfg.dayDurationMultiplier = ModSettingsStore.GetFloat(modId, "dayDurationMultiplier", cfg.dayDurationMultiplier);
+            cfg.disableEnemySpawns = ModSettingsStore.GetBool(modId, "disableEnemySpawns", cfg.disableEnemySpawns);
+            cfg.disableCustomerSpawns = ModSettingsStore.GetBool(modId, "disableCustomerSpawns", cfg.disableCustomerSpawns);
+            cfg.disableSales = ModSettingsStore.GetBool(modId, "disableSales", cfg.disableSales);
+            cfg.disableWorldLoads = ModSettingsStore.GetBool(modId, "disableWorldLoads", cfg.disableWorldLoads);
         }
 
         private static void RegisterConfigHooks(string owner, SimpleConfig cfg)
@@ -107,6 +122,15 @@ namespace Madness.Mods
                 }, 0, owner);
             }
 
+            if (Math.Abs(cfg.bossHealthMultiplier - 1f) > 0.001f || Math.Abs(cfg.bossDamageMultiplier - 1f) > 0.001f)
+            {
+                ModEventBus.Subscribe<BossSpawnContext>(ctx =>
+                {
+                    ctx.HealthMultiplier *= cfg.bossHealthMultiplier;
+                    ctx.DamageMultiplier *= cfg.bossDamageMultiplier;
+                }, 0, owner);
+            }
+
             if (Math.Abs(cfg.dayDurationMultiplier - 1f) > 0.001f)
             {
                 ModEventBus.Subscribe<DayContext>(ctx =>
@@ -114,6 +138,17 @@ namespace Madness.Mods
                     ctx.DurationSeconds *= cfg.dayDurationMultiplier;
                 }, 0, owner);
             }
+
+            if (cfg.disableEnemySpawns)
+                ModEventBus.Subscribe<EnemySpawnContext>(ctx => ctx.Cancelled = true, 100, owner);
+            if (cfg.disableEnemySpawns)
+                ModEventBus.Subscribe<BossSpawnContext>(ctx => ctx.Cancelled = true, 100, owner);
+            if (cfg.disableCustomerSpawns)
+                ModEventBus.Subscribe<CustomerSpawnContext>(ctx => ctx.Cancelled = true, 100, owner);
+            if (cfg.disableSales)
+                ModEventBus.Subscribe<SaleContext>(ctx => ctx.Cancelled = true, 100, owner);
+            if (cfg.disableWorldLoads)
+                ModEventBus.Subscribe<WorldLoadContext>(ctx => ctx.CancelLoad = true, 100, owner);
         }
     }
 }

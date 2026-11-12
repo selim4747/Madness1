@@ -152,6 +152,13 @@ namespace Madness.Mods
         public Vector3 Position;
     }
 
+    public sealed class BossSpawnContext : ModContext
+    {
+        public int Day;
+        public float HealthMultiplier = 1f;
+        public float DamageMultiplier = 1f;
+    }
+
     public sealed class DamageContext : ModContext
     {
         public object Target;
