@@ -29,6 +29,21 @@ namespace Madness.Mods
         public static T GetContent<T>(string id, T fallback = null) where T : UnityEngine.Object
             => ModContentOverride.GetOrDefault(id, fallback);
 
+        /// <summary>
+        /// Mod Creator ile eklenen yeni içeriği veya başka bir içeriğin override'ını getirir.
+        /// Önce override, sonra yeni içerik registry'si, en son fallback denenir.
+        /// </summary>
+        public static T GetModContent<T>(string id, T fallback = null) where T : UnityEngine.Object
+        {
+            T overrideAsset;
+            if (ModContentOverride.TryGet(id, out overrideAsset)) return overrideAsset;
+            T registered;
+            return ModContentRegistry.TryGet(id, out registered) ? registered : fallback;
+        }
+
+        public static bool TryGetRegisteredContent<T>(string id, out T asset) where T : UnityEngine.Object
+            => ModContentRegistry.TryGet(id, out asset);
+
         public static T LoadAsset<T>(string modId, string assetName) where T : UnityEngine.Object
             => ModAssetLoader.LoadAsset<T>(modId, assetName);
 

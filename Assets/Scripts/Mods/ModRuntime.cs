@@ -142,6 +142,7 @@ namespace Madness.Mods
 
             // Harici modları önce kaldır; aynı ID'li built-in modun callback'leri yanlışlıkla silinmesin.
             ModScriptLoader.UnloadAll(this);
+            ModContentPackageLoader.UnloadAll();
             for (int i = builtInModules.Count - 1; i >= 0; i--)
             {
                 try { UnregisterModule(builtInModules[i]); }
@@ -163,6 +164,9 @@ namespace Madness.Mods
 
             try { ModConfigApplier.ApplyAll(this); }
             catch (Exception ex) { Debug.LogError("[ModRuntime] config.json uygulanamadı: " + ex); }
+
+            try { ModContentPackageLoader.LoadAll(this); }
+            catch (Exception ex) { Debug.LogError("[ModRuntime] Mod Creator içerikleri yüklenemedi: " + ex); }
 
             if (AllowDllMods)
             {
