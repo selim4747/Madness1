@@ -13,6 +13,9 @@ public class WeaponInventory : MonoBehaviour
     [Header("Baslangic")]
     [SerializeField] private WeaponData starterWeapon;   // Tabanca Mk1 — Gun 1'de ucretsiz
 
+    [Header("Gorsel")]
+    [SerializeField] private SpriteRenderer weaponRenderer;
+
     /// <summary>WeaponType basina sahip olunan TEK silah (kademe otomatik yukselir).</summary>
     private readonly Dictionary<WeaponType, WeaponData> owned = new Dictionary<WeaponType, WeaponData>();
 
@@ -28,6 +31,8 @@ public class WeaponInventory : MonoBehaviour
 
     private void Start()
     {
+        ResolveWeaponRendererIfNeeded();
+
         if (!HasAnyWeapon && starterWeapon != null)
             GrantWeapon(starterWeapon);
     }
@@ -96,7 +101,32 @@ public class WeaponInventory : MonoBehaviour
     public void Equip(WeaponType type)
     {
         WeaponData data;
-        if (owned.TryGetValue(type, out data)) Equipped = data;
+        if (!owned.TryGetValue(type, out data)) return;
+
+        Equipped = data;
+        UpdateWeaponVisual(data);
+    }
+
+    private void UpdateWeaponVisual(WeaponData weapon)
+    {
+        ResolveWeaponRendererIfNeeded();
+        if (weaponRenderer == null) return;
+
+        // Sprite atanmamissa sahnedeki mevcut gorunumu bozma.
+        // Sprite atanmis bir WeaponData geldiginde gorunumu degistir.
+        if (weapon == null || weapon.weaponSprite == null) return;
+
+        weaponRenderer.sprite = weapon.weaponSprite;
+        weaponRenderer.enabled = true;
+    }
+
+    private void ResolveWeaponRendererIfNeeded()
+    {
+        if (weaponRenderer != null) return;
+
+        Transform firePoint = transform.Find("FirePoint");
+        if (firePoint != null)
+            weaponRenderer = firePoint.GetComponent<SpriteRenderer>();
     }
 
     public WeaponData GetOwned(WeaponType type)

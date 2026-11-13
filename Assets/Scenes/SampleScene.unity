@@ -23505,7 +23505,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 4776574426818646478, guid: d0e3f5b1d84fd4a42a0c22d248cd1fc8, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -23513,7 +23513,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!114 &1552065086
 MonoBehaviour:
@@ -28130,6 +28130,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4861db4845cf4dd439a29c300c36bae1, type: 2}
   - {fileID: 11400000, guid: 64b8705b6e207de4d92701aff93b85d8, type: 2}
   starterWeapon: {fileID: 11400000, guid: 6ba262e9b637d2d4599902417a4c4de2, type: 2}
+  weaponRenderer: {fileID: 1552065085}
 --- !u!114 &1871538745
 MonoBehaviour:
   m_ObjectHideFlags: 0
