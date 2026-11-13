@@ -3,7 +3,7 @@
   "name": "Full Power Example",
   "version": "1.0.0",
   "apiVersion": "1",
-  "enabled": true,
+  "enabled": false,
   "entryScript": "Mod.dll",
   "loadOrder": 1
 }

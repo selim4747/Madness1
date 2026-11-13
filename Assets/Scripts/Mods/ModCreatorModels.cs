@@ -58,7 +58,8 @@ namespace Madness.Mods
         public string version = "1.0.0";
         public string author = "";
         public int loadOrder;
-        public bool enabledByDefault = true;
+        // Güvenlik ve öngörülebilirlik için yeni modlar ilk kurulumda kapalı başlar.
+        public bool enabledByDefault = false;
         public bool totalConversion;
         public UnityEngine.Object mainScene;
 

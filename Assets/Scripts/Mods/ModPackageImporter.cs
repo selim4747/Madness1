@@ -51,6 +51,11 @@ namespace Madness.Mods
                 if (!string.IsNullOrEmpty(validationError))
                     return FailAndClean(validationError, stagingRoot);
 
+                // Yeni/içe aktarılan modlar güvenli varsayılan olarak kapalı başlar.
+                // Kullanıcı daha sonra Mod panelinden açıkça etkinleştirebilir.
+                manifest.enabled = false;
+                File.WriteAllText(manifestPath, JsonUtility.ToJson(manifest, true));
+
                 string packageRoot = Directory.GetParent(manifestPath).FullName;
                 string targetDirectory = Path.Combine(modsDirectory, manifest.id);
                 string backupDirectory = Path.Combine(backupRoot, manifest.id + "_" + DateTime.UtcNow.Ticks);
