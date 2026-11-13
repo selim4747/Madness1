@@ -11,7 +11,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class BlackBookDealerNPC : MonoBehaviour, ISohbetHedefi
+public class BlackBookDealerNPC : MonoBehaviour, ISohbetHedefi, ISohbetDuraklatilabilir
 {
     [Header("Kimlik")]
     [Tooltip("Diyalog kutusunda konuşan adı olarak görünür. İleride gerçek bir isme değiştirebilirsin.")]
@@ -26,6 +26,11 @@ public class BlackBookDealerNPC : MonoBehaviour, ISohbetHedefi
     [SerializeField] private SpriteRenderer gorselRenderer;
 
     public Transform SohbetTransformuAl() { return transform; }
+
+    // Satıcı şu anda sabit duruyor; bu metotlar gelecekte hareketli yapılırsa
+    // PlayerInteraction akışını değiştirmeden duraklatma desteğini korur.
+    public void SohbetIcinDuraklat(float minimumSure = 2f) { }
+    public void SohbetiBitir() { }
 
     private void Start()
     {

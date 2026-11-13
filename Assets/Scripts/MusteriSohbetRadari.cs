@@ -8,7 +8,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class MusteriSohbetRadari : MonoBehaviour, ISohbetHedefi
+public class MusteriSohbetRadari : MonoBehaviour, ISohbetHedefi, ISohbetDuraklatilabilir
 {
     private NPCKimligi musteriKimligi;
     private CustomerController musteriScripti;
@@ -61,7 +61,9 @@ public class MusteriSohbetRadari : MonoBehaviour, ISohbetHedefi
 
             SohbetEdildiBildir();
             if (DialogueBox.Instance != null)
+            {
                 DialogueBox.Instance.SecenekliGoster(GosterilenIsim(), gosterilecekMetin, secenekler, DedikoduSecimYapildi, default(SesKlipSeti), musteriKimligi.cinsiyet, musteriKimligi.GetYasGrubu());
+            }
             return;
         }
 
@@ -145,7 +147,20 @@ public class MusteriSohbetRadari : MonoBehaviour, ISohbetHedefi
         satir.konusanCinsiyeti = musteriKimligi != null ? musteriKimligi.cinsiyet : Cinsiyet.Erkek;
         satir.konusanYasGrubu = musteriKimligi != null ? musteriKimligi.GetYasGrubu() : YasGrubu.Yetiskin;
 
-        if (DialogueBox.Instance != null) DialogueBox.Instance.Show(new List<DialogueLine> { satir });
+        if (DialogueBox.Instance != null)
+            DialogueBox.Instance.Show(new List<DialogueLine> { satir });
+    }
+
+    public void SohbetIcinDuraklat(float minimumSure = 2f)
+    {
+        if (musteriScripti != null)
+            musteriScripti.SohbetIcinDuraklat(minimumSure);
+    }
+
+    public void SohbetiBitir()
+    {
+        if (musteriScripti != null)
+            musteriScripti.SohbetiBitir();
     }
 
     /// <summary>Oyuncu magazadaki dedikodu-paylas secenegini secince cagirir.</summary>

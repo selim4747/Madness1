@@ -88,6 +88,12 @@ public class CustomerController : MonoBehaviour
     private float PARTIAL_PATH_ISINLAMA_SANIYE => portalConfig != null ? portalConfig.partialPathIsinlamaSaniye : 5f;
     private float partialPathSuresi = 0f;
 
+    // Oyuncu sohbet ederken müşteri hareketi durur. Sohbet kapansa bile minimum
+    // duraklama süresi tamamlanmadan yeniden yürümeye başlamaz.
+    private bool sohbetDuraklatildi;
+    private bool sohbetBitti;
+    private float sohbetDuraklamaSayaci;
+
     // GEÇİT IŞINLAMASI: NavMeshPortalConfig atanırsa onu kullanır, yoksa eski sabitler.
     [SerializeField] private NavMeshPortalConfig portalConfig;
     
@@ -312,7 +318,24 @@ public class CustomerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
         }
 
-        if (agent == null || !agent.isActiveAndEnabled || agent.pathPending) return;
+        if (agent == null || !agent.isActiveAndEnabled) return;
+
+        if (sohbetDuraklatildi)
+        {
+            sohbetDuraklamaSayaci -= Time.deltaTime;
+            if (sohbetBitti && sohbetDuraklamaSayaci <= 0f)
+            {
+                sohbetDuraklatildi = false;
+                agent.isStopped = false;
+                if (hedefVar) agent.SetDestination(sonHedef);
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (agent.pathPending) return;
 
         // GEÇİT IŞINLAMASI: yol hesaplaması beklemeden, her frame önce bu kontrol edilir.
 
@@ -719,6 +742,24 @@ public class CustomerController : MonoBehaviour
         // bu hedefi yeniden vermek zorundayiz, yoksa NPC olduğu yerde donup kalir.
         sonHedef = hedef;
         hedefVar = true;
+    }
+
+    /// <summary>Oyuncu bu müşteriyle konuşmaya başladığında hareketi geçici durdurur.</summary>
+    public void SohbetIcinDuraklat(float minimumSure = 2f)
+    {
+        if (agent == null || !agent.isActiveAndEnabled) return;
+
+        sohbetDuraklatildi = true;
+        sohbetBitti = false;
+        sohbetDuraklamaSayaci = Mathf.Max(sohbetDuraklamaSayaci, minimumSure);
+        agent.isStopped = true;
+    }
+
+    /// <summary>DialogueBox kapandığında çağrılır; minimum süre dolduysa müşteri yürür.</summary>
+    public void SohbetiBitir()
+    {
+        if (!sohbetDuraklatildi) return;
+        sohbetBitti = true;
     }
 
     public void GoToCounter()

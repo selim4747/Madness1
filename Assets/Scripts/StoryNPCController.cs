@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class StoryNPCController : NavMeshMover
+public class StoryNPCController : NavMeshMover, ISohbetDuraklatilabilir
 {
     private enum State { Entering, Talking, GoingToShelf, GoingToCounter, WaitingAtCounter, GoingToGarden, SittingInGarden, Leaving }
 
@@ -41,6 +41,9 @@ public class StoryNPCController : NavMeshMover
     private bool dialogueShown;
     private ShelfController targetShelf;
     private BookData carriedBook;
+    private bool sohbetDuraklatildi;
+    private bool sohbetBitti;
+    private float sohbetDuraklamaSayaci;
 
 
     public string NpcName { get { return npcName; } }
@@ -173,6 +176,17 @@ public class StoryNPCController : NavMeshMover
     {
         IsinlanmaSayaciniAzalt();
 
+        if (sohbetDuraklatildi && sohbetBitti)
+        {
+            sohbetDuraklamaSayaci -= Time.deltaTime;
+            if (sohbetDuraklamaSayaci <= 0f)
+            {
+                sohbetDuraklatildi = false;
+                sohbetBitti = false;
+                if (agent != null && agent.isOnNavMesh) agent.isStopped = false;
+            }
+        }
+
 
         // Yon (flipX) ve animasyon — bos ise dokunmadan gecer.
         if (bodyRenderer != null && Mathf.Abs(CurrentVelocity.x) > 0.05f)
@@ -283,6 +297,10 @@ public class StoryNPCController : NavMeshMover
         float hareketMesafe = storyData != null ? storyData.hareketMesafesi
                              : (konukData != null ? konukData.hareketMesafesi : 2f);
 
+        // Hareketli anlatım bir cutscene davranışıdır. Seçiliyse ortak sohbet
+        // duraklatması bu NPC'nin hareketini kesmez; seçili değilse NPC yerinde durur.
+        if (!hareketli) SohbetIcinDuraklat(2f);
+
         if (hareketli)
         {
             if (hareketCoroutine != null) StopCoroutine(hareketCoroutine);
@@ -329,6 +347,7 @@ public class StoryNPCController : NavMeshMover
     {
         if (dialogueShown) return;
         dialogueShown = true;
+        SohbetIcinDuraklat(2f);
 
         List<DialogueLine> lines = new List<DialogueLine>();
 
@@ -369,6 +388,7 @@ public class StoryNPCController : NavMeshMover
 
     private void HandleBahceSohbetiBitti()
     {
+        SohbetiBitir();
         if (DialogueBox.Instance != null)
         {
             DialogueBox.Instance.OnNoMoreLines -= HandleBahceSohbetiBitti;
@@ -380,6 +400,7 @@ public class StoryNPCController : NavMeshMover
 
     private void OnDialogueFinished()
     {
+        SohbetiBitir();
         // Guvenlik: eger Close() ForceClose uzerinden geldiyse (gun sonu zorla kesme), OnNoMoreLines
         // aboneligi hala asili kalmis olabilir — burada da temizle ki baska bir NPC'nin
         // konusmasina yanlislikla karismasin.
@@ -468,6 +489,9 @@ public class StoryNPCController : NavMeshMover
     }
     private void LeaveNow()
     {
+        sohbetDuraklatildi = false;
+        sohbetBitti = false;
+        if (agent != null && agent.isOnNavMesh) agent.isStopped = false;
         state = State.Leaving;
         leavingViaGate = false;
         if (talkIcon != null) talkIcon.SetActive(false);
@@ -491,6 +515,27 @@ public class StoryNPCController : NavMeshMover
         // sonsuza kadar bu NPC'ye kilitli kalirdi (obje yok olunca hedefi de kaybederdi).
         // Cagrisi zararsiz: zaten odaklanma yoksa hicbir sey yapmaz.
         if (CameraFollow.Instance != null) CameraFollow.Instance.ReturnToPlayer();
+    }
+
+    public void SohbetIcinDuraklat(float minimumSure = 2f)
+    {
+        sohbetDuraklatildi = true;
+        sohbetBitti = false;
+        sohbetDuraklamaSayaci = Mathf.Max(0f, minimumSure);
+
+        if (hareketCoroutine != null)
+        {
+            StopCoroutine(hareketCoroutine);
+            hareketCoroutine = null;
+        }
+
+        if (agent != null && agent.isOnNavMesh) agent.isStopped = true;
+    }
+
+    public void SohbetiBitir()
+    {
+        if (!sohbetDuraklatildi) return;
+        sohbetBitti = true;
     }
 
     /// <summary>Afor gibi ozel karakterler icin: konusma boyunca baslangic noktasindan

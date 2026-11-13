@@ -13,7 +13,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class BahceSohbetRadari : MonoBehaviour, ISohbetHedefi
+public class BahceSohbetRadari : MonoBehaviour, ISohbetHedefi, ISohbetDuraklatilabilir
 {
     [Tooltip("Bu buyuk masanin ETRAFINDAKI TUM oturma noktalari (orn. 8 nokta). BahceYoneticisi'nde her biri AYRI ayri takip edildigi icin, radar HANGISINDE oturan varsa (oyuncuya en yakin OLANI) onu bulur.")]
     [SerializeField] private Transform[] masaNoktalari;
@@ -27,6 +27,16 @@ public class BahceSohbetRadari : MonoBehaviour, ISohbetHedefi
     private int aktifNormalSecenekSayisi;
 
     public Transform SohbetTransformuAl() { return transform; }
+
+    public void SohbetIcinDuraklat(float minimumSure = 2f)
+    {
+        if (aktifMusteri != null) aktifMusteri.SohbetIcinDuraklat(minimumSure);
+    }
+
+    public void SohbetiBitir()
+    {
+        if (aktifMusteri != null) aktifMusteri.SohbetiBitir();
+    }
 
     /// <summary>masaNoktalari'ndaki TUM noktalari tarar, oturan biri olan noktalar arasindan
     /// RASTGELE birini secer (en yakin DEGIL) — boylece ETK'ye tekrar tekrar basinca hep

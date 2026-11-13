@@ -34,6 +34,9 @@ public class PlayerInteraction : MonoBehaviour
 
     private void HandleDialogueClosed()
     {
+        ISohbetDuraklatilabilir duraklatilabilir = activeChatTarget as ISohbetDuraklatilabilir;
+        if (duraklatilabilir != null) duraklatilabilir.SohbetiBitir();
+
         activeChatTarget = null;
     }
 
@@ -119,6 +122,14 @@ public class PlayerInteraction : MonoBehaviour
     {
         activeChatTarget = target;
         target.SohbetEt();
+
+        // Hedef, müşteri/öğrenci gibi kendi hareket referansını SohbetEt içinde
+        // hazırlayabilir. Bu yüzden duraklatma çağrısı sohbet açıldıktan sonra yapılır.
+        if (DialogueBox.Instance != null && DialogueBox.Instance.IsOpen)
+        {
+            ISohbetDuraklatilabilir duraklatilabilir = target as ISohbetDuraklatilabilir;
+            if (duraklatilabilir != null) duraklatilabilir.SohbetIcinDuraklat(2f);
+        }
     }
 
     // ── Raf bilgi paneli (kitap detayi goruntuleme) ──
