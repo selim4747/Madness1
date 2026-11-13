@@ -23,5 +23,5 @@ MonoBehaviour:
   price: 250
   pelletCount: 1
   spreadAngle: 0
-  weaponSprite: {fileID: 0}
+  weaponSprite: {fileID: 4776574426818646478, guid: d0e3f5b1d84fd4a42a0c22d248cd1fc8, type: 3}
   fireSound: {fileID: 8300000, guid: 2e6763f7a80aacb4e9073da39ace8465, type: 3}
