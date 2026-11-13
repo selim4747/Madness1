@@ -154,7 +154,12 @@ public class MarketUI : MonoBehaviour
 
     public void OnWeaponEquip(WeaponType type)
     {
-        WeaponInventory.Instance.Equip(type);
+        if (WeaponInventory.Instance.Equipped != null &&
+            WeaponInventory.Instance.Equipped.type == type)
+            WeaponInventory.Instance.Unequip();
+        else
+            WeaponInventory.Instance.Equip(type);
+
         Refresh();
     }
 

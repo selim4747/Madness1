@@ -13,6 +13,12 @@ public class SilahKontrol : MonoBehaviour
     // MOBİL BUTON İÇİN ÖZEL FONKSİYON
     public void AtesEt()
     {
+        if (WeaponInventory.Instance == null || WeaponInventory.Instance.Equipped == null)
+            return;
+
+        if (GameManager.Instance != null && GameManager.Instance.CurrentPhase != GamePhase.Night)
+            return;
+
         // Eğer peş peşe basıyorsa bekleme süresini kontrol et
         if (Time.time > sonAtisZamani + atisGecikmesi)
         {

@@ -39,7 +39,12 @@ public class WeaponUpgradePanelUI : MonoBehaviour
 
     private void Kullan(WeaponType type)
     {
-        WeaponInventory.Instance.Equip(type);
+        if (WeaponInventory.Instance.Equipped != null &&
+            WeaponInventory.Instance.Equipped.type == type)
+            WeaponInventory.Instance.Unequip();
+        else
+            WeaponInventory.Instance.Equip(type);
+
         Refresh();
     }
 
@@ -73,9 +78,12 @@ public class WeaponUpgradePanelUI : MonoBehaviour
         bool sahip = mevcut != null;
         bool kusanik = WeaponInventory.Instance.Equipped != null && WeaponInventory.Instance.Equipped.type == type;
 
-        // KULLAN BUTONU: sadece SAHIPKEN ve KUSANIK DEGILKEN gorunur.
-        // Hic alinmamissa (sahip degil) ya da zaten kusanikse gizlenir.
-        if (useButton != null) useButton.gameObject.SetActive(sahip && !kusanik);
+        // Ayni buton kusanili silah icin artik "Cikar" olarak kullanilir.
+        if (useButton != null)
+        {
+            useButton.gameObject.SetActive(sahip);
+            SetUseButtonText(useButton, kusanik ? "Çıkar" : "Kuşan");
+        }
 
         if (sonraki == null)
         {
@@ -101,6 +109,14 @@ public class WeaponUpgradePanelUI : MonoBehaviour
 
     /// <summary>Bu tipin bir sonraki (satin alinabilir) kademesini AllWeapons listesinden bulur.
     /// Hicbir sey sahip degilse Mk1'i, Mk1 sahipse Mk2'yi... dondurur. Mk3 sahipse null doner.</summary>
+    private void SetUseButtonText(Button button, string text)
+    {
+        if (button == null) return;
+
+        TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (label != null) label.text = text;
+    }
+
     private WeaponData SonrakiKademeyiBul(WeaponType type)
     {
         WeaponData mevcut = WeaponInventory.Instance.GetOwned(type);

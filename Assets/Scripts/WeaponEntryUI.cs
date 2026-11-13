@@ -47,14 +47,14 @@ public class WeaponEntryUI : MonoBehaviour
 
         if (actionLabel != null)
         {
-            if (equipped)      actionLabel.text = "Kusanildi";
+            if (equipped)      actionLabel.text = "Çıkar";
             else if (owned)    actionLabel.text = "Kusan";
             else if (canBuy)   actionLabel.text = weapon.price + " Para";
             else               actionLabel.text = "Kilitli";
         }
 
         if (actionButton != null)
-            actionButton.interactable = (owned && !equipped) || canBuy;
+            actionButton.interactable = owned || canBuy;
     }
 
     private void OnPressed()

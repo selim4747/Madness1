@@ -16,6 +16,9 @@ public class WeaponInventory : MonoBehaviour
     [Header("Gorsel")]
     [SerializeField] private SpriteRenderer weaponRenderer;
 
+    [Header("Faz davranisi")]
+    [SerializeField] private bool autoUnequipAtDay = true;
+
     /// <summary>WeaponType basina sahip olunan TEK silah (kademe otomatik yukselir).</summary>
     private readonly Dictionary<WeaponType, WeaponData> owned = new Dictionary<WeaponType, WeaponData>();
 
@@ -33,8 +36,27 @@ public class WeaponInventory : MonoBehaviour
     {
         ResolveWeaponRendererIfNeeded();
 
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnPhaseChanged += HandlePhaseChanged;
+
         if (!HasAnyWeapon && starterWeapon != null)
             GrantWeapon(starterWeapon);
+
+        if (autoUnequipAtDay && GameManager.Instance != null &&
+            GameManager.Instance.CurrentPhase == GamePhase.Day)
+            Unequip();
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnPhaseChanged -= HandlePhaseChanged;
+    }
+
+    private void HandlePhaseChanged(GamePhase phase)
+    {
+        if (autoUnequipAtDay && phase == GamePhase.Day)
+            Unequip();
     }
 
     /// <summary>Bu silaha sahip miyiz (ayni tip, ayni veya ust kademe)?</summary>
@@ -94,7 +116,12 @@ public class WeaponInventory : MonoBehaviour
     private void GrantWeapon(WeaponData weapon)
     {
         owned[weapon.type] = weapon;
-        Equip(weapon.type);
+
+        if (autoUnequipAtDay && GameManager.Instance != null &&
+            GameManager.Instance.CurrentPhase == GamePhase.Day)
+            Unequip();
+        else
+            Equip(weapon.type);
     }
 
     /// <summary>MarketUI'daki "Kusan" butonundan cagrilir.</summary>
@@ -105,6 +132,14 @@ public class WeaponInventory : MonoBehaviour
 
         Equipped = data;
         UpdateWeaponVisual(data);
+    }
+
+    /// <summary>Silahi satmaz; sadece oyuncunun elinden cikarir.</summary>
+    public void Unequip()
+    {
+        Equipped = null;
+        if (weaponRenderer != null)
+            weaponRenderer.enabled = false;
     }
 
     private void UpdateWeaponVisual(WeaponData weapon)
@@ -148,7 +183,10 @@ public class WeaponInventory : MonoBehaviour
             if (found != null) owned[found.type] = found;
         }
 
-        Equip((WeaponType)data.equippedWeaponType);
+        if (data.equippedWeaponType >= 0)
+            Equip((WeaponType)data.equippedWeaponType);
+        else
+            Unequip();
 
         // Bozuk kayit korumasi
         if (!HasAnyWeapon && starterWeapon != null) GrantWeapon(starterWeapon);
@@ -166,7 +204,7 @@ public class WeaponInventory : MonoBehaviour
             data.ownedWeapons.Add(entry);
         }
 
-        if (Equipped != null) data.equippedWeaponType = (int)Equipped.type;
+        data.equippedWeaponType = Equipped != null ? (int)Equipped.type : -1;
     }
 
     private WeaponData FindWeapon(WeaponType type, WeaponTier tier)
