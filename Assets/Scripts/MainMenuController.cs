@@ -1,5 +1,6 @@
 ﻿// MainMenuController.cs — Ana menu
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -30,9 +31,23 @@ public class MainMenuController : MonoBehaviour
     [Tooltip("Y panelinin içindeki Geri Dön butonu. Basılınca Y gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
     [SerializeField] private Button continueBackButton;
 
+    [Header("Mod seçimi")]
+    [Tooltip("Z paneli: 'Modlar' butonuna basılınca görünen mod listesi paneli.")]
+    [SerializeField] private GameObject modSelectionPanel;
+    [Tooltip("Z panelindeki mod butonları. Kaç mod varsa o kadarı kullanılır, fazlası gizlenir. OnClick'i elle bağlamana gerek yok.")]
+    [SerializeField] private Button[] modSlotButtons;
+    [Tooltip("Z panelinin içindeki Geri Dön butonu. Basılınca Z gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
+    [SerializeField] private Button modBackButton;
+
+    private ModRuntime modRuntime;
+
     private void Start()
     {
-        try { ModRuntime.EnsureExists(); } // Mod Ekle butonu artık sahnede elle: ModImportUI bileşeni
+        try // Mod Ekle butonu artık sahnede elle: ModImportUI bileşeni
+        {
+            modRuntime = ModRuntime.EnsureExists();
+            modRuntime.OnModsChanged += RefreshModButtons; // mod aç/kapa, içe aktarma → butonlar tazelenir
+        }
         catch (System.Exception ex) { Debug.LogException(ex); }
         SaveSystem.EnsureExists(); // ana menü sahnesinde SaveSystem yok — PeekSlot null veriyordu
 
@@ -48,6 +63,14 @@ public class MainMenuController : MonoBehaviour
         }
         BindContinueSlotButtons();
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
+
+        if (modBackButton != null)
+        {
+            modBackButton.onClick.RemoveAllListeners();
+            modBackButton.onClick.AddListener(CloseModSelection);
+        }
+        if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
+        RefreshModButtons();
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
     }
@@ -84,6 +107,115 @@ public class MainMenuController : MonoBehaviour
     {
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+    }
+
+    /// <summary>Modlar: ana menü paneli (X) gizlenir, mod listesi paneli (Z) görünür olur.</summary>
+    public void OpenMods()
+    {
+        OpenModSelection();
+    }
+
+    private void OpenModSelection()
+    {
+        if (modSelectionPanel == null)
+        {
+            Debug.LogWarning("[MainMenuController] 'Mod Selection Panel' (Z) Inspector'da atanmadı.");
+            return;
+        }
+
+        RefreshModButtons();
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        modSelectionPanel.SetActive(true);
+    }
+
+    /// <summary>Geri Dön: mod paneli (Z) gizlenir, ana menü paneli (X) tekrar görünür olur.</summary>
+    public void CloseModSelection()
+    {
+        if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+    }
+
+    /// <summary>Z panelindeki butonları modlarla doldurur: her moda bir buton, artan butonlar gizlenir.</summary>
+    private void RefreshModButtons()
+    {
+        if (modSlotButtons == null) return;
+
+        List<ModManifest> mods = CollectMods();
+        for (int i = 0; i < modSlotButtons.Length; i++)
+        {
+            Button button = modSlotButtons[i];
+            if (button == null) continue;
+
+            bool used = i < mods.Count;
+            button.gameObject.SetActive(used); // mod sayısından fazla buton görünmez
+            if (!used) continue;
+
+            TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (label != null) label.text = BuildModInfo(mods[i]);
+        }
+
+        if (mods.Count > modSlotButtons.Length)
+            Debug.LogWarning($"[MainMenuController] {mods.Count} mod var ama sadece {modSlotButtons.Length} mod butonu atanmış; fazlası gösterilmiyor.");
+    }
+
+    /// <summary>Harici modlar + yerleşik modlar (varsa) tek listede.</summary>
+    private List<ModManifest> CollectMods()
+    {
+        List<ModManifest> mods = new List<ModManifest>();
+        if (modRuntime == null)
+        {
+            try { modRuntime = ModRuntime.EnsureExists(); }
+            catch (System.Exception ex) { Debug.LogException(ex); }
+        }
+
+        if (modRuntime != null)
+        {
+            IReadOnlyList<ModManifest> loaded = modRuntime.LoadedManifests;
+            for (int i = 0; i < loaded.Count; i++)
+                if (loaded[i] != null) mods.Add(loaded[i]);
+        }
+
+        IReadOnlyList<string> builtInIds = BuiltInModCatalog.GetAvailableIds();
+        for (int i = 0; i < builtInIds.Count; i++)
+        {
+            string id = builtInIds[i];
+            bool listed = false;
+            for (int j = 0; j < mods.Count; j++)
+                if (string.Equals(mods[j].id, id, System.StringComparison.OrdinalIgnoreCase)) { listed = true; break; }
+            if (listed) continue;
+
+            mods.Add(new ModManifest
+            {
+                id = id,
+                name = BuiltInModCatalog.GetDisplayName(id),
+                identity = BuiltInModCatalog.GetIdentity(id),
+                version = "yerleşik",
+                author = "NJG Games",
+                enabled = BuiltInModCatalog.IsEnabled(id)
+            });
+        }
+
+        return mods;
+    }
+
+    /// <summary>Buton yazısı: mod adı/sürümü/yapımcısı ve kimlik + durum satırı.</summary>
+    private string BuildModInfo(ModManifest mod)
+    {
+        string name = string.IsNullOrWhiteSpace(mod.name) ? mod.id : mod.name;
+        string identity = string.IsNullOrWhiteSpace(mod.identity) ? "-" : mod.identity;
+        string author = string.IsNullOrWhiteSpace(mod.author) ? "" : "  ·  " + mod.author;
+
+        string status;
+        if (modRuntime != null && !modRuntime.IsBuiltIn(mod.id)) status = modRuntime.GetModStatus(mod);
+        else status = mod.enabled ? "Açık" : "Kapalı";
+
+        return name + "  v" + mod.version + author + "\n" +
+               "<size=65%>Kimlik: " + identity + "  ·  " + status + "</size>";
+    }
+
+    private void OnDestroy()
+    {
+        if (modRuntime != null) modRuntime.OnModsChanged -= RefreshModButtons;
     }
 
     /// <summary>Y panelindeki kendi yaptığın kayıt butonlarını slotlarına bağlar.</summary>
