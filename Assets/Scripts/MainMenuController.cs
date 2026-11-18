@@ -51,8 +51,11 @@ public class MainMenuController : MonoBehaviour
         catch (System.Exception ex) { Debug.LogException(ex); }
         SaveSystem.EnsureExists(); // ana menü sahnesinde SaveSystem yok — PeekSlot null veriyordu
 
-        for (int i = 0; i < slots.Length; i++)
-            if (slots[i] != null) slots[i].Bind(this);
+        if (slots != null)
+        {
+            for (int i = 0; i < slots.Length; i++)
+                if (slots[i] != null) slots[i].Bind(this);
+        }
 
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
         if (quitButton != null)     quitButton.onClick.AddListener(Quit);
@@ -312,7 +315,8 @@ public class MainMenuController : MonoBehaviour
 
     private void OpenSettings()
     {
-        SettingsMenu.Instance.Show();
+        if (SettingsMenu.Instance != null)
+            SettingsMenu.Instance.Show();
     }
 
     private void Quit()
