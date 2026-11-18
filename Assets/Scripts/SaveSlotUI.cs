@@ -68,7 +68,7 @@ public class SaveSlotUI : MonoBehaviour
 
     private void OnLoad()
     {
-        if (menu != null) menu.LoadSlot(slotIndex);
+        menu.LoadSlot(slotIndex);
     }
 
     private void OnNewGame()
