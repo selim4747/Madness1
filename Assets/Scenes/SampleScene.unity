@@ -5331,6 +5331,7 @@ GameObject:
   - component: {fileID: 345356398}
   - component: {fileID: 345356397}
   - component: {fileID: 345356401}
+  - component: {fileID: 345356402}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -5458,6 +5459,32 @@ MonoBehaviour:
   paraYazisi: {fileID: 1747230364}
   marketPaneli: {fileID: 1201488938}
   canYazisi: {fileID: 1817136292}
+--- !u!114 &345356402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345356396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc331c4ee05931c4597214a1d6410e5c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PauseMenuController
+  root: {fileID: 0}
+  pauseButton: {fileID: 0}
+  resumeButton: {fileID: 0}
+  catalogButton: {fileID: 0}
+  achievementsButton: {fileID: 0}
+  marketButton: {fileID: 0}
+  upgradeButton: {fileID: 0}
+  settingsButton: {fileID: 0}
+  saveButton: {fileID: 0}
+  upgradePanel: {fileID: 0}
+  mainMenuButton: {fileID: 0}
+  musicToggle: {fileID: 0}
+  sfxToggle: {fileID: 0}
+  mainMenuSceneName: AnaMenu
 --- !u!1 &347053161
 GameObject:
   m_ObjectHideFlags: 0
