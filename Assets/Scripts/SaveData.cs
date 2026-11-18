@@ -85,6 +85,7 @@ public class SaveData
     public int damageLevel = 0;
     public int speedLevel = 0;
     public int personnelCapacityLevel = 0;
+    public int spotlightWidthLevel = 0;
 
     // --- Ekonomi Enflasyonu (EKONOMİ SIKILAŞTIRMA — çılgın olmayan ama gerekli özellik) ---
     public float ekonomiEnflasyonCarpani = 1f;

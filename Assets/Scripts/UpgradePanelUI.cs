@@ -27,6 +27,11 @@ public class UpgradePanelUI : MonoBehaviour
     [SerializeField] private Button personnelButton;
     [SerializeField] private TextMeshProUGUI personnelLabel;
 
+    [Header("Oyuncu Spot Isigi")]
+    [Tooltip("Bos birakilabilir. Atanirsa PlayerSpotlightController genislik upgrade'i burada gorunur.")]
+    [SerializeField] private Button spotlightWidthButton;
+    [SerializeField] private TextMeshProUGUI spotlightWidthLabel;
+
     private void Awake()
     {
         if (root != null) root.SetActive(false);
@@ -36,6 +41,7 @@ public class UpgradePanelUI : MonoBehaviour
         if (damageButton != null) damageButton.onClick.AddListener(() => Upgrade(StatType.Damage));
         if (speedButton != null) speedButton.onClick.AddListener(() => Upgrade(StatType.Speed));
         if (personnelButton != null) personnelButton.onClick.AddListener(UpgradePersonnel);
+        if (spotlightWidthButton != null) spotlightWidthButton.onClick.AddListener(UpgradeSpotlightWidth);
 
         if (PanelYoneticisi.Instance != null && root != null) PanelYoneticisi.Instance.Kaydet(root);
     }
@@ -62,6 +68,12 @@ public class UpgradePanelUI : MonoBehaviour
         if (PersonnelCapacityUpgrade.Instance.TryUpgrade()) Refresh();
     }
 
+    private void UpgradeSpotlightWidth()
+    {
+        if (PlayerSpotlightController.Instance != null &&
+            PlayerSpotlightController.Instance.TryUpgradeWidth()) Refresh();
+    }
+
     private void Refresh()
     {
         if (goldLabel != null) goldLabel.text = EconomyManager.Instance.Gold + " Para";
@@ -76,6 +88,7 @@ public class UpgradePanelUI : MonoBehaviour
                     PlayerStats.Instance.SpeedStat.ToString("0.0"));
 
         RefreshPersonnel();
+        RefreshSpotlightWidth();
     }
 
     private void RefreshStat(StatType stat, TextMeshProUGUI label, Button button,
@@ -118,5 +131,31 @@ public class UpgradePanelUI : MonoBehaviour
         }
 
         if (personnelButton != null) personnelButton.interactable = EconomyManager.Instance.CanAfford(cost);
+    }
+
+    private void RefreshSpotlightWidth()
+    {
+        PlayerSpotlightController mgr = PlayerSpotlightController.Instance;
+        if (mgr == null)
+        {
+            if (spotlightWidthButton != null) spotlightWidthButton.interactable = false;
+            if (spotlightWidthLabel != null) spotlightWidthLabel.text = "Spot isigi — kullanilamaz";
+            return;
+        }
+
+        int level = mgr.WidthUpgradeLevel;
+        if (mgr.IsMaxWidth)
+        {
+            if (spotlightWidthLabel != null)
+                spotlightWidthLabel.text = "Spot isigi genisligi (Sv." + level + ") — MAKS";
+            if (spotlightWidthButton != null) spotlightWidthButton.interactable = false;
+            return;
+        }
+
+        int cost = mgr.GetWidthUpgradeCost();
+        if (spotlightWidthLabel != null)
+            spotlightWidthLabel.text = "Spot isigi genisligi (Sv." + level + ") — " + cost + " Para";
+        if (spotlightWidthButton != null)
+            spotlightWidthButton.interactable = EconomyManager.Instance != null && EconomyManager.Instance.CanAfford(cost);
     }
 }
