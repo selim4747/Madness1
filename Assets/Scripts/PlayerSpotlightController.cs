@@ -42,8 +42,6 @@ public class PlayerSpotlightController : MonoBehaviour
     [SerializeField] private bool useUnscaledTimeDuringTransition = false;
     [SerializeField] private bool followGameManagerPhase = true;
     [SerializeField] private bool enableInTutorial = true;
-    [Tooltip("Kapaliysa bu script Light2D.enabled alanina dokunmaz ve komponenti acik tutar. Isigi kontrol etmek icin onerilen ayardir.")]
-    [SerializeField] private bool allowTurningComponentOff = false;
 
     [Header("Genislik upgrade'i")]
     [Tooltip("Her seviye gece spotunun dis acisini bu kadar derece arttirir.")]
@@ -126,7 +124,14 @@ public class PlayerSpotlightController : MonoBehaviour
 
     private void Update()
     {
-        if (spotLight == null || transitionElapsed < 0f) return;
+        if (spotLight == null) return;
+
+        // Bu sistem Light2D komponentini kapatmaz. Inspector'da veya baska bir
+        // sistem tarafindan kapatilsa bile spotlight tekrar aktif edilir.
+        if (!spotLight.enabled)
+            spotLight.enabled = true;
+
+        if (transitionElapsed < 0f) return;
 
         float delta = useUnscaledTimeDuringTransition ? Time.unscaledDeltaTime : Time.deltaTime;
         transitionElapsed += delta;
@@ -204,13 +209,10 @@ public class PlayerSpotlightController : MonoBehaviour
     private void ApplySettings(LightSettings settings)
     {
         if (spotLight == null) return;
-        // Isik kontrolu icin Light2D komponentini kapatmak yerine intensity'yi ve
-        // diger ayarlari degistir. Boylece mevcut sahne spotlight'i kaybolmaz.
-        // Tamamen kapatma istenirse Inspector'dan allowTurningComponentOff acilabilir.
-        if (allowTurningComponentOff)
-            spotLight.enabled = settings.enabled;
-        else
-            spotLight.enabled = true;
+        // Light2D.enabled bu sistemde faz ayari degildir. Bilesen her zaman acik
+        // tutulur; gun/gece farki intensity, radius, angle, color ve falloff ile
+        // kontrol edilir.
+        spotLight.enabled = true;
         spotLight.intensity = settings.intensity;
         spotLight.pointLightOuterRadius = Mathf.Max(0f, settings.radius);
         spotLight.pointLightOuterAngle = Mathf.Clamp(settings.outerAngle, 0f, 360f);
