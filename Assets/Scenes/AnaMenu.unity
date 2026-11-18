@@ -5459,12 +5459,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
   gameSceneName: SampleScene
-  slots: []
+  slots:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   settingsButton: {fileID: 860367074}
   quitButton: {fileID: 367944204}
   mainMenuPanel: {fileID: 216897047}
   continueSelectionPanel: {fileID: 2094521450}
-  continueSlotButtons: []
+  continueSlotButtons:
+  - {fileID: 155838081}
+  - {fileID: 1592575809}
+  - {fileID: 1640913320}
+  - {fileID: 1333015511}
+  - {fileID: 265398080}
   continueBackButton: {fileID: 316737007}
 --- !u!4 &1365089415
 Transform:
