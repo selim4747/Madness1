@@ -1,0 +1,6 @@
+Bu değişiklik paketi uygulanırken aşağıdaki dosyalar silinmelidir:
+
+Assets/Scripts/Mods/ModPanelController.cs
+Assets/Scripts/Mods/ModPanelController.cs.meta
+
+Not: ModPanelController sahne bileşeni ve eski ModManagerUI sahne bileşeni AnaMenu.unity içinden kaldırılmıştır.

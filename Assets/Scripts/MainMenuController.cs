@@ -34,14 +34,17 @@ public class MainMenuController : MonoBehaviour
     [Header("Mod seçimi")]
     [Tooltip("Z paneli: 'Modlar' butonuna basılınca görünen mod listesi paneli.")]
     [SerializeField] private GameObject modSelectionPanel;
+    [Tooltip("Ana menüdeki Modlar panelini açan buton.")]
+    [SerializeField] private Button modOpenButton;
     [Tooltip("Z panelindeki mod butonları. Mod sayısı kadar görünür, geri kalanı gizlenir.")]
     [SerializeField] private Button[] modSlotButtons;
+    [Tooltip("Silme modunu açıp kapatan global buton. Açıldıktan sonra tıklanan ilk harici mod silinir; tekrar basılırsa iptal edilir.")]
+    [SerializeField] private Button modDeleteButton;
     [Tooltip("Z panelinin içindeki Geri Dön butonu. Basılınca Z gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
     [SerializeField] private Button modBackButton;
 
     private ModRuntime modRuntime;
-    private string pendingDeleteModId;
-    private float pendingDeleteUntil;
+    private bool deleteMode;
 
     private void Start()
     {
@@ -61,6 +64,18 @@ public class MainMenuController : MonoBehaviour
 
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
         if (quitButton != null)     quitButton.onClick.AddListener(Quit);
+        if (modOpenButton != null)
+        {
+            modOpenButton.onClick.RemoveAllListeners();
+            modOpenButton.onClick.AddListener(OpenMods);
+        }
+        if (modDeleteButton == null) modDeleteButton = CreateFallbackDeleteButton();
+        if (modDeleteButton != null)
+        {
+            modDeleteButton.onClick.RemoveAllListeners();
+            modDeleteButton.onClick.AddListener(ToggleDeleteMode);
+            UpdateDeleteButtonLabel();
+        }
         if (continueBackButton != null)
         {
             continueBackButton.onClick.RemoveAllListeners();
@@ -160,41 +175,78 @@ public class MainMenuController : MonoBehaviour
             TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
             if (label != null) label.text = BuildModDetails(mod);
             bool builtIn = modRuntime != null && modRuntime.IsBuiltIn(mod.id);
-            button.onClick.AddListener(() => SetModEnabled(mod.id, !mod.enabled, builtIn));
-            ConfigureDeleteButton(button, mod, builtIn);
+            button.onClick.AddListener(() => OnModButtonClicked(mod, builtIn));
         }
 
         if (mods.Count > modSlotButtons.Length)
             Debug.LogWarning($"[MainMenuController] {mods.Count} mod var ama sadece {modSlotButtons.Length} mod butonu atanmış; fazlası gösterilmiyor.");
     }
 
-    private void ConfigureDeleteButton(Button modButton, ModManifest mod, bool builtIn)
+    private void OnModButtonClicked(ModManifest mod, bool builtIn)
     {
-        Transform existing = modButton.transform.Find("ModDeleteButton");
-        Button delete = existing == null ? CreateDeleteButton(modButton.transform) : existing.GetComponent<Button>();
-        delete.onClick.RemoveAllListeners();
-        delete.interactable = !builtIn;
-        TextMeshProUGUI label = delete.GetComponentInChildren<TextMeshProUGUI>(true);
-        if (label != null) label.text = builtIn ? "Silinemez" : "Sil";
-        if (!builtIn) delete.onClick.AddListener(() => DeleteMod(mod.id));
+        if (deleteMode)
+        {
+            if (builtIn)
+            {
+                if (ToastNotification.Instance != null)
+                    ToastNotification.Instance.Show("Yerleşik modlar silinemez.", 3f);
+                return;
+            }
+
+            deleteMode = false;
+            UpdateDeleteButtonLabel();
+            DeleteMod(mod.id);
+            return;
+        }
+
+        SetModEnabled(mod.id, !mod.enabled, builtIn);
     }
 
-    private static Button CreateDeleteButton(Transform parent)
+    private void ToggleDeleteMode()
     {
-        GameObject buttonObject = new GameObject("ModDeleteButton", typeof(RectTransform), typeof(Image), typeof(Button));
-        buttonObject.transform.SetParent(parent, false);
+        deleteMode = !deleteMode;
+        UpdateDeleteButtonLabel();
+        if (ToastNotification.Instance != null)
+            ToastNotification.Instance.Show(deleteMode ? "Silme modu açık. Silinecek ilk moda basın." : "Silme işlemi iptal edildi.", 3f);
+    }
+
+    private void UpdateDeleteButtonLabel()
+    {
+        if (modDeleteButton == null) return;
+        TextMeshProUGUI label = modDeleteButton.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (label != null) label.text = deleteMode ? "İptal" : "Mod Sil";
+        Text legacyLabel = modDeleteButton.GetComponentInChildren<Text>(true);
+        if (legacyLabel != null) legacyLabel.text = deleteMode ? "İptal" : "Mod Sil";
+    }
+
+    private Button CreateFallbackDeleteButton()
+    {
+        if (modSelectionPanel == null) return null;
+
+        GameObject buttonObject = new GameObject("RuntimeModDeleteButton", typeof(RectTransform), typeof(Image), typeof(Button));
+        buttonObject.transform.SetParent(modSelectionPanel.transform, false);
         RectTransform rect = buttonObject.GetComponent<RectTransform>();
-        rect.anchorMin = new Vector2(1f, 0f);
-        rect.anchorMax = new Vector2(1f, 0f);
-        rect.pivot = new Vector2(1f, 0f);
-        rect.anchoredPosition = new Vector2(-12f, 10f);
-        rect.sizeDelta = new Vector2(120f, 36f);
+        rect.anchorMin = new Vector2(1f, 1f);
+        rect.anchorMax = new Vector2(1f, 1f);
+        rect.pivot = new Vector2(1f, 1f);
+        rect.anchoredPosition = new Vector2(-220f, -40f);
+        rect.sizeDelta = new Vector2(180f, 54f);
         buttonObject.GetComponent<Image>().color = new Color(0.45f, 0.14f, 0.14f, 1f);
-        TextMeshProUGUI label = buttonObject.AddComponent<TextMeshProUGUI>();
-        label.alignment = TextAlignmentOptions.Center;
-        label.fontSize = 18;
+
+        GameObject labelObject = new GameObject("Label", typeof(RectTransform));
+        labelObject.transform.SetParent(buttonObject.transform, false);
+        RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+        Text label = labelObject.AddComponent<Text>();
+        label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        label.fontSize = 22;
+        label.alignment = TextAnchor.MiddleCenter;
         label.color = Color.white;
         label.raycastTarget = false;
+        label.text = "Mod Sil";
         return buttonObject.GetComponent<Button>();
     }
 
@@ -265,20 +317,9 @@ public class MainMenuController : MonoBehaviour
 
     private void DeleteMod(string modId)
     {
-        if (pendingDeleteModId != modId || Time.unscaledTime > pendingDeleteUntil)
-        {
-            pendingDeleteModId = modId;
-            pendingDeleteUntil = Time.unscaledTime + 5f;
-            if (ToastNotification.Instance != null)
-                ToastNotification.Instance.Show("Silmek için aynı butona tekrar basın.", 3f);
-            return;
-        }
-
         string message;
         if (modRuntime != null) modRuntime.DeleteExternalMod(modId, out message);
         else message = "Mod sistemi hazır değil.";
-        pendingDeleteModId = null;
-        pendingDeleteUntil = 0f;
         if (ToastNotification.Instance != null) ToastNotification.Instance.Show(message, 3f);
         RefreshModButtons();
     }
