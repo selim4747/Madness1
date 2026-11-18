@@ -5472,13 +5472,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc331c4ee05931c4597214a1d6410e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuController
-  root: {fileID: 345356396}
+  root: {fileID: 1058355862}
   pauseButton: {fileID: 1601144741}
-  resumeButton: {fileID: 0}
-  saveButton: {fileID: 0}
-  mainMenuButton: {fileID: 0}
-  sfxButton: {fileID: 0}
-  musicButton: {fileID: 0}
+  resumeButton: {fileID: 502500503}
+  saveButton: {fileID: 2087113904}
+  mainMenuButton: {fileID: 1725650324}
+  sfxButton: {fileID: 1361440455}
+  musicButton: {fileID: 2051937559}
   catalogButton: {fileID: 0}
   achievementsButton: {fileID: 0}
   marketButton: {fileID: 0}
