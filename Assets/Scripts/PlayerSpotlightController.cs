@@ -20,8 +20,8 @@ public class PlayerSpotlightController : MonoBehaviour
     [SerializeField] private bool searchInChildren = true;
 
     [Header("Gun ayarlari")]
-    [SerializeField] private bool dayLightEnabled = false;
-    [Min(0f)] [SerializeField] private float dayIntensity = 0f;
+    [SerializeField] private bool dayLightEnabled = true;
+    [Min(0f)] [SerializeField] private float dayIntensity = 0.35f;
     [Min(0f)] [SerializeField] private float dayOuterRadius = 3f;
     [Range(0f, 360f)] [SerializeField] private float dayOuterAngle = 45f;
     [Range(0f, 360f)] [SerializeField] private float dayInnerAngle = 25f;
@@ -41,7 +41,7 @@ public class PlayerSpotlightController : MonoBehaviour
     [Min(0f)] [SerializeField] private float phaseTransitionSeconds = 1.25f;
     [SerializeField] private bool useUnscaledTimeDuringTransition = false;
     [SerializeField] private bool followGameManagerPhase = true;
-    [SerializeField] private bool enableInTutorial = false;
+    [SerializeField] private bool enableInTutorial = true;
 
     [Header("Genislik upgrade'i")]
     [Tooltip("Her seviye gece spotunun dis acisini bu kadar derece arttirir.")]
