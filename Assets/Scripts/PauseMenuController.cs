@@ -15,6 +15,10 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private Button resumeButton;
 
     [Header("Alt paneller")]
+    [Tooltip("Y paneli: durdur menüsünden açılan alt panel. Atanmazsa davranış değişmez.")]
+    [SerializeField] private GameObject subPanel;
+    [Tooltip("Y panelinin içindeki Geri Dön butonu. Basılınca Y gizlenir ve durdur menüsü (X) görünür olur.")]
+    [SerializeField] private Button subPanelBackButton;
     [SerializeField] private Button catalogButton;
     [SerializeField] private Button achievementsButton;
     [SerializeField] private Button marketButton;
@@ -51,6 +55,8 @@ public class PauseMenuController : MonoBehaviour
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
         if (saveButton != null) saveButton.onClick.AddListener(SaveGame);
         if (mainMenuButton != null) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        if (subPanelBackButton != null) subPanelBackButton.onClick.AddListener(CloseSubPanel);
+        if (subPanel != null && subPanel != root) subPanel.SetActive(false);
         if (musicToggle != null) musicToggle.onValueChanged.AddListener(SetMusicEnabled);
         if (sfxToggle != null) sfxToggle.onValueChanged.AddListener(SetSfxEnabled);
     }
@@ -69,14 +75,30 @@ public class PauseMenuController : MonoBehaviour
     public void Pause()
     {
         RefreshAudioToggles();
+        if (subPanel != null && subPanel != root) subPanel.SetActive(false); // her açılışta X ile başla
         if (root != null) root.SetActive(true);
         Time.timeScale = 0f;
     }
 
     public void Resume()
     {
+        if (subPanel != null && subPanel != root) subPanel.SetActive(false);
         if (root != null) root.SetActive(false);
         Time.timeScale = 1f;
+    }
+
+    /// <summary>Durdur menüsünden hangi alt panel açılacaksa: X gizlenir, Y görünür olur.</summary>
+    public void OpenSubPanel()
+    {
+        if (root != null) root.SetActive(false);
+        if (subPanel != null) subPanel.SetActive(true);
+    }
+
+    /// <summary>Y içindeki Geri Dön: Y gizlenir, X (durdur menüsü) tekrar görünür olur.</summary>
+    public void CloseSubPanel()
+    {
+        if (subPanel != null) subPanel.SetActive(false);
+        if (root != null) root.SetActive(true);
     }
 
     private void RefreshAudioToggles()

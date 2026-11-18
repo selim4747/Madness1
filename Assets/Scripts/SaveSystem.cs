@@ -35,6 +35,20 @@ public class SaveSystem : MonoBehaviour
         sessionStartTime = Time.unscaledTime;
     }
 
+    /// <summary>
+    /// Ana menu sahnesinde SaveSystem bilesenı yok — Instance null kaliyordu ve
+    /// ana menude PeekSlot/GetSlotName cagrilari NullReferenceException veriyordu.
+    /// Bilesen yoksa calisma zamaninda olusturur.
+    /// </summary>
+    public static SaveSystem EnsureExists()
+    {
+        if (Instance != null) return Instance;
+        GameObject host = new GameObject("SaveSystem");
+        SaveSystem created = host.AddComponent<SaveSystem>();   // Awake burada calisir, Instance atanir
+        if (Instance == null) Instance = created;
+        return Instance;
+    }
+
     private void Start()
     {
         StartCoroutine(OtomatikKayitDongusu());

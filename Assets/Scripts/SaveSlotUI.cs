@@ -38,10 +38,11 @@ public class SaveSlotUI : MonoBehaviour
 
     public void Refresh()
     {
-        SaveData data = SaveSystem.Instance.PeekSlot(slotIndex);
+        SaveSystem saveSystem = SaveSystem.EnsureExists();
+        SaveData data = saveSystem.PeekSlot(slotIndex);
         bool exists = data != null;
-        if (titleLabel != null) titleLabel.text = data == null ? "Kayıt " + (slotIndex + 1) : SaveSystem.Instance.GetSlotName(slotIndex);
-        if (nameInput != null) nameInput.text = data == null ? "" : SaveSystem.Instance.GetSlotName(slotIndex);
+        if (titleLabel != null) titleLabel.text = data == null ? "Kayıt " + (slotIndex + 1) : saveSystem.GetSlotName(slotIndex);
+        if (nameInput != null) nameInput.text = data == null ? "" : saveSystem.GetSlotName(slotIndex);
 
         if (infoLabel != null)
         {
@@ -52,7 +53,7 @@ public class SaveSlotUI : MonoBehaviour
 
                 infoLabel.text = "Gun " + data.currentDay + "  ·  " + data.gold + " Para\n" +
                                  data.saveTimestamp + "  ·  " + hours + "s " + minutes + "dk\n" +
-                                 "Gereken modlar: " + SaveSystem.Instance.GetRequiredModsText(slotIndex);
+                                 "Gereken modlar: " + saveSystem.GetRequiredModsText(slotIndex);
             }
             else
             {
@@ -67,7 +68,7 @@ public class SaveSlotUI : MonoBehaviour
 
     private void OnLoad()
     {
-        menu.LoadSlot(slotIndex);
+        if (menu != null) menu.LoadSlot(slotIndex);
     }
 
     private void OnNewGame()
@@ -77,7 +78,7 @@ public class SaveSlotUI : MonoBehaviour
 
     private void OnDelete()
     {
-        SaveSystem.Instance.DeleteSlot(slotIndex);
+        SaveSystem.EnsureExists().DeleteSlot(slotIndex);
         Refresh();
         if (ToastNotification.Instance != null)
             ToastNotification.Instance.Show("Slot " + (slotIndex + 1) + " silindi.", 2.5f);
@@ -85,6 +86,6 @@ public class SaveSlotUI : MonoBehaviour
 
     private void OnRename(string value)
     {
-        if (SaveSystem.Instance.RenameSlot(slotIndex, value)) Refresh();
+        if (SaveSystem.EnsureExists().RenameSlot(slotIndex, value)) Refresh();
     }
 }
