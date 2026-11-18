@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Madness.Mods;
+using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -101,13 +102,52 @@ public class MainMenuController : MonoBehaviour
         RefreshContinueSlotButtons();
     }
 
-    /// <summary>Boş slotların butonlarını tıklanamaz yapar.</summary>
+    /// <summary>Buton yazılarını ve boş slotların tıklanamazlığını günceller.</summary>
     private void RefreshContinueSlotButtons()
     {
         if (continueSlotButtons == null) return;
         SaveSystem saveSystem = SaveSystem.EnsureExists();
+
         for (int i = 0; i < continueSlotButtons.Length; i++)
-            if (continueSlotButtons[i] != null) continueSlotButtons[i].interactable = saveSystem.SlotExists(i);
+        {
+            Button button = continueSlotButtons[i];
+            if (button == null) continue;
+
+            button.interactable = saveSystem.SlotExists(i);
+            TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (label != null) label.text = BuildSlotInfo(saveSystem, i);
+        }
+    }
+
+    /// <summary>Slot butonunun yazısı: kayıt adı, gün, para, son kayıt zamanı ve
+    /// kaydın gerektirdiği 6 karakterlik mod kimlikleri (küçük yazı).</summary>
+    private static string BuildSlotInfo(SaveSystem saveSystem, int slot)
+    {
+        SaveData data = saveSystem.PeekSlot(slot);
+        if (data == null) return "Kayıt " + (slot + 1) + "\n<size=65%>Boş slot</size>";
+
+        return saveSystem.GetSlotName(slot) + "\n" +
+               "Gün " + data.currentDay + "  ·  " + data.gold + " Para\n" +
+               "Son kayıt: " + data.saveTimestamp + "\n" +
+               "Modlar:\n" +
+               "<size=60%>" + GetModIdentities(data) + "</size>";
+    }
+
+    private static string GetModIdentities(SaveData data)
+    {
+        if (data.requiredMods == null || data.requiredMods.Count == 0) return "yok";
+
+        System.Text.StringBuilder ids = new System.Text.StringBuilder();
+        for (int i = 0; i < data.requiredMods.Count; i++)
+        {
+            RequiredModSaveEntry mod = data.requiredMods[i];
+            if (mod == null) continue;
+            string id = string.IsNullOrEmpty(mod.modIdentity) ? mod.modId : mod.modIdentity;
+            if (string.IsNullOrEmpty(id)) continue;
+            if (ids.Length > 0) ids.Append(", ");
+            ids.Append(id);
+        }
+        return ids.Length > 0 ? ids.ToString() : "yok";
     }
 
     /// <summary>Yeni oyun — sadece NIYETI isaretler.</summary>
