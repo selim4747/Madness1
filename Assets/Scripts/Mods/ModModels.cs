@@ -8,6 +8,8 @@ namespace Madness.Mods
     public sealed class ModManifest
     {
         public string id = "";
+        [Tooltip("Kayıt bağımlılıklarında gösterilen tam 6 karakterlik harf-rakam kimliği.")]
+        public string identity = "";
         public string name = "";
         public string description = "";
         public string version = "1.0.0";

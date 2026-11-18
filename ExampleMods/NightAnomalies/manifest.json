@@ -6,5 +6,6 @@
   "author": "Madness Mod Example",
   "enabled": false,
   "loadOrder": 50,
-  "entryScript": "NightAnomalies.dll"
+  "entryScript": "NightAnomalies.dll",
+  "identity": "NA3L7Q"
 }

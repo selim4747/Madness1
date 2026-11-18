@@ -124,7 +124,14 @@ public class PlayerSpotlightController : MonoBehaviour
 
     private void Update()
     {
-        if (spotLight == null || transitionElapsed < 0f) return;
+        if (spotLight == null) return;
+
+        // Bu sistem Light2D komponentini kapatmaz. Inspector'da veya baska bir
+        // sistem tarafindan kapatilsa bile spotlight tekrar aktif edilir.
+        if (!spotLight.enabled)
+            spotLight.enabled = true;
+
+        if (transitionElapsed < 0f) return;
 
         float delta = useUnscaledTimeDuringTransition ? Time.unscaledDeltaTime : Time.deltaTime;
         transitionElapsed += delta;
@@ -202,7 +209,10 @@ public class PlayerSpotlightController : MonoBehaviour
     private void ApplySettings(LightSettings settings)
     {
         if (spotLight == null) return;
-        spotLight.enabled = settings.enabled;
+        // Light2D.enabled bu sistemde faz ayari degildir. Bilesen her zaman acik
+        // tutulur; gun/gece farki intensity, radius, angle, color ve falloff ile
+        // kontrol edilir.
+        spotLight.enabled = true;
         spotLight.intensity = settings.intensity;
         spotLight.pointLightOuterRadius = Mathf.Max(0f, settings.radius);
         spotLight.pointLightOuterAngle = Mathf.Clamp(settings.outerAngle, 0f, 360f);

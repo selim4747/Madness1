@@ -12,15 +12,15 @@ namespace MadnessExampleMods
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Register()
         {
-            TryRegister("harder_nights", "Harder Nights", "1.0.0", () => new HarderNightsMod());
-            TryRegister("my_csharp_mod", "My C# Mod", "1.0.0", () => new MyCSharpMod());
-            TryRegister("full_power_example", "Full Power Example", "1.0.0", () => new FullPowerExampleMod());
+            TryRegister("harder_nights", "HN7K2A", "Harder Nights", "1.0.0", () => new HarderNightsMod());
+            TryRegister("my_csharp_mod", "MC8P4X", "My C# Mod", "1.0.0", () => new MyCSharpMod());
+            TryRegister("full_power_example", "FP5Q9Z", "Full Power Example", "1.0.0", () => new FullPowerExampleMod());
         }
 
         // Bir kaydın hatası diğerlerini ve oyunu etkilemez.
-        private static void TryRegister(string id, string name, string version, System.Func<IModModule> factory)
+        private static void TryRegister(string id, string identity, string name, string version, System.Func<IModModule> factory)
         {
-            try { BuiltInModCatalog.Register(id, name, version, factory); }
+            try { BuiltInModCatalog.Register(id, identity, name, version, factory); }
             catch (System.Exception ex) { Debug.LogError("[ExampleBuiltInMods] " + id + " kaydedilemedi: " + ex.Message); }
         }
     }

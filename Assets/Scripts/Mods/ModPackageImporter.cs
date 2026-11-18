@@ -144,6 +144,8 @@ namespace Madness.Mods
             if (string.IsNullOrWhiteSpace(manifest.id)) return "Manifest içinde mod id bulunmalıdır.";
             if (!ModRuntime.IsSafeModId(manifest.id) || manifest.id.IndexOfAny(InvalidIdChars) >= 0)
                 return "Mod id yalnızca güvenli harf, rakam, nokta, alt çizgi ve tire içerebilir.";
+            if (!ModRuntime.IsSixCharacterIdentity(manifest.identity))
+                return "Manifest identity tam 6 harf/rakam karakterinden oluşmalıdır (örnek: ABC123).";
             if (manifest.apiVersion != ModRuntime.CurrentApiVersion.ToString())
                 return "Mod, bu oyunun mod API sürümüyle uyumlu değil.";
             if (manifest.totalConversion && string.IsNullOrWhiteSpace(manifest.mainScene) && string.IsNullOrWhiteSpace(manifest.worldScene))

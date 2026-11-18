@@ -12,6 +12,8 @@ public class SaveSlotUI : MonoBehaviour
     [Header("Referanslar")]
     [SerializeField] private TextMeshProUGUI titleLabel;
     [SerializeField] private TextMeshProUGUI infoLabel;
+    [Tooltip("Opsiyonel. Doldurulursa kayıt adını buradan değiştirebilirsiniz.")]
+    [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private Button loadButton;
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button deleteButton;
@@ -25,16 +27,21 @@ public class SaveSlotUI : MonoBehaviour
         if (loadButton != null) { loadButton.onClick.RemoveAllListeners(); loadButton.onClick.AddListener(OnLoad); }
         if (newGameButton != null) { newGameButton.onClick.RemoveAllListeners(); newGameButton.onClick.AddListener(OnNewGame); }
         if (deleteButton != null) { deleteButton.onClick.RemoveAllListeners(); deleteButton.onClick.AddListener(OnDelete); }
+        if (nameInput != null)
+        {
+            nameInput.onEndEdit.RemoveAllListeners();
+            nameInput.onEndEdit.AddListener(OnRename);
+        }
 
         Refresh();
     }
 
     public void Refresh()
     {
-        if (titleLabel != null) titleLabel.text = "Slot " + (slotIndex + 1);
-
         SaveData data = SaveSystem.Instance.PeekSlot(slotIndex);
         bool exists = data != null;
+        if (titleLabel != null) titleLabel.text = data == null ? "Kayıt " + (slotIndex + 1) : SaveSystem.Instance.GetSlotName(slotIndex);
+        if (nameInput != null) nameInput.text = data == null ? "" : SaveSystem.Instance.GetSlotName(slotIndex);
 
         if (infoLabel != null)
         {
@@ -44,7 +51,8 @@ public class SaveSlotUI : MonoBehaviour
                 int minutes = Mathf.FloorToInt((data.totalPlayTimeSeconds % 3600f) / 60f);
 
                 infoLabel.text = "Gun " + data.currentDay + "  ·  " + data.gold + " Para\n" +
-                                 data.saveTimestamp + "  ·  " + hours + "s " + minutes + "dk";
+                                 data.saveTimestamp + "  ·  " + hours + "s " + minutes + "dk\n" +
+                                 "Gereken modlar: " + SaveSystem.Instance.GetRequiredModsText(slotIndex);
             }
             else
             {
@@ -73,5 +81,10 @@ public class SaveSlotUI : MonoBehaviour
         Refresh();
         if (ToastNotification.Instance != null)
             ToastNotification.Instance.Show("Slot " + (slotIndex + 1) + " silindi.", 2.5f);
+    }
+
+    private void OnRename(string value)
+    {
+        if (SaveSystem.Instance.RenameSlot(slotIndex, value)) Refresh();
     }
 }

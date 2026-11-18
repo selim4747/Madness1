@@ -1,4 +1,4 @@
-// SaveSystem.cs — 3 slotlu kayit + gun basi otomatik snapshot
+// SaveSystem.cs — 5 isimlendirilebilir slot + gun basi otomatik snapshot
 // NJG Games | Delilik | Unity 6 | UTF-8 with BOM
 using UnityEngine;
 using Madness.Mods;
@@ -11,7 +11,7 @@ public class SaveSystem : MonoBehaviour
     public static SaveSystem Instance { get; private set; }
     public SaveData Current { get; private set; } = new SaveData();
 
-    public const int SlotCount = 3;
+    public const int SlotCount = 5;
     private const string SnapshotFileName = "day_snapshot.json";
 
     /// <summary>Su an hangi slota otomatik kayit yapiliyor (-1 = hicbiri).</summary>
@@ -136,6 +136,7 @@ public class SaveSystem : MonoBehaviour
     {
         if (!IsValidSlot(slot)) { DevLog.Warning("[SaveSystem] Geçersiz slot: " + slot); return; }
         GatherFromScene();
+        if (string.IsNullOrWhiteSpace(Current.slotName)) Current.slotName = "Kayıt " + (slot + 1);
         Current.saveTimestamp = DateTime.Now.ToString("dd.MM.yyyy HH:mm");
         Current.totalPlayTimeSeconds += Time.unscaledTime - sessionStartTime;
         sessionStartTime = Time.unscaledTime;
@@ -154,6 +155,45 @@ public class SaveSystem : MonoBehaviour
         for (int i = 0; i < SlotCount; i++)
             if (SlotExists(i)) return true;
         return false;
+    }
+
+    public string GetSlotName(int slot)
+    {
+        SaveData data = PeekSlot(slot);
+        return data == null || string.IsNullOrWhiteSpace(data.slotName) ? "Kayıt " + (slot + 1) : data.slotName;
+    }
+
+    public bool RenameSlot(int slot, string name)
+    {
+        if (!IsValidSlot(slot) || !SlotExists(slot)) return false;
+        SaveData data = PeekSlot(slot);
+        if (data == null) return false;
+        data.slotName = string.IsNullOrWhiteSpace(name) ? "Kayıt " + (slot + 1) : name.Trim();
+        WriteJson(SlotPath(slot), data, true);
+        if (ActiveSlot == slot) Current.slotName = data.slotName;
+        return true;
+    }
+
+    public SaveData[] GetAllSlotSummaries()
+    {
+        SaveData[] result = new SaveData[SlotCount];
+        for (int i = 0; i < SlotCount; i++) result[i] = PeekSlot(i);
+        return result;
+    }
+
+    public string GetRequiredModsText(int slot)
+    {
+        SaveData data = PeekSlot(slot);
+        if (data == null || data.requiredMods == null || data.requiredMods.Count == 0) return "Gereken mod yok";
+        System.Text.StringBuilder text = new System.Text.StringBuilder();
+        for (int i = 0; i < data.requiredMods.Count; i++)
+        {
+            RequiredModSaveEntry mod = data.requiredMods[i];
+            if (mod == null) continue;
+            if (text.Length > 0) text.Append(", ");
+            text.Append(string.IsNullOrEmpty(mod.modIdentity) ? mod.modId : mod.modIdentity);
+        }
+        return text.ToString();
     }
 
     public void LoadFromSlot(int slot)
