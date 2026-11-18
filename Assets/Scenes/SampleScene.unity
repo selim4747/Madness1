@@ -16538,7 +16538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1058355863
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21180,7 +21180,7 @@ GameObject:
   - component: {fileID: 1361440455}
   - component: {fileID: 1361440454}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: SoundButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27081,7 +27081,7 @@ GameObject:
   - component: {fileID: 1725650324}
   - component: {fileID: 1725650323}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: MenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32400,7 +32400,7 @@ GameObject:
   - component: {fileID: 2051937559}
   - component: {fileID: 2051937558}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: MusicButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33147,7 +33147,7 @@ GameObject:
   - component: {fileID: 2087113904}
   - component: {fileID: 2087113903}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: SaveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
