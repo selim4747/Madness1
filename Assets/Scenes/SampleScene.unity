@@ -5469,7 +5469,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc331c4ee05931c4597214a1d6410e5c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuController
   root: {fileID: 0}
   pauseButton: {fileID: 0}
@@ -28370,6 +28370,9 @@ MonoBehaviour:
   - type: 3
     prefab: {fileID: 1953093942648582668, guid: 21678b0b318bcf849a0ecf886d7416e8, type: 3}
     prewarmCount: 1
+  - type: 0
+    prefab: {fileID: 3260110820978180880, guid: 0261caf10b57b49b4a002b06ad18a6e3, type: 3}
+    prewarmCount: 1
 --- !u!4 &1873830217
 Transform:
   m_ObjectHideFlags: 0
@@ -29587,7 +29590,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -11.399902, y: -8.400055}
+  m_AnchoredPosition: {x: -11.399902, y: -8.400024}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1956674849
