@@ -5471,19 +5471,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc331c4ee05931c4597214a1d6410e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuController
-  root: {fileID: 0}
-  pauseButton: {fileID: 0}
+  root: {fileID: 345356396}
+  pauseButton: {fileID: 1601144741}
   resumeButton: {fileID: 0}
+  saveButton: {fileID: 0}
+  mainMenuButton: {fileID: 0}
+  sfxButton: {fileID: 0}
+  musicButton: {fileID: 0}
   catalogButton: {fileID: 0}
   achievementsButton: {fileID: 0}
   marketButton: {fileID: 0}
   upgradeButton: {fileID: 0}
   settingsButton: {fileID: 0}
-  saveButton: {fileID: 0}
   upgradePanel: {fileID: 0}
-  mainMenuButton: {fileID: 0}
-  musicToggle: {fileID: 0}
-  sfxToggle: {fileID: 0}
   mainMenuSceneName: AnaMenu
 --- !u!1 &347053161
 GameObject:
@@ -24939,9 +24939,8 @@ GameObject:
   - component: {fileID: 1601144742}
   - component: {fileID: 1601144741}
   - component: {fileID: 1601144744}
-  - component: {fileID: 1601144745}
   m_Layer: 5
-  m_Name: Test
+  m_Name: Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25011,9 +25010,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1601144745}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: AnaMenuyeDonButonu, Assembly-CSharp
-        m_MethodName: AnaMenuyeDon
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -25022,7 +25021,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
 --- !u!114 &1601144742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25075,19 +25074,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ButtonPunch
   punchScale: 1.15
   sure: 0.12
---- !u!114 &1601144745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1601144739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a4ffc0285089f24da65dff57d20b797, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnaMenuyeDonButonu
-  anaMenuSahneAdi: AnaMenu
 --- !u!1 &1614989142
 GameObject:
   m_ObjectHideFlags: 0
