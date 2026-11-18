@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 870af40673a3b4bcd8e030b1abe0e995
+guid: b34f2fce73118437ab13c779e47d8cc0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1815191505010999431
-    second: Hayalet_0
+      213: 5125773749709670871
+    second: Hayalen19_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hayalet_0
+      name: Hayalen19_0
       rect:
         serializedVersion: 2
         x: 23
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 97f338881f42fc6e0800000000000000
-      internalID: -1815191505010999431
+      spriteID: 7d9877e5118622740800000000000000
+      internalID: 5125773749709670871
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Hayalet_0: -1815191505010999431
+      Hayalen19_0: 5125773749709670871
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -257,9 +257,9 @@ public class NpcHizliOlusturucu : EditorWindow
     private void YeniAyarDosyasiOlustur()
     {
         NpcHavuzuAyarlari yeni = ScriptableObject.CreateInstance<NpcHavuzuAyarlari>();
-        yeni.kadinIsimleri = new List<string> { "Ayşe", "Fatma", "Elif", "Zeynep", "Merve", "Selin" };
-        yeni.erkekIsimleri = new List<string> { "Ahmet", "Mehmet", "Can", "Burak", "Emre", "Kerem" };
-        yeni.soyadlar = new List<string> { "Yılmaz", "Kaya", "Demir", "Çelik", "Arslan" };
+        yeni.kadinIsimleri = new List<string> { "Zafkı", "Afor", "Ate", "Naleg", "Nalva", "Narız", "Yejen", "Izdag", "Mesli", "Ezli", "Nodlo", "Gılez" };
+        yeni.erkekIsimleri = new List<string> { "Kaelan", "Feil", "Saek", "Tamıs", "Gize", "Danpar", "Egir", "Geceg", "Kyldo", "Gri", "Zal", "Igme", "Yulkom", "Nıraz", "Nodlo" };
+        yeni.soyadlar = new List<string> { "Bura", "Sarı", "Eşci", "Eldig", "Sanu" };
         yeni.meslekler = new List<string> { "Öğretmen", "Mühendis", "Doktor", "Esnaf" };
         yeni.diyaloglar = new List<string> { "Bugün hava çok güzel.", "Bu dükkanı çok seviyorum.", "Yeni bir kitap arıyorum." };
         yeni.meslekTurEslesmeleri = new List<string> { "Öğretmen: Tarih, Felsefe", "Doktor: Bilim" };

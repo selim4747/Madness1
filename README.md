@@ -1,29 +1,24 @@
-# Madness1
+# Madness1 — Kullanılmayan Mekanik Hook'ları + Menü Kilit Sistemi
 
-Unity 6 (6000.4.6f1) 2D kitapçı / kütüphane temalı oyun.
+## İçerik
 
-## Özellikler
-- Gündüz: müşteri servisi, raf yönetimi, bahçe sohbeti, özel raflar, öğrenci sistemi
-- Gece: dalga / boss savaşı
-- Kapsamlı save sistemi (3 slot + gün başı snapshot + oturum)
-- NPC kimlikleri, çoklu kişilik, diyalog, dedikodu, başarımlar
+- `Assets/Scripts/MenuUnlockController.cs`  
+  Ana menü kilitleri. İstatistikler/Başarımlar kilitsiz. Çok Oyunculu 5. gün. Mod Oluştur 24. gece.
+
+- `Assets/Scripts/Mods/ModContextsExtra.cs`  
+  Kitap etkileri, Personel, Bahçe bitki, Özel etkinlik, Tüketilebilir, Dekorasyon context'leri.
+
+- `Assets/Scripts/UnusedMechanicsHooks.cs`  
+  Boş hook metodları. Orijinal oyunda hiçbir etki yapmaz.
 
 ## Kurulum
-1. Unity 6000.4.6f1 (veya uyumlu) ile aç.
-2. NavMeshPlus paketi Packages/manifest.json içinde zaten tanımlı.
-3. Ana sahne: `Assets/Scenes/AnaMenu.unity`
 
-## Önemli Sistemler
-- `ShelfRegistry` — rafları merkezi tutar (FindObjectsOfType yerine)
-- `CustomerController` — müşteri AI state machine
-- `CounterController` — kasa kuyruğu
-- `SaveSystem` — kayıt / yükleme
-- `EconomyManager`, `GameManager`, `BahceYoneticisi` vb. singleton'lar
-
-## Geliştirme Notları
-- Debug log'ları `DevLog` üzerinden gider (Editor / Development Build dışında sessiz).
-- NavMesh geçit ışınlaması için `NavMeshPortalConfig` ScriptableObject oluşturup CustomerController'a atayabilirsin.
-- Build klasörleri ve `.DS_Store` `.gitignore`'da.
+1. Bu klasördeki dosyaları Unity projenin `Assets/` altına aynı yollarla kopyala.
+2. Ana menü sahnesine boş bir GameObject oluştur, `MenuUnlockController` ekle.
+3. Inspector'da butonları ata (requiredDay ve alwaysUnlocked ayarlarını yap).
+4. İstersen bir GameObject'e `UnusedMechanicsHooks` ekle (DontDestroyOnLoad ile çalışır).
 
 ## Not
-Bu README otomatik oluşturulmuştur. Daha fazla detay için script yorumlarına bak.
+
+Bu kodlar **orijinal oyunda hiçbir mekanik eklemez veya değiştirmez**.  
+Sadece modların ileride dinleyebileceği boş context'ler ve menü kilit sistemi sağlar.

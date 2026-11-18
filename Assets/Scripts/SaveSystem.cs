@@ -267,6 +267,7 @@ public class SaveSystem : MonoBehaviour
         if (ShopManager.Instance != null) ShopManager.Instance.ApplySave(Current);
         if (CharacterUpgradeManager.Instance != null) CharacterUpgradeManager.Instance.ApplySave(Current);
         if (PersonnelCapacityUpgrade.Instance != null) PersonnelCapacityUpgrade.Instance.ApplySave(Current);
+        if (PlayerSpotlightController.Instance != null) PlayerSpotlightController.Instance.ApplySave(Current);
         if (StudentDeskManager.Instance != null) StudentDeskManager.Instance.ApplySave(Current);
         if (SatisfactionTracker.Instance != null) SatisfactionTracker.Instance.ApplySave(Current);
         if (AchievementManager.Instance != null) AchievementManager.Instance.ApplySave(Current);
@@ -297,6 +298,7 @@ public class SaveSystem : MonoBehaviour
         if (ShopManager.Instance != null) ShopManager.Instance.WriteToSave(Current);
         if (CharacterUpgradeManager.Instance != null) CharacterUpgradeManager.Instance.WriteToSave(Current);
         if (PersonnelCapacityUpgrade.Instance != null) PersonnelCapacityUpgrade.Instance.WriteToSave(Current);
+        if (PlayerSpotlightController.Instance != null) PlayerSpotlightController.Instance.WriteToSave(Current);
         if (StudentDeskManager.Instance != null) StudentDeskManager.Instance.WriteToSave(Current);
         if (SatisfactionTracker.Instance != null) SatisfactionTracker.Instance.WriteToSave(Current);
         if (AchievementManager.Instance != null) AchievementManager.Instance.WriteToSave(Current);

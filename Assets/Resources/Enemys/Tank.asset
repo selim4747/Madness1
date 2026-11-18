@@ -22,7 +22,7 @@ MonoBehaviour:
   isRanged: 0
   preferredDistance: 4
   projectileSpeed: 6
-  spawnWeight: 1
+  spawnWeight: 0.66
   minDayToAppear: 1
   healthGrowthPerDay: 1.05
   damageGrowthPerDay: 1.03

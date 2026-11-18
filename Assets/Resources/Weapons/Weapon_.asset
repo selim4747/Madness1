@@ -17,7 +17,7 @@ MonoBehaviour:
   displayName: Tabanca Mk1
   description: Hizli ates eden temel silah.
   damageMultiplier: 1
-  fireInterval: 0.7
+  fireInterval: 1.25
   range: 6
   projectileSpeed: 4
   price: 0
