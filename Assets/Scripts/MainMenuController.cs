@@ -150,9 +150,30 @@ public class MainMenuController : MonoBehaviour
         return ids.Length > 0 ? ids.ToString() : "yok";
     }
 
-    /// <summary>Yeni oyun — sadece NIYETI isaretler.</summary>
+    /// <summary>Yeni oyun — sadece NIYETI isaretler. Verilen slot bossa orada, doluysa ilk bos
+    /// slota yazilir; hic bos slot yoksa mevcut kaydin uzerine yazmaz.</summary>
     public void StartNewGame(int slot)
     {
+        SaveSystem saveSystem = SaveSystem.EnsureExists();
+        if (slot < 0 || slot >= SaveSystem.SlotCount) slot = 0;
+
+        if (saveSystem.SlotExists(slot))
+        {
+            int emptySlot = -1;
+            for (int i = 0; i < SaveSystem.SlotCount; i++)
+                if (!saveSystem.SlotExists(i)) { emptySlot = i; break; }
+
+            if (emptySlot < 0)
+            {
+                Debug.LogWarning("[MainMenuController] Tüm kayıt slotları dolu — yeni oyun başlatılamadı.");
+                if (ToastNotification.Instance != null)
+                    ToastNotification.Instance.Show("Tüm kayıt slotları dolu. Önce bir kaydı silin.", 3f);
+                return;
+            }
+
+            slot = emptySlot;
+        }
+
         SaveSystem.RequestNewGame(slot);
         SceneManager.LoadScene(gameSceneName);
     }
