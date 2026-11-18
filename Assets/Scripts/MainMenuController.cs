@@ -34,12 +34,14 @@ public class MainMenuController : MonoBehaviour
     [Header("Mod seçimi")]
     [Tooltip("Z paneli: 'Modlar' butonuna basılınca görünen mod listesi paneli.")]
     [SerializeField] private GameObject modSelectionPanel;
-    [Tooltip("Z panelindeki mod butonları. Kaç mod varsa o kadarı kullanılır, fazlası gizlenir. OnClick'i elle bağlamana gerek yok.")]
+    [Tooltip("Z panelindeki mod butonları. Mod sayısı kadar görünür, geri kalanı gizlenir.")]
     [SerializeField] private Button[] modSlotButtons;
     [Tooltip("Z panelinin içindeki Geri Dön butonu. Basılınca Z gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
     [SerializeField] private Button modBackButton;
 
     private ModRuntime modRuntime;
+    private string pendingDeleteModId;
+    private float pendingDeleteUntil;
 
     private void Start()
     {
@@ -150,15 +152,50 @@ public class MainMenuController : MonoBehaviour
             if (button == null) continue;
 
             bool used = i < mods.Count;
-            button.gameObject.SetActive(used); // mod sayısından fazla buton görünmez
+            button.gameObject.SetActive(used);
+            button.onClick.RemoveAllListeners();
             if (!used) continue;
 
+            ModManifest mod = mods[i];
             TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
-            if (label != null) label.text = BuildModInfo(mods[i]);
+            if (label != null) label.text = BuildModDetails(mod);
+            bool builtIn = modRuntime != null && modRuntime.IsBuiltIn(mod.id);
+            button.onClick.AddListener(() => SetModEnabled(mod.id, !mod.enabled, builtIn));
+            ConfigureDeleteButton(button, mod, builtIn);
         }
 
         if (mods.Count > modSlotButtons.Length)
             Debug.LogWarning($"[MainMenuController] {mods.Count} mod var ama sadece {modSlotButtons.Length} mod butonu atanmış; fazlası gösterilmiyor.");
+    }
+
+    private void ConfigureDeleteButton(Button modButton, ModManifest mod, bool builtIn)
+    {
+        Transform existing = modButton.transform.Find("ModDeleteButton");
+        Button delete = existing == null ? CreateDeleteButton(modButton.transform) : existing.GetComponent<Button>();
+        delete.onClick.RemoveAllListeners();
+        delete.interactable = !builtIn;
+        TextMeshProUGUI label = delete.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (label != null) label.text = builtIn ? "Silinemez" : "Sil";
+        if (!builtIn) delete.onClick.AddListener(() => DeleteMod(mod.id));
+    }
+
+    private static Button CreateDeleteButton(Transform parent)
+    {
+        GameObject buttonObject = new GameObject("ModDeleteButton", typeof(RectTransform), typeof(Image), typeof(Button));
+        buttonObject.transform.SetParent(parent, false);
+        RectTransform rect = buttonObject.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(1f, 0f);
+        rect.anchorMax = new Vector2(1f, 0f);
+        rect.pivot = new Vector2(1f, 0f);
+        rect.anchoredPosition = new Vector2(-12f, 10f);
+        rect.sizeDelta = new Vector2(120f, 36f);
+        buttonObject.GetComponent<Image>().color = new Color(0.45f, 0.14f, 0.14f, 1f);
+        TextMeshProUGUI label = buttonObject.AddComponent<TextMeshProUGUI>();
+        label.alignment = TextAlignmentOptions.Center;
+        label.fontSize = 18;
+        label.color = Color.white;
+        label.raycastTarget = false;
+        return buttonObject.GetComponent<Button>();
     }
 
     /// <summary>Harici modlar + yerleşik modlar (varsa) tek listede.</summary>
@@ -201,19 +238,49 @@ public class MainMenuController : MonoBehaviour
         return mods;
     }
 
-    /// <summary>Buton yazısı: mod adı/sürümü/yapımcısı ve kimlik + durum satırı.</summary>
-    private string BuildModInfo(ModManifest mod)
+    /// <summary>Mod butonu yazısı: açıklama, sürüm, yapımcı, 6 karakterlik kimlik ve durum.</summary>
+    private string BuildModDetails(ModManifest mod)
     {
         string name = string.IsNullOrWhiteSpace(mod.name) ? mod.id : mod.name;
         string identity = string.IsNullOrWhiteSpace(mod.identity) ? "-" : mod.identity;
-        string author = string.IsNullOrWhiteSpace(mod.author) ? "" : "  ·  " + mod.author;
+        string version = string.IsNullOrWhiteSpace(mod.version) ? "-" : mod.version;
+        string author = string.IsNullOrWhiteSpace(mod.author) ? "Bilinmiyor" : mod.author;
+        string description = string.IsNullOrWhiteSpace(mod.description) ? "Açıklama yok." : mod.description;
+        string status = modRuntime != null && !modRuntime.IsBuiltIn(mod.id)
+            ? modRuntime.GetModStatus(mod)
+            : (mod.enabled ? "Açık" : "Kapalı");
 
-        string status;
-        if (modRuntime != null && !modRuntime.IsBuiltIn(mod.id)) status = modRuntime.GetModStatus(mod);
-        else status = mod.enabled ? "Açık" : "Kapalı";
+        return name + "  v" + version + "\n" +
+               "<size=65%>Kimlik: " + identity + "  ·  Yapımcı: " + author + "  ·  Durum: " + status + "</size>\n" +
+               "<size=65%>" + description + "</size>";
+    }
 
-        return name + "  v" + mod.version + author + "\n" +
-               "<size=65%>Kimlik: " + identity + "  ·  " + status + "</size>";
+    private void SetModEnabled(string modId, bool enabled, bool builtIn)
+    {
+        bool changed = builtIn
+            ? BuiltInModCatalog.SetEnabled(modId, enabled)
+            : modRuntime != null && modRuntime.SetExternalModEnabled(modId, enabled);
+        if (!changed) RefreshModButtons();
+    }
+
+    private void DeleteMod(string modId)
+    {
+        if (pendingDeleteModId != modId || Time.unscaledTime > pendingDeleteUntil)
+        {
+            pendingDeleteModId = modId;
+            pendingDeleteUntil = Time.unscaledTime + 5f;
+            if (ToastNotification.Instance != null)
+                ToastNotification.Instance.Show("Silmek için aynı butona tekrar basın.", 3f);
+            return;
+        }
+
+        string message;
+        if (modRuntime != null) modRuntime.DeleteExternalMod(modId, out message);
+        else message = "Mod sistemi hazır değil.";
+        pendingDeleteModId = null;
+        pendingDeleteUntil = 0f;
+        if (ToastNotification.Instance != null) ToastNotification.Instance.Show(message, 3f);
+        RefreshModButtons();
     }
 
     private void OnDestroy()
