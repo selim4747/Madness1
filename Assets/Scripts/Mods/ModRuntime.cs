@@ -22,6 +22,14 @@ namespace Madness.Mods
             }
             return true;
         }
+
+        public static bool IsSixCharacterIdentity(string identity)
+        {
+            if (string.IsNullOrWhiteSpace(identity) || identity.Length != 6) return false;
+            for (int i = 0; i < identity.Length; i++)
+                if (!char.IsLetterOrDigit(identity[i])) return false;
+            return true;
+        }
         public string ModsDirectory { get; private set; }
         public IReadOnlyList<ModManifest> LoadedManifests { get { return loadedManifests; } }
         public IReadOnlyList<ModDiagnostic> Diagnostics { get { return diagnostics; } }
@@ -389,6 +397,44 @@ namespace Madness.Mods
                 try { aware.OnBeforeSave(this); } catch (Exception ex) { Debug.LogException(ex); }
             }
             data.modStates = new List<ModSaveEntry>(states);
+            data.requiredMods = BuildRequiredModList();
+        }
+
+        public List<RequiredModSaveEntry> BuildRequiredModList()
+        {
+            List<RequiredModSaveEntry> result = new List<RequiredModSaveEntry>();
+            for (int i = 0; i < loadedManifests.Count; i++)
+            {
+                ModManifest manifest = loadedManifests[i];
+                if (manifest == null || !manifest.enabled) continue;
+                result.Add(new RequiredModSaveEntry { modId = manifest.id, modIdentity = manifest.identity, version = manifest.version });
+            }
+            foreach (string builtInId in BuiltInModCatalog.GetAvailableIds())
+            {
+                if (!BuiltInModCatalog.IsEnabled(builtInId)) continue;
+                result.Add(new RequiredModSaveEntry
+                {
+                    modId = builtInId,
+                    modIdentity = BuiltInModCatalog.GetIdentity(builtInId),
+                    version = "built-in"
+                });
+            }
+            return result;
+        }
+
+        public List<string> GetMissingRequiredMods(SaveData data)
+        {
+            List<string> missing = new List<string>();
+            if (data == null || data.requiredMods == null) return missing;
+            for (int i = 0; i < data.requiredMods.Count; i++)
+            {
+                RequiredModSaveEntry required = data.requiredMods[i];
+                if (required == null) continue;
+                bool found = loadedManifests.Any(m => string.Equals(m.id, required.modId, StringComparison.OrdinalIgnoreCase)) ||
+                             BuiltInModCatalog.Contains(required.modId);
+                if (!found) missing.Add(string.IsNullOrEmpty(required.modIdentity) ? required.modId : required.modIdentity);
+            }
+            return missing;
         }
 
         public void RegisterBuiltInModules(IEnumerable<IModModule> builtIns)

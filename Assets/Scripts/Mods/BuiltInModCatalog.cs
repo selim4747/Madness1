@@ -16,6 +16,7 @@ namespace Madness.Mods
         private sealed class Entry
         {
             public string Id;
+            public string Identity;
             public string Name;
             public Func<IModModule> Factory;
         }
@@ -24,12 +25,23 @@ namespace Madness.Mods
             new Dictionary<string, Entry>(StringComparer.OrdinalIgnoreCase);
         public static void Register(string id, string name, string version, Func<IModModule> factory)
         {
+            string fallback = id == null ? "MOD000" : id;
+            if (fallback.Length > 6) fallback = fallback.Substring(0, 6);
+            if (fallback.Length < 6) fallback = fallback.PadRight(6, '0');
+            Register(id, fallback, name, version, factory);
+        }
+
+        public static void Register(string id, string identity, string name, string version, Func<IModModule> factory)
+        {
             if (string.IsNullOrWhiteSpace(id) || factory == null)
                 throw new ArgumentException("Yerleşik mod kimliği ve factory zorunludur.");
+            if (!ModRuntime.IsSixCharacterIdentity(identity))
+                throw new ArgumentException("Yerleşik mod identity tam 6 harf/rakam olmalıdır.");
             // Editörde "Domain Reload" kapalıyken tekrar kayıt oyunu bozmasın: aynı kimlik üzerine yazılır.
             Entries[id] = new Entry
             {
                 Id = id,
+                Identity = identity,
                 Name = string.IsNullOrWhiteSpace(name) ? id : name,
                 Factory = factory
             };
@@ -40,6 +52,9 @@ namespace Madness.Mods
 
         public static string GetDisplayName(string id)
             => Entries.TryGetValue(id ?? "", out Entry entry) ? entry.Name : id;
+
+        public static string GetIdentity(string id)
+            => Entries.TryGetValue(id ?? "", out Entry entry) ? entry.Identity : "";
 
         public static bool Contains(string id)
             => Entries.ContainsKey(id ?? "");

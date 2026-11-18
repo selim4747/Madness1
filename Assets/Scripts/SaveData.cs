@@ -53,8 +53,19 @@ public class CustomerSaveEntry
 }
 
 [Serializable]
+public class RequiredModSaveEntry
+{
+    public string modId = "";
+    public string modIdentity = "";
+    public string version = "";
+}
+
+[Serializable]
 public class SaveData
 {
+    public int saveSchemaVersion = 2;
+    public string slotName = "";
+    public List<RequiredModSaveEntry> requiredMods = new List<RequiredModSaveEntry>();
     // Modlar ana kayıt şemasını değiştirmeden kendi durumlarını isim alanında saklar.
     public List<Madness.Mods.ModSaveEntry> modStates = new List<Madness.Mods.ModSaveEntry>();
     // --- OTURUM DURUMU (Ana Menu'ye donunce ayni saniyeden devam icin) ---

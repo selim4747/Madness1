@@ -53,6 +53,8 @@ namespace Madness.Mods
     {
         [Header("Mod kimliği")]
         public string id = "my_mod";
+        [Tooltip("Tam 6 karakter; yalnızca A-Z, a-z ve 0-9. Kayıt bağımlılığı olarak kullanılır.")]
+        public string identity = "ABC123";
         public string displayName = "Yeni Mod";
         [TextArea(2, 5)] public string description = "";
         public string version = "1.0.0";
