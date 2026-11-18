@@ -1,4 +1,4 @@
-﻿// PauseMenuController.cs — Durdur menusu: devam, kaydet, sesler, ana menu
+﻿// PauseMenuController.cs — Durdur menusu: devam, kaydet, ana menu, ses
 // NJG Games | Delilik | Unity 6 | UTF-8
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,60 +10,59 @@ public class PauseMenuController : MonoBehaviour
     public static PauseMenuController Instance { get; private set; }
 
     [Header("Panel")]
+    [Tooltip("Durdur paneli: sahnede hazır olmalı, oyun başında kapatılır.")]
     [SerializeField] private GameObject root;
+    [Tooltip("Panel açan buton (eski 'Oyunu Durdur' butonunun yerine koyacağın buton).")]
     [SerializeField] private Button pauseButton;
-    [SerializeField] private Button resumeButton;
 
-    [Header("Alt paneller")]
-    [Tooltip("Y paneli: durdur menüsünden açılan alt panel. Atanmazsa davranış değişmez.")]
-    [SerializeField] private GameObject subPanel;
-    [Tooltip("Y panelinin içindeki Geri Dön butonu. Basılınca Y gizlenir ve durdur menüsü (X) görünür olur.")]
-    [SerializeField] private Button subPanelBackButton;
+    [Header("Panel butonları")]
+    [SerializeField] private Button resumeButton;
+    [SerializeField] private Button saveButton;
+    [SerializeField] private Button mainMenuButton;
+    [Tooltip("Ses aç/kapa. Buton yazısı otomatik 'Ses: Açık/Kapalı' olur.")]
+    [SerializeField] private Button sfxButton;
+    [Tooltip("Müzik aç/kapa. Buton yazısı otomatik 'Müzik: Açık/Kapalı' olur.")]
+    [SerializeField] private Button musicButton;
+
+    [Header("Ek butonlar")]
     [SerializeField] private Button catalogButton;
     [SerializeField] private Button achievementsButton;
     [SerializeField] private Button marketButton;
     [SerializeField] private Button upgradeButton;
     [SerializeField] private Button settingsButton;
-    [SerializeField] private Button saveButton;
     [SerializeField] private UpgradePanelUI upgradePanel;
 
-    [Header("Pause ek butonlari")]
-    [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Toggle musicToggle;
-    [SerializeField] private Toggle sfxToggle;
+    [Header("Sahne")]
     [SerializeField] private string mainMenuSceneName = "AnaMenu";
 
     public bool IsPaused { get { return root != null && root.activeSelf; } }
+
     private float musicBeforeMute = 0.7f;
     private float sfxBeforeMute = 1f;
-    private bool muteCallbacksReady;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
-        if (root == null) CreateRuntimePauseUI();
         if (root != null) root.SetActive(false);
 
         if (pauseButton != null) pauseButton.onClick.AddListener(Pause);
         if (resumeButton != null) resumeButton.onClick.AddListener(Resume);
+        if (saveButton != null) saveButton.onClick.AddListener(SaveGame);
+        if (mainMenuButton != null) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        if (sfxButton != null) sfxButton.onClick.AddListener(ToggleSfx);
+        if (musicButton != null) musicButton.onClick.AddListener(ToggleMusic);
         if (catalogButton != null) catalogButton.onClick.AddListener(OpenCatalog);
         if (achievementsButton != null) achievementsButton.onClick.AddListener(OpenAchievements);
         if (marketButton != null) marketButton.onClick.AddListener(OpenMarket);
         if (upgradeButton != null) upgradeButton.onClick.AddListener(OpenUpgrades);
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
-        if (saveButton != null) saveButton.onClick.AddListener(SaveGame);
-        if (mainMenuButton != null) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
-        if (subPanelBackButton != null) subPanelBackButton.onClick.AddListener(CloseSubPanel);
-        if (subPanel != null) subPanel.SetActive(false);
-        if (musicToggle != null) musicToggle.onValueChanged.AddListener(SetMusicEnabled);
-        if (sfxToggle != null) sfxToggle.onValueChanged.AddListener(SetSfxEnabled);
     }
 
     private void Start()
     {
-        RefreshAudioToggles();
+        RefreshAudioButtons();
     }
 
     private void OnDestroy()
@@ -74,70 +73,71 @@ public class PauseMenuController : MonoBehaviour
 
     public void Pause()
     {
-        RefreshAudioToggles();
-        if (subPanel != null) subPanel.SetActive(false); // her açılışta X ile başla
-        if (root != null) root.SetActive(true);
+        if (root == null) return;
+
+        RefreshAudioButtons();
+        root.SetActive(true);
         Time.timeScale = 0f;
     }
 
     public void Resume()
     {
-        if (subPanel != null) subPanel.SetActive(false);
         if (root != null) root.SetActive(false);
         Time.timeScale = 1f;
     }
 
-    /// <summary>Durdur menüsünden hangi alt panel açılacaksa: X gizlenir, Y görünür olur.</summary>
-    public void OpenSubPanel()
-    {
-        if (root != null) root.SetActive(false);
-        if (subPanel != null) subPanel.SetActive(true);
-    }
+    // ── Ses / müzik butonları ──
 
-    /// <summary>Y içindeki Geri Dön: Y gizlenir, X (durdur menüsü) tekrar görünür olur.</summary>
-    public void CloseSubPanel()
-    {
-        if (subPanel != null) subPanel.SetActive(false);
-        if (root != null) root.SetActive(true);
-    }
-
-    private void RefreshAudioToggles()
+    private void ToggleMusic()
     {
         if (AudioManager.Instance == null) return;
-        muteCallbacksReady = false;
-        if (musicToggle != null) musicToggle.SetIsOnWithoutNotify(AudioManager.Instance.MusicVolume > 0.001f);
-        if (sfxToggle != null) sfxToggle.SetIsOnWithoutNotify(AudioManager.Instance.SfxVolume > 0.001f);
-        muteCallbacksReady = true;
-    }
 
-    private void SetMusicEnabled(bool enabled)
-    {
-        if (!muteCallbacksReady || AudioManager.Instance == null) return;
-        if (enabled)
-        {
-            float value = musicBeforeMute > 0.001f ? musicBeforeMute : 0.7f;
-            AudioManager.Instance.SetMusicVolume(value);
-        }
-        else
+        if (AudioManager.Instance.MusicVolume > 0.001f)
         {
             musicBeforeMute = AudioManager.Instance.MusicVolume;
             AudioManager.Instance.SetMusicVolume(0f);
         }
+        else
+        {
+            AudioManager.Instance.SetMusicVolume(musicBeforeMute > 0.001f ? musicBeforeMute : 0.7f);
+        }
+
+        RefreshAudioButtons();
     }
 
-    private void SetSfxEnabled(bool enabled)
+    private void ToggleSfx()
     {
-        if (!muteCallbacksReady || AudioManager.Instance == null) return;
-        if (enabled)
-        {
-            float value = sfxBeforeMute > 0.001f ? sfxBeforeMute : 1f;
-            AudioManager.Instance.SetSfxVolume(value);
-        }
-        else
+        if (AudioManager.Instance == null) return;
+
+        if (AudioManager.Instance.SfxVolume > 0.001f)
         {
             sfxBeforeMute = AudioManager.Instance.SfxVolume;
             AudioManager.Instance.SetSfxVolume(0f);
         }
+        else
+        {
+            AudioManager.Instance.SetSfxVolume(sfxBeforeMute > 0.001f ? sfxBeforeMute : 1f);
+        }
+
+        RefreshAudioButtons();
+    }
+
+    private void RefreshAudioButtons()
+    {
+        bool musicOn = AudioManager.Instance != null && AudioManager.Instance.MusicVolume > 0.001f;
+        bool sfxOn = AudioManager.Instance != null && AudioManager.Instance.SfxVolume > 0.001f;
+
+        SetButtonLabel(musicButton, "Müzik: " + (musicOn ? "Açık" : "Kapalı"));
+        SetButtonLabel(sfxButton, "Ses: " + (sfxOn ? "Açık" : "Kapalı"));
+    }
+
+    /// <summary>Butonun kendi Text (TMP) çocuğuna yazı yazar.</summary>
+    private static void SetButtonLabel(Button button, string text)
+    {
+        if (button == null) return;
+
+        TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (label != null) label.text = text;
     }
 
     private void OpenCatalog() { if (BookCatalogUI.Instance != null) BookCatalogUI.Instance.Open(); }
@@ -162,58 +162,5 @@ public class PauseMenuController : MonoBehaviour
         SaveGame();
         Time.timeScale = 1f;
         SceneManager.LoadScene(mainMenuSceneName);
-    }
-
-    private void CreateRuntimePauseUI()
-    {
-        Transform canvas = transform;
-        pauseButton = CreateButton(canvas, "Oyunu Durdur", new Vector2(1f, 1f), new Vector2(-115f, -55f), new Vector2(190f, 55f));
-        root = new GameObject("PauseMenuRoot");
-        root.transform.SetParent(canvas, false);
-        RectTransform panelRect = root.AddComponent<RectTransform>();
-        panelRect.anchorMin = new Vector2(0.5f, 0.5f); panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRect.sizeDelta = new Vector2(620f, 650f); panelRect.anchoredPosition = Vector2.zero;
-        Image panelImage = root.AddComponent<Image>(); panelImage.color = new Color(0.025f, 0.025f, 0.05f, 0.97f);
-
-        CreateLabel(root.transform, "OYUN DURDURULDU", new Vector2(0, 265), 30);
-        resumeButton = CreateButton(root.transform, "Devam Et", new Vector2(0.5f, 1f), new Vector2(0, -85), new Vector2(420, 58));
-        saveButton = CreateButton(root.transform, "Oyunu Kaydet", new Vector2(0.5f, 1f), new Vector2(0, -155), new Vector2(420, 58));
-        mainMenuButton = CreateButton(root.transform, "Ana Menüye Dön", new Vector2(0.5f, 1f), new Vector2(0, -225), new Vector2(420, 58));
-        musicToggle = CreateToggle(root.transform, "Müzik Açık", new Vector2(0, -330));
-        sfxToggle = CreateToggle(root.transform, "Ses Efektleri Açık", new Vector2(0, -390));
-        CreateLabel(root.transform, "Müzik ve ses düğmelerini kapatmak için işareti kaldırın.", new Vector2(0, -465), 16);
-    }
-
-    private Button CreateButton(Transform parent, string label, Vector2 anchor, Vector2 position, Vector2 size)
-    {
-        GameObject go = new GameObject(label);
-        go.transform.SetParent(parent, false);
-        Image image = go.AddComponent<Image>(); image.color = new Color(0.15f, 0.2f, 0.3f, 1f);
-        Button button = go.AddComponent<Button>(); button.targetGraphic = image;
-        RectTransform rect = go.GetComponent<RectTransform>(); rect.anchorMin = anchor; rect.anchorMax = anchor; rect.sizeDelta = size; rect.anchoredPosition = position;
-        TextMeshProUGUI text = CreateLabel(go.transform, label, Vector2.zero, 22);
-        text.rectTransform.anchorMin = Vector2.zero; text.rectTransform.anchorMax = Vector2.one; text.rectTransform.sizeDelta = Vector2.zero;
-        return button;
-    }
-
-    private Toggle CreateToggle(Transform parent, string label, Vector2 position)
-    {
-        GameObject go = new GameObject(label);
-        go.transform.SetParent(parent, false);
-        RectTransform rect = go.AddComponent<RectTransform>(); rect.anchorMin = new Vector2(0.5f, 1f); rect.anchorMax = new Vector2(0.5f, 1f); rect.sizeDelta = new Vector2(420, 48); rect.anchoredPosition = position;
-        Toggle toggle = go.AddComponent<Toggle>();
-        GameObject textGo = new GameObject("Label"); textGo.transform.SetParent(go.transform, false);
-        TextMeshProUGUI text = textGo.AddComponent<TextMeshProUGUI>(); text.text = label; text.fontSize = 21; text.alignment = TextAlignmentOptions.Center; text.color = Color.white;
-        RectTransform textRect = text.rectTransform; textRect.anchorMin = Vector2.zero; textRect.anchorMax = Vector2.one; textRect.sizeDelta = Vector2.zero;
-        toggle.graphic = text;
-        return toggle;
-    }
-
-    private TextMeshProUGUI CreateLabel(Transform parent, string textValue, Vector2 position, float size)
-    {
-        GameObject go = new GameObject("Label"); go.transform.SetParent(parent, false);
-        TextMeshProUGUI text = go.AddComponent<TextMeshProUGUI>(); text.text = textValue; text.fontSize = size; text.alignment = TextAlignmentOptions.Center; text.color = Color.white;
-        RectTransform rect = text.rectTransform; rect.anchorMin = new Vector2(0.5f, 0.5f); rect.anchorMax = new Vector2(0.5f, 0.5f); rect.sizeDelta = new Vector2(560, 52); rect.anchoredPosition = position;
-        return text;
     }
 }
