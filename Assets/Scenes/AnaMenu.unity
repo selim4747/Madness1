@@ -4294,7 +4294,10 @@ MonoBehaviour:
   slots: []
   settingsButton: {fileID: 860367074}
   quitButton: {fileID: 367944204}
-  continuePanelParent: {fileID: 0}
+  mainMenuPanel: {fileID: 216897047}
+  continueSelectionPanel: {fileID: 0}
+  continueSlotButtons: []
+  continueBackButton: {fileID: 0}
 --- !u!4 &1365089415
 Transform:
   m_ObjectHideFlags: 0
