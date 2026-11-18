@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Madness.Mods;
-using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -27,8 +26,6 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private GameObject continueSelectionPanel;
     [Tooltip("Y panelindeki 5 kayıt butonu, sırayla (0,1,2,3,4). OnClick'i elle bağlamana gerek yok; boş slotun butonu tıklanamaz olur.")]
     [SerializeField] private Button[] continueSlotButtons;
-    [Tooltip("Opsiyonel: kayıt butonlarının yazıları, aynı sırayla. Doldurulursa gün/para/mod özeti otomatik yazılır.")]
-    [SerializeField] private TextMeshProUGUI[] continueSlotLabels;
     [Tooltip("Y panelinin içindeki Geri Dön butonu. Basılınca Y gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
     [SerializeField] private Button continueBackButton;
 
@@ -38,9 +35,8 @@ public class MainMenuController : MonoBehaviour
         catch (System.Exception ex) { Debug.LogException(ex); }
         SaveSystem.EnsureExists(); // ana menü sahnesinde SaveSystem yok — PeekSlot null veriyordu
 
-        if (slots != null)
-            for (int i = 0; i < slots.Length; i++)
-                if (slots[i] != null) slots[i].Bind(this);
+        for (int i = 0; i < slots.Length; i++)
+            if (slots[i] != null) slots[i].Bind(this);
 
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
         if (quitButton != null)     quitButton.onClick.AddListener(Quit);
@@ -58,20 +54,14 @@ public class MainMenuController : MonoBehaviour
     /// <summary>Kayitli oyunu yukle — sadece NIYETI isaretler, veriyi yuklemez.</summary>
     public void LoadSlot(int slot)
     {
-        LoadSlotDirect(slot);
+        if (!SaveSystem.EnsureExists().SlotExists(slot)) return;
+        SaveSystem.RequestLoadSlot(slot);
+        SceneManager.LoadScene(gameSceneName);
     }
 
     public void Continue()
     {
         OpenContinueSelection();
-    }
-
-    private void LoadSlotDirect(int slot)
-    {
-        SaveSystem saveSystem = SaveSystem.EnsureExists();
-        if (saveSystem == null || !saveSystem.SlotExists(slot)) return;
-        SaveSystem.RequestLoadSlot(slot);
-        SceneManager.LoadScene(gameSceneName);
     }
 
     /// <summary>Devam Et: ana menü paneli (X) gizlenir, kayıt seçim paneli (Y) görünür olur.</summary>
@@ -111,34 +101,13 @@ public class MainMenuController : MonoBehaviour
         RefreshContinueSlotButtons();
     }
 
-    /// <summary>Butonların tıklanabilirliğini ve yazılarını güncel kayda göre yeniler.</summary>
+    /// <summary>Boş slotların butonlarını tıklanamaz yapar.</summary>
     private void RefreshContinueSlotButtons()
     {
+        if (continueSlotButtons == null) return;
         SaveSystem saveSystem = SaveSystem.EnsureExists();
-
-        if (continueSlotButtons != null)
-        {
-            for (int i = 0; i < continueSlotButtons.Length; i++)
-            {
-                Button button = continueSlotButtons[i];
-                if (button != null) button.interactable = saveSystem.SlotExists(i);
-            }
-        }
-
-        if (continueSlotLabels == null) return;
-
-        for (int i = 0; i < continueSlotLabels.Length; i++)
-        {
-            TextMeshProUGUI label = continueSlotLabels[i];
-            if (label != null) label.text = GetSlotSummary(saveSystem, i);
-        }
-    }
-
-    private static string GetSlotSummary(SaveSystem saveSystem, int slot)
-    {
-        SaveData data = saveSystem.PeekSlot(slot);
-        if (data == null) return "Kayıt " + (slot + 1) + " — Boş";
-        return saveSystem.GetSlotName(slot) + "  |  Gün " + data.currentDay + "  |  " + data.gold + " Para\nModlar: " + saveSystem.GetRequiredModsText(slot);
+        for (int i = 0; i < continueSlotButtons.Length; i++)
+            if (continueSlotButtons[i] != null) continueSlotButtons[i].interactable = saveSystem.SlotExists(i);
     }
 
     /// <summary>Yeni oyun — sadece NIYETI isaretler.</summary>

@@ -56,7 +56,7 @@ public class PauseMenuController : MonoBehaviour
         if (saveButton != null) saveButton.onClick.AddListener(SaveGame);
         if (mainMenuButton != null) mainMenuButton.onClick.AddListener(ReturnToMainMenu);
         if (subPanelBackButton != null) subPanelBackButton.onClick.AddListener(CloseSubPanel);
-        if (subPanel != null && subPanel != root) subPanel.SetActive(false);
+        if (subPanel != null) subPanel.SetActive(false);
         if (musicToggle != null) musicToggle.onValueChanged.AddListener(SetMusicEnabled);
         if (sfxToggle != null) sfxToggle.onValueChanged.AddListener(SetSfxEnabled);
     }
@@ -75,14 +75,14 @@ public class PauseMenuController : MonoBehaviour
     public void Pause()
     {
         RefreshAudioToggles();
-        if (subPanel != null && subPanel != root) subPanel.SetActive(false); // her açılışta X ile başla
+        if (subPanel != null) subPanel.SetActive(false); // her açılışta X ile başla
         if (root != null) root.SetActive(true);
         Time.timeScale = 0f;
     }
 
     public void Resume()
     {
-        if (subPanel != null && subPanel != root) subPanel.SetActive(false);
+        if (subPanel != null) subPanel.SetActive(false);
         if (root != null) root.SetActive(false);
         Time.timeScale = 1f;
     }
