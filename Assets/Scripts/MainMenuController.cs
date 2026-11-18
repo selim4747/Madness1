@@ -23,15 +23,14 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
 
     [Header("Devam seçimi")]
-    [Tooltip("Y paneli: kayıt seçiminin açılacağı panel. 5 kayıt butonu bunun çocuğu olarak oluşturulur.")]
+    [Tooltip("Y paneli: Devam Et'e basılınca görünen kayıt seçim paneli (içindeki butonları sen hazırlarsın).")]
     [SerializeField] private GameObject continueSelectionPanel;
+    [Tooltip("Y panelindeki 5 kayıt butonu, sırayla (0,1,2,3,4). OnClick'i elle bağlamana gerek yok; boş slotun butonu tıklanamaz olur.")]
+    [SerializeField] private Button[] continueSlotButtons;
+    [Tooltip("Opsiyonel: kayıt butonlarının yazıları, aynı sırayla. Doldurulursa gün/para/mod özeti otomatik yazılır.")]
+    [SerializeField] private TextMeshProUGUI[] continueSlotLabels;
     [Tooltip("Y panelinin içindeki Geri Dön butonu. Basılınca Y gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
     [SerializeField] private Button continueBackButton;
-    [Tooltip("Y atanmazsa, 5 kayıt butonlu panel bu transform altında otomatik oluşturulur. Boşsa Canvas kullanılır.")]
-    [SerializeField] private Transform continuePanelParent;
-
-    private GameObject generatedContinuePanel;
-    private bool slotButtonsBuilt;
 
     private void Start()
     {
@@ -50,8 +49,8 @@ public class MainMenuController : MonoBehaviour
             continueBackButton.onClick.RemoveAllListeners();
             continueBackButton.onClick.AddListener(CloseContinueSelection);
         }
+        BindContinueSlotButtons();
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
-        if (generatedContinuePanel != null) generatedContinuePanel.SetActive(false);
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
     }
@@ -59,11 +58,6 @@ public class MainMenuController : MonoBehaviour
     /// <summary>Kayitli oyunu yukle — sadece NIYETI isaretler, veriyi yuklemez.</summary>
     public void LoadSlot(int slot)
     {
-        if (slots == null || slots.Length == 0)
-        {
-            OpenContinueSelection();
-            return;
-        }
         LoadSlotDirect(slot);
     }
 
@@ -74,7 +68,8 @@ public class MainMenuController : MonoBehaviour
 
     private void LoadSlotDirect(int slot)
     {
-        if (SaveSystem.Instance == null || !SaveSystem.Instance.SlotExists(slot)) return;
+        SaveSystem saveSystem = SaveSystem.EnsureExists();
+        if (saveSystem == null || !saveSystem.SlotExists(slot)) return;
         SaveSystem.RequestLoadSlot(slot);
         SceneManager.LoadScene(gameSceneName);
     }
@@ -82,93 +77,68 @@ public class MainMenuController : MonoBehaviour
     /// <summary>Devam Et: ana menü paneli (X) gizlenir, kayıt seçim paneli (Y) görünür olur.</summary>
     private void OpenContinueSelection()
     {
-        GameObject panel = EnsureContinuePanel();
-        if (panel == null) return;
+        if (continueSelectionPanel == null)
+        {
+            Debug.LogWarning("[MainMenuController] 'Continue Selection Panel' (Y) Inspector'da atanmadı.");
+            return;
+        }
 
+        RefreshContinueSlotButtons();
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-        panel.SetActive(true);
+        continueSelectionPanel.SetActive(true);
     }
 
     /// <summary>Geri Dön: kayıt seçim paneli (Y) gizlenir, ana menü paneli (X) tekrar görünür olur.</summary>
     public void CloseContinueSelection()
     {
-        if (generatedContinuePanel != null) generatedContinuePanel.SetActive(false);
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
     }
 
-    /// <summary>Inspector'da Y atanmışsa onu kullanır; atanmamışsa 5 kayıt butonlu paneli üretir.</summary>
-    private GameObject EnsureContinuePanel()
+    /// <summary>Y panelindeki kendi yaptığın kayıt butonlarını slotlarına bağlar.</summary>
+    private void BindContinueSlotButtons()
     {
-        if (continueSelectionPanel != null)
+        if (continueSlotButtons == null) return;
+
+        for (int i = 0; i < continueSlotButtons.Length; i++)
         {
-            if (!slotButtonsBuilt)
-            {
-                CreateSlotButtons(continueSelectionPanel.transform);
-                slotButtonsBuilt = true;
-            }
-            return continueSelectionPanel;
+            Button button = continueSlotButtons[i];
+            if (button == null) continue;
+            int slot = i;
+            button.onClick.AddListener(() => LoadSlot(slot));
         }
 
-        if (generatedContinuePanel != null) return generatedContinuePanel;
-
-        Canvas canvas = FindFirstObjectByType<Canvas>();
-        if (canvas == null) return null;
-        Transform parent = continuePanelParent != null ? continuePanelParent : canvas.transform;
-        generatedContinuePanel = new GameObject("ContinueSaveSelection");
-        generatedContinuePanel.transform.SetParent(parent, false);
-        RectTransform root = generatedContinuePanel.AddComponent<RectTransform>();
-        root.anchorMin = new Vector2(0.5f, 0.5f); root.anchorMax = new Vector2(0.5f, 0.5f);
-        root.sizeDelta = new Vector2(720f, 620f);
-        root.anchoredPosition = Vector2.zero;
-        UnityEngine.UI.Image background = generatedContinuePanel.AddComponent<UnityEngine.UI.Image>();
-        background.color = new Color(0.04f, 0.04f, 0.07f, 0.96f);
-
-        GameObject titleObject = new GameObject("Title");
-        titleObject.transform.SetParent(generatedContinuePanel.transform, false);
-        TextMeshProUGUI title = titleObject.AddComponent<TextMeshProUGUI>();
-        title.text = "Kayıtlı Oyun Seç"; title.fontSize = 32; title.alignment = TextAlignmentOptions.Center;
-        RectTransform titleRect = title.rectTransform; titleRect.anchorMin = new Vector2(0, 1); titleRect.anchorMax = new Vector2(1, 1); titleRect.sizeDelta = new Vector2(-40, 60); titleRect.anchoredPosition = new Vector2(0, -45);
-
-        if (!slotButtonsBuilt)
-        {
-            CreateSlotButtons(generatedContinuePanel.transform);
-            slotButtonsBuilt = true;
-        }
-
-        GameObject closeObject = new GameObject("GeriDon");
-        closeObject.transform.SetParent(generatedContinuePanel.transform, false);
-        UnityEngine.UI.Button close = closeObject.AddComponent<UnityEngine.UI.Button>();
-        TextMeshProUGUI closeText = closeObject.AddComponent<TextMeshProUGUI>();
-        closeText.text = "Geri Dön"; closeText.fontSize = 22; closeText.alignment = TextAlignmentOptions.Center;
-        RectTransform closeRect = closeText.rectTransform; closeRect.anchorMin = new Vector2(0.5f, 0); closeRect.anchorMax = new Vector2(0.5f, 0); closeRect.sizeDelta = new Vector2(220, 50); closeRect.anchoredPosition = new Vector2(0, 35);
-        close.onClick.AddListener(CloseContinueSelection);
-
-        return generatedContinuePanel;
+        RefreshContinueSlotButtons();
     }
 
-    private void CreateSlotButtons(Transform parent)
+    /// <summary>Butonların tıklanabilirliğini ve yazılarını güncel kayda göre yeniler.</summary>
+    private void RefreshContinueSlotButtons()
     {
-        for (int i = 0; i < SaveSystem.SlotCount; i++) CreateContinueButton(parent, i);
-    }
-
-    private void CreateContinueButton(Transform parent, int slot)
-    {
-        GameObject objectRoot = new GameObject("SaveSlot_" + slot);
-        objectRoot.transform.SetParent(parent, false);
-        UnityEngine.UI.Button button = objectRoot.AddComponent<UnityEngine.UI.Button>();
-        TextMeshProUGUI text = objectRoot.AddComponent<TextMeshProUGUI>();
         SaveSystem saveSystem = SaveSystem.EnsureExists();
-        SaveData data = saveSystem != null ? saveSystem.PeekSlot(slot) : null;
-        bool exists = data != null;
-        text.text = exists
-            ? saveSystem.GetSlotName(slot) + "  |  Gün " + data.currentDay + "  |  " + data.gold + " Para\nModlar: " + saveSystem.GetRequiredModsText(slot)
-            : "Kayıt " + (slot + 1) + " — Boş";
-        text.fontSize = 20; text.alignment = TextAlignmentOptions.Center; text.color = Color.white;
-        RectTransform rect = text.rectTransform; rect.anchorMin = new Vector2(0.5f, 1); rect.anchorMax = new Vector2(0.5f, 1); rect.sizeDelta = new Vector2(650, 75); rect.anchoredPosition = new Vector2(0, -115 - slot * 85);
-        button.interactable = exists;
-        int selectedSlot = slot;
-        button.onClick.AddListener(() => LoadSlotDirect(selectedSlot));
+
+        if (continueSlotButtons != null)
+        {
+            for (int i = 0; i < continueSlotButtons.Length; i++)
+            {
+                Button button = continueSlotButtons[i];
+                if (button != null) button.interactable = saveSystem.SlotExists(i);
+            }
+        }
+
+        if (continueSlotLabels == null) return;
+
+        for (int i = 0; i < continueSlotLabels.Length; i++)
+        {
+            TextMeshProUGUI label = continueSlotLabels[i];
+            if (label != null) label.text = GetSlotSummary(saveSystem, i);
+        }
+    }
+
+    private static string GetSlotSummary(SaveSystem saveSystem, int slot)
+    {
+        SaveData data = saveSystem.PeekSlot(slot);
+        if (data == null) return "Kayıt " + (slot + 1) + " — Boş";
+        return saveSystem.GetSlotName(slot) + "  |  Gün " + data.currentDay + "  |  " + data.gold + " Para\nModlar: " + saveSystem.GetRequiredModsText(slot);
     }
 
     /// <summary>Yeni oyun — sadece NIYETI isaretler.</summary>
