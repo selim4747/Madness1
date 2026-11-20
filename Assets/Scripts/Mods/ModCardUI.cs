@@ -8,14 +8,15 @@ namespace Madness.Mods
     /// <summary>Mod kartı prefabına eklenir. Görsel nesneler Inspector'dan atanır.</summary>
     public sealed class ModCardUI : MonoBehaviour
     {
+        [Header("Button prefabı - şu an sadece bu temel alanları bağla")]
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Text detailsText;
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TMP_Text descriptionText;
         [SerializeField] private TMP_Text dependencyText;
         [SerializeField] private GameObject expandablePanel;
-        [SerializeField] private Transform settingsContent;
-        [SerializeField] private ModSettingUI settingPrefab;
+        [HideInInspector] [SerializeField] private Transform settingsContent;
+        [HideInInspector] [SerializeField] private ModSettingUI settingPrefab;
         [Header("GameObject (2) uyumlu ayrı bilgi alanları - isteğe bağlı")]
         [SerializeField] private TMP_Text modNameText;
         [SerializeField] private TMP_Text versionText;
@@ -26,8 +27,8 @@ namespace Madness.Mods
         [SerializeField] private Toggle enabledToggle;
         [SerializeField] private Button selectButton;
         [SerializeField] private Button closePanelButton;
-        [SerializeField] private Button moveUpButton;
-        [SerializeField] private Button moveDownButton;
+        [HideInInspector] [SerializeField] private Button moveUpButton;
+        [HideInInspector] [SerializeField] private Button moveDownButton;
 
         private ModManifest manifest;
         private bool builtIn;

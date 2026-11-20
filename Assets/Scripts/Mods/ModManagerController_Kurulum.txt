@@ -1,38 +1,78 @@
-ModManagerController kurulumu
-==============================
+ModManagerController - temel kurulum
+=====================================
 
-Bu script panel, ScrollRect, kart veya ayar satırı oluşturmaz. UI nesnelerini Unity'de sen oluşturup Inspector'dan bağlamalısın.
+Bu aşamada yalnızca mod butonlarının ScrollRect Content altında oluşturulması, AnaButton ile panelin açılması ve paneldeki SilButton ile silme işlemi kullanılır. Ayarlar, profiller, filtreler, diagnostic ve kayıt uyumluluğu daha sonra açılabilir.
 
-1) ModManagerController'ı mod paneline veya ayrı bir GameObject'e ekle.
-2) ScrollRect alanına kendi ScrollRect'ini, Mod Content alanına ScrollRect Content nesnesini ver.
-3) Kendi hazırladığın mod kartı prefabına ModCardUI ekle. Prefabın içinde Toggle, yazılar ve açılır detay paneli bulunabilir. Şu alanları bağla:
-   - Title Text, Details Text, Status Text, Description Text, Dependency Text
-   - Expandable Panel: kartın kendi açılır panel GameObject'i
-   - Enabled Toggle
-   - Select, Close Panel, Move Up, Move Down butonları
-   - İstersen GameObject (2) yapısındaki ayrı alanları da bağla:
-     - ModAd -> Mod Name Text
-     - Sürüm -> Version Text
-     - Yapımcı -> Author Text
-     - ModKimligi -> Identity Text
-     - Gereklilik -> Dependency Info Text
-     - Aciklama -> Description Info Text
-   Bu ayrı alanlar isteğe bağlıdır; bağlanırsa controller bu alanları da doldurur.
-   Not: Güncel AnaMenu.unity içinde ModAd, Sürüm, Yapımcı, ModKimligi, Gereklilik ve Aciklama nesneleri mevcut metin/placeholder olarak duruyor. Bunları sabit etiket olarak koruyacaksan ModCardUI'daki ayrı bilgi alanlarına yeni TMP_Text değer nesneleri bağla; mevcut etiketleri doğrudan bağlamak onların yazısını mod verisiyle değiştirir.
-   - İstersen prefab içindeki ayar listesi için Settings Content ve Setting Prefab
-   Bu prefabı Mod Card Prefab alanına ver. Controller her mod için bu prefabın bir örneğini ScrollRect Content altında oluşturur.
-4) Mod Panel alanına GameObject (2) gibi mod listesinin bulunduğu paneli bağla. Ana Button alanına paneli açacak AnaButton'ı bağla. Detail, Settings, Diagnostics, Import, Profiles ve Save Compatibility panellerini kendin oluşturup ilgili GameObject alanlarına bağla.
-5) Her kartın kendi panelinde ayar göstereceksen ModCardUI içindeki Settings Content ve Setting Prefab alanlarını kullan. Ayar satırı prefabına ModSettingUI ekle; Label, Toggle, Slider, TMP_Dropdown, TMP_InputField ve Value Text alanlarını bağla.
-6) Profil panelinde TMP_InputField, TMP_Dropdown ve kaydet/uygula/sil butonlarını bağla.
-7) Kayıt uyumluluk panelinde Save Compatibility Text ve devam/iptal butonlarını bağla.
-8) MainMenuController'daki LoadSlot yerine önce ModManagerController.CheckSaveCompatibility(slot) çağır. Eksik mod yoksa controller SaveSystem.RequestLoadSlot çağrısını yapar; ardından mevcut oyun sahnesine geçişi senin buton akışın yapmalıdır.
-9) Mod kartındaki aç/kapat, seç, paneli kapat, ayar, içe aktarma, yeniden yükleme, profil ve kayıt kontrolleri runtime'da mevcut API'lere bağlanır. Selected Delete Button olarak SilButton'ı bağla; ilk tıkta "Emin misin?", ikinci tıkta "Son şansın", üçüncü tıkta silme gerçekleşir. İstersen butonun iç TMP yazısını Selected Delete Button Label alanına bağla.
+Önemli:
+- Assets/Prefabs klasöründe şu anda adı Button olan ayrı bir prefab yok.
+- Kullanılacak Button, AnaMenu.unity içindeki GameObject (2) > Button nesnesidir.
+- Bu Button nesnesini Project penceresinde kendi prefabına kaydet. Örnek: Assets/Prefabs/ModButton.prefab.
+- GameObject (2) içindeki sahne örneği, prefabı kaydettikten sonra silinebilir veya pasif yapılabilir. Runtime'da mod sayısı kadar prefab oluşturulur.
 
-Notlar:
-- ModManagerUI eski runtime-UI üreticisidir; bu yeni kontrol katmanında panel üretimi yoktur.
-- Silme işlemi aynı SilButton üzerinden üç tıklamalıdır: 1. tık "Emin misin?", 2. tık "Son şansın", 3. tık gerçek silme.
-- Mod kartı prefabında Sil butonu bulunmaz. Paneldeki Selected Delete Button olarak bağlanan SilButton seçili mod için üç aşamalı silme akışını yürütür. Delete Confirm Button alanı eski kurulumlarla uyumluluk için durur ancak bu akışta bağlanması gerekmez.
-- AnaMenu.unity içindeki GameObject (2) yalnızca örnek hiyerarşi olarak incelenmiştir: kök Button kartı açar, ackapabutton Toggle'dır, Panel içindeki Ackapabutton paneli kapatır. Paneldeki mevcut SilButton prefab kartına bağlanmamalıdır; silme için Selected Delete Button ve Confirm Delete Button kullanılır.
-- ScrollRect'in Content, Viewport ve LayoutGroup ayarlarını Unity Inspector'da sen yapmalısın.
-- Ayarlarda restartRequired true ise statusText'te yeniden yükleme uyarısı verilir.
-- Save compatibility Continue butonu eksik modlarla devam etme kararını temsil eder.
+1) ModManagerController'ı aktif kalacak ayrı bir GameObject'e ekle. Mod panelini pasif yaptığında controller'ı panelin içine koyma.
+
+2) Liste alanlarını bağla:
+   - Mod Scroll Rect -> kendi oluşturduğun ScrollRect
+   - Mod Content -> ScrollRect içindeki Viewport/Content
+   - Mod Card Prefab -> Button'dan kaydettiğin ModButton.prefab
+   ScrollRect.enabled açık kalmalıdır. Controller ScrollRect oluşturmaz, kapatmaz veya silmez; yalnızca Content altına mod prefablarını ekler.
+
+3) ScrollRect yapısı şu şekilde olsun:
+   ModPanel
+   └── ScrollRect
+       └── Viewport
+           └── Content
+
+   Content üzerinde Vertical Layout Group kullanabilirsin. Content Size Fitter kullanıyorsan Vertical Fit değerini Preferred Size yapabilirsin.
+
+4) Button prefabına ModCardUI ekle ve yalnızca şu temel alanları bağla:
+   - Title Text -> mod adının gösterileceği TMP_Text
+   - Details Text -> kimlik, sürüm, yapımcı ve yükleme sırası bilgisi gösterilecek TMP_Text
+   - Status Text -> mod durumu gösterilecek TMP_Text
+   - Description Text -> açıklama TMP_Text
+   - Dependency Text -> bağımlılık durumu TMP_Text
+   - Expandable Panel -> Button içindeki açılır Panel
+   - Enabled Toggle -> Button içindeki ackapabutton Toggle
+   - Select Button -> Button prefabının root Button bileşeni
+   - Close Panel Button -> Panel içindeki Ackapabutton
+
+   ModCardUI içindeki Settings Content, Setting Prefab, Move Up Button ve Move Down Button alanları şimdilik kullanılmıyor ve Inspector'da gizlidir.
+
+5) Button prefabındaki GameObject (2) yapısı için temel eşleştirme:
+   - Button -> Select Button
+   - ackapabutton -> Enabled Toggle
+   - Panel -> Expandable Panel
+   - Panel/Ackapabutton -> Close Panel Button
+   - Panel içindeki ModAd, Sürüm, Yapımcı, ModKimligi, Gereklilik ve Aciklama nesnelerini sabit etiket olarak bırakabilirsin.
+   Mod verilerini ayrı göstermek istiyorsan bunların yanına ayrı TMP_Text değer nesneleri oluştur ve ModCardUI'daki isteğe bağlı alanlara bağla.
+
+6) Panel açma bağlantısı:
+   - Mod Panel -> açılacak mod paneli
+   - Ana Button -> mod panelini açacak AnaButton
+   AnaButton tıklanınca panel aktif edilir ve mod listesi yenilenir.
+
+7) Silme bağlantısı:
+   - Selected Delete Button -> paneldeki SilButton
+   - Selected Delete Button Label -> istersen SilButton içindeki Text (TMP)
+   - Delete Cancel Button -> istersen silmeyi iptal eden buton
+
+   Aynı SilButton üç kez tıklanır:
+   - 1. tık: Emin misin?
+   - 2. tık: Son şansın
+   - 3. tık: Mod silinir.
+   Delete Confirm Button alanını bu yeni akışta bağlamak gerekmez.
+
+8) İlk test:
+   - Mod Scroll Rect, Mod Content ve Mod Card Prefab dolu mu?
+   - ScrollRect açık mı?
+   - Ana Button ve Mod Panel bağlı mı?
+   - Play'e basıp AnaButton'a tıkla.
+   - Content altında mod sayısı kadar Button(Clone) oluşmalı.
+   - ScrollRect açık kalmalı ve kartlar kaydırılabilmeli.
+
+Şimdilik boş bırakılacak gelişmiş alanlar:
+- Settings Panel ve ayar satırları
+- Search/Filter/Sort
+- Import, Profiles ve Save Compatibility
+- Diagnostics ve detay paneli
+- Move Up/Move Down

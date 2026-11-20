@@ -1109,7 +1109,7 @@ MonoBehaviour:
   identityText: {fileID: 6013382827697486271}
   dependencyInfoText: {fileID: 2310126353968737127}
   descriptionInfoText: {fileID: 6708050636191351453}
-  enabledToggle: {fileID: 0}
+  enabledToggle: {fileID: 1323849900794858655}
   selectButton: {fileID: 6355575932322652453}
   closePanelButton: {fileID: 1020065514024930654}
   moveUpButton: {fileID: 297235366785125264}

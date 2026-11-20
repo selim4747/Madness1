@@ -19,51 +19,51 @@ namespace Madness.Mods
         [SerializeField] private Transform modContent;
         [SerializeField] private ModCardUI modCardPrefab;
         [SerializeField] private bool includeBuiltIn = true;
-        [SerializeField] private TMP_InputField searchInput;
-        [SerializeField] private TMP_Dropdown filterDropdown;
-        [SerializeField] private TMP_Dropdown sortDropdown;
+        [HideInInspector] [SerializeField] private TMP_InputField searchInput;
+        [HideInInspector] [SerializeField] private TMP_Dropdown filterDropdown;
+        [HideInInspector] [SerializeField] private TMP_Dropdown sortDropdown;
 
         [Header("Paneller - GameObject'leri sen oluştur ve bağla")]
         [SerializeField] private GameObject modPanel;
-        [SerializeField] private GameObject detailPanel;
-        [SerializeField] private GameObject settingsPanel;
-        [SerializeField] private GameObject diagnosticsPanel;
-        [SerializeField] private GameObject importPanel;
-        [SerializeField] private GameObject profilesPanel;
-        [SerializeField] private GameObject saveCompatibilityPanel;
+        [HideInInspector] [SerializeField] private GameObject detailPanel;
+        [HideInInspector] [SerializeField] private GameObject settingsPanel;
+        [HideInInspector] [SerializeField] private GameObject diagnosticsPanel;
+        [HideInInspector] [SerializeField] private GameObject importPanel;
+        [HideInInspector] [SerializeField] private GameObject profilesPanel;
+        [HideInInspector] [SerializeField] private GameObject saveCompatibilityPanel;
 
         [Header("Detay ve durum metinleri")]
-        [SerializeField] private TMP_Text detailTitle;
-        [SerializeField] private TMP_Text detailBody;
-        [SerializeField] private TMP_Text diagnosticsText;
+        [HideInInspector] [SerializeField] private TMP_Text detailTitle;
+        [HideInInspector] [SerializeField] private TMP_Text detailBody;
+        [HideInInspector] [SerializeField] private TMP_Text diagnosticsText;
         [SerializeField] private TMP_Text statusText;
 
-        [Header("Ayar satırı - satır prefabını sen oluştur ve bağla")]
-        [SerializeField] private Transform settingsContent;
-        [SerializeField] private ModSettingUI settingPrefab;
+        [Header("Gelişmiş alanlar - şimdilik kullanılmıyor")]
+        [HideInInspector] [SerializeField] private Transform settingsContent;
+        [HideInInspector] [SerializeField] private ModSettingUI settingPrefab;
 
         [Header("Kontrol butonları - isteğe bağlı")]
         [SerializeField] private Button anaButton;
-        [SerializeField] private Button refreshButton;
-        [SerializeField] private Button importButton;
-        [SerializeField] private Button selectedToggleButton;
+        [HideInInspector] [SerializeField] private Button refreshButton;
+        [HideInInspector] [SerializeField] private Button importButton;
+        [HideInInspector] [SerializeField] private Button selectedToggleButton;
         [SerializeField] private Button selectedDeleteButton;
         [SerializeField] private TMP_Text selectedDeleteButtonLabel;
         [SerializeField] private Button deleteConfirmButton;
-        [SerializeField] private Button deleteCancelButton;
-        [SerializeField] private Button reloadButton;
+        [HideInInspector] [SerializeField] private Button deleteCancelButton;
+        [HideInInspector] [SerializeField] private Button reloadButton;
 
         [Header("Kayıt uyumluluğu")]
-        [SerializeField] private TMP_Text saveCompatibilityText;
-        [SerializeField] private Button continueWithMissingModsButton;
-        [SerializeField] private Button cancelSaveLoadButton;
+        [HideInInspector] [SerializeField] private TMP_Text saveCompatibilityText;
+        [HideInInspector] [SerializeField] private Button continueWithMissingModsButton;
+        [HideInInspector] [SerializeField] private Button cancelSaveLoadButton;
 
         [Header("Profil")]
-        [SerializeField] private TMP_InputField profileNameInput;
-        [SerializeField] private TMP_Dropdown profileDropdown;
-        [SerializeField] private Button saveProfileButton;
-        [SerializeField] private Button applyProfileButton;
-        [SerializeField] private Button deleteProfileButton;
+        [HideInInspector] [SerializeField] private TMP_InputField profileNameInput;
+        [HideInInspector] [SerializeField] private TMP_Dropdown profileDropdown;
+        [HideInInspector] [SerializeField] private Button saveProfileButton;
+        [HideInInspector] [SerializeField] private Button applyProfileButton;
+        [HideInInspector] [SerializeField] private Button deleteProfileButton;
 
         private readonly List<ModCardUI> cards = new List<ModCardUI>();
         private readonly List<ModSettingUI> settingRows = new List<ModSettingUI>();
