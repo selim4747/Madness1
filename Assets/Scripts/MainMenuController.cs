@@ -43,6 +43,20 @@ public class MainMenuController : MonoBehaviour
     [Tooltip("Z panelinin içindeki Geri Dön butonu. Basılınca Z gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
     [SerializeField] private Button modBackButton;
 
+    [Header("Mod görünümü")]
+    [Tooltip("Mod butonlarındaki bilgi metninin ana font boyutu.")]
+    [SerializeField] private float modFontSize = 23f;
+    [Tooltip("Font otomatik boyutlandırılırsa kullanılabilecek minimum değer. Otomatik boyutlandırma kapalıyken de Inspector'da saklanır.")]
+    [SerializeField] private float modFontSizeMin = 18f;
+    [Tooltip("Font otomatik boyutlandırılırsa kullanılabilecek maksimum değer.")]
+    [SerializeField] private float modFontSizeMax = 28f;
+    [Tooltip("Mod bilgilerindeki satır aralığı. Daha küçük değer satırları sıkıştırır.")]
+    [SerializeField] private float modLineSpacing = -4f;
+    [Tooltip("Mod bilgi metninin iç kenar boşluğu: sol, üst, sağ, alt.")]
+    [SerializeField] private Vector4 modTextMargin = new Vector4(18f, 10f, 18f, 8f);
+    [Tooltip("Mod bilgi metninin hizalaması.")]
+    [SerializeField] private TextAlignmentOptions modTextAlignment = TextAlignmentOptions.TopLeft;
+
     private ModRuntime modRuntime;
     private bool deleteMode;
 
@@ -173,7 +187,19 @@ public class MainMenuController : MonoBehaviour
 
             ModManifest mod = mods[i];
             TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
-            if (label != null) label.text = BuildModDetails(mod);
+            if (label != null)
+            {
+                label.text = BuildModDetails(mod);
+                label.richText = false;
+                label.enableAutoSizing = false;
+                label.fontSize = modFontSize;
+                label.fontSizeMin = modFontSizeMin;
+                label.fontSizeMax = modFontSizeMax;
+                label.lineSpacing = modLineSpacing;
+                label.alignment = modTextAlignment;
+                label.enableWordWrapping = true;
+                label.margin = modTextMargin;
+            }
             bool builtIn = modRuntime != null && modRuntime.IsBuiltIn(mod.id);
             button.onClick.AddListener(() => OnModButtonClicked(mod, builtIn));
         }
@@ -290,7 +316,7 @@ public class MainMenuController : MonoBehaviour
         return mods;
     }
 
-    /// <summary>Mod butonu yazısı: açıklama, sürüm, yapımcı, 6 karakterlik kimlik ve durum.</summary>
+    /// <summary>Mod butonu yazısı: tüm bilgiler okunabilir biçimde alt alta gösterilir.</summary>
     private string BuildModDetails(ModManifest mod)
     {
         string name = string.IsNullOrWhiteSpace(mod.name) ? mod.id : mod.name;
@@ -302,9 +328,12 @@ public class MainMenuController : MonoBehaviour
             ? modRuntime.GetModStatus(mod)
             : (mod.enabled ? "Açık" : "Kapalı");
 
-        return name + "  v" + version + "\n" +
-               "<size=65%>Kimlik: " + identity + "  ·  Yapımcı: " + author + "  ·  Durum: " + status + "</size>\n" +
-               "<size=65%>" + description + "</size>";
+        return "Mod: " + name + "\n" +
+               "Kimlik: " + identity + "\n" +
+               "Sürüm: " + version + "\n" +
+               "Yapımcı: " + author + "\n" +
+               "Durum: " + status + "\n" +
+               "Açıklama: " + description;
     }
 
     private void SetModEnabled(string modId, bool enabled, bool builtIn)
