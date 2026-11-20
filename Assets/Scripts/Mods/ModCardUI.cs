@@ -15,6 +15,13 @@ namespace Madness.Mods
         [SerializeField] private TMP_Text descriptionText;
         [SerializeField] private TMP_Text dependencyText;
         [SerializeField] private GameObject expandablePanel;
+        [Header("Durum ve aç/kapa metinleri")]
+        [Tooltip("Kartın üzerinde görünen durum metni: Durum: Açık/Kapalı")]
+        [SerializeField] private TMP_Text cardStatusText;
+        [Tooltip("Açılan panelin içinde görünen durum metni: Durum: Açık/Kapalı")]
+        [SerializeField] private TMP_Text panelStatusText;
+        [Tooltip("Modu Aç/Modu Kapat butonunun yazısı")]
+        [SerializeField] private TMP_Text toggleButtonText;
         [HideInInspector] [SerializeField] private Transform settingsContent;
         [HideInInspector] [SerializeField] private ModSettingUI settingPrefab;
         [Header("GameObject (2) uyumlu ayrı bilgi alanları - isteğe bağlı")]
@@ -37,6 +44,10 @@ namespace Madness.Mods
         private Action<ModManifest, bool> toggle;
         private Action<ModManifest, ModSettingDefinition, string> settingChanged;
         private readonly System.Collections.Generic.List<ModSettingUI> settingRows = new System.Collections.Generic.List<ModSettingUI>();
+        private Transform expandableOriginalParent;
+        private int expandableOriginalSiblingIndex;
+        private bool expandablePanelIsOverlay;
+        private static ModCardUI activeOverlayCard;
 
         public void Bind(ModManifest value, bool isBuiltIn, ModRuntime modRuntime,
             Action<ModManifest, bool> onSelect, Action<ModManifest, bool> onToggle,
@@ -57,6 +68,7 @@ namespace Madness.Mods
             if (titleText != null) titleText.text = modName;
             if (detailsText != null) detailsText.text = author;
             if (statusText != null) statusText.text = version;
+            SetStatusText(value.enabled);
             if (descriptionText != null) descriptionText.text = string.IsNullOrWhiteSpace(value.description) ? "Açıklama yok." : value.description;
             if (dependencyText != null) dependencyText.text = isBuiltIn ? "Bağımlılık: Yok" : "Bağımlılık: " + (runtime.GetDependencyError(value) ?? "Yok");
             SetOptionalText(modNameText, modName);
@@ -65,6 +77,7 @@ namespace Madness.Mods
             SetOptionalText(identityText, "Kimlik: " + Dash(value.identity));
             SetOptionalText(dependencyInfoText, "Bağımlılık: " + (isBuiltIn ? "Yok" : (runtime.GetDependencyError(value) ?? "Yok")));
             SetOptionalText(descriptionInfoText, string.IsNullOrWhiteSpace(value.description) ? "Açıklama yok." : value.description);
+            RestoreExpandablePanelParent();
             ClearSettingRows();
             if (expandablePanel != null) expandablePanel.SetActive(false);
             if (!isBuiltIn && settingsContent != null && settingPrefab != null && value.settings != null)
@@ -91,6 +104,7 @@ namespace Madness.Mods
             BindButton(closePanelButton, ClosePanel);
             BindButton(moveUpButton, MoveUp);
             BindButton(moveDownButton, MoveDown);
+            UpdateMoveButtonState();
         }
 
         private string BuildDetails(ModManifest value)
@@ -106,6 +120,53 @@ namespace Madness.Mods
         {
             if (target != null) target.text = value ?? "";
         }
+
+        private void SetStatusText(bool enabled)
+        {
+            string status = enabled ? "Durum: Açık" : "Durum: Kapalı";
+            SetOptionalText(cardStatusText, status);
+            SetOptionalText(panelStatusText, status);
+
+            TMP_Text label = toggleButtonText;
+            if (label == null && enabledToggle != null)
+                label = enabledToggle.GetComponentInChildren<TMP_Text>(true);
+            SetOptionalText(label, enabled ? "Modu Kapat" : "Modu Aç");
+        }
+
+        private void UpdateMoveButtonState()
+        {
+            if (runtime == null || manifest == null || builtIn)
+            {
+                SetMoveButtonState(moveUpButton, false);
+                SetMoveButtonState(moveDownButton, false);
+                return;
+            }
+
+            int lowest = manifest.loadOrder;
+            int highest = manifest.loadOrder;
+            for (int i = 0; i < runtime.LoadedManifests.Count; i++)
+            {
+                ModManifest other = runtime.LoadedManifests[i];
+                if (other == null) continue;
+                lowest = Mathf.Min(lowest, other.loadOrder);
+                highest = Mathf.Max(highest, other.loadOrder);
+            }
+
+            // MoveUp +1 olduğundan en yüksek sırada yukarı tuşu; MoveDown -1
+            // olduğundan en düşük sırada aşağı tuşu pasif görünür.
+            SetMoveButtonState(moveUpButton, manifest.loadOrder >= highest);
+            SetMoveButtonState(moveDownButton, manifest.loadOrder <= lowest);
+        }
+
+        private void SetMoveButtonState(Button button, bool dimmed)
+        {
+            if (button == null) return;
+            CanvasGroup group = button.GetComponent<CanvasGroup>();
+            if (group == null) group = button.gameObject.AddComponent<CanvasGroup>();
+            group.alpha = dimmed ? 0.35f : 1f;
+            group.interactable = !dimmed;
+            group.blocksRaycasts = !dimmed;
+        }
         private void BindButton(Button button, UnityEngine.Events.UnityAction action)
         {
             if (button == null) return;
@@ -114,14 +175,70 @@ namespace Madness.Mods
         }
         private void OnSelectClicked()
         {
-            if (expandablePanel != null) expandablePanel.SetActive(!expandablePanel.activeSelf);
+            if (expandablePanel != null)
+            {
+                bool shouldOpen = !expandablePanel.activeSelf;
+                if (activeOverlayCard != null && activeOverlayCard != this)
+                    activeOverlayCard.ClosePanel();
+
+                if (shouldOpen)
+                {
+                    MoveExpandablePanelToOverlay();
+                    expandablePanel.SetActive(true);
+                    activeOverlayCard = this;
+                }
+                else
+                {
+                    ClosePanel();
+                }
+            }
             if (select != null) select(manifest, builtIn);
         }
         private void ClosePanel()
         {
             if (expandablePanel != null) expandablePanel.SetActive(false);
+            RestoreExpandablePanelParent();
+            if (activeOverlayCard == this) activeOverlayCard = null;
         }
-        private void OnToggleChanged(bool value) { if (toggle != null) toggle(manifest, builtIn); }
+
+        private void MoveExpandablePanelToOverlay()
+        {
+            if (expandablePanel == null || expandablePanelIsOverlay) return;
+            RectTransform panelRect = expandablePanel.transform as RectTransform;
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (panelRect == null || canvas == null) return;
+
+            expandableOriginalParent = panelRect.parent;
+            expandableOriginalSiblingIndex = panelRect.GetSiblingIndex();
+            Canvas rootCanvas = canvas.rootCanvas != null ? canvas.rootCanvas : canvas;
+            panelRect.SetParent(rootCanvas.transform, false);
+            panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+            panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            panelRect.pivot = new Vector2(0.5f, 0.5f);
+            panelRect.anchoredPosition = Vector2.zero;
+            panelRect.localRotation = Quaternion.identity;
+            panelRect.localScale = Vector3.one;
+            panelRect.SetAsLastSibling();
+            expandablePanelIsOverlay = true;
+        }
+
+        private void RestoreExpandablePanelParent()
+        {
+            if (!expandablePanelIsOverlay || expandablePanel == null || expandableOriginalParent == null) return;
+            RectTransform panelRect = expandablePanel.transform as RectTransform;
+            if (panelRect == null) return;
+
+            panelRect.SetParent(expandableOriginalParent, false);
+            int maxIndex = expandableOriginalParent.childCount - 1;
+            panelRect.SetSiblingIndex(Mathf.Clamp(expandableOriginalSiblingIndex, 0, maxIndex));
+            expandablePanelIsOverlay = false;
+            expandableOriginalParent = null;
+        }
+        private void OnToggleChanged(bool value)
+        {
+            SetStatusText(value);
+            if (toggle != null) toggle(manifest, builtIn);
+        }
 
         public void MoveUp() { SendLoadOrderChange(1); }
         public void MoveDown() { SendLoadOrderChange(-1); }
