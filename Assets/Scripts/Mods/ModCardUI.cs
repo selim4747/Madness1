@@ -49,14 +49,19 @@ namespace Madness.Mods
             toggle = onToggle;
             settingChanged = onSettingChanged;
 
-            if (titleText != null) titleText.text = string.IsNullOrWhiteSpace(value.name) ? value.id : value.name;
-            if (detailsText != null) detailsText.text = BuildDetails(value);
-            if (statusText != null) statusText.text = isBuiltIn ? (value.enabled ? "Açık" : "Kapalı") : runtime.GetModStatus(value);
+            string modName = string.IsNullOrWhiteSpace(value.name) ? value.id : value.name;
+            string author = Dash(value.author);
+            string version = Dash(value.version);
+
+            // Kapalı kart görünümünde her alan yalnızca kendi değerini göstermeli.
+            if (titleText != null) titleText.text = modName;
+            if (detailsText != null) detailsText.text = author;
+            if (statusText != null) statusText.text = version;
             if (descriptionText != null) descriptionText.text = string.IsNullOrWhiteSpace(value.description) ? "Açıklama yok." : value.description;
             if (dependencyText != null) dependencyText.text = isBuiltIn ? "Bağımlılık: Yok" : "Bağımlılık: " + (runtime.GetDependencyError(value) ?? "Yok");
-            SetOptionalText(modNameText, string.IsNullOrWhiteSpace(value.name) ? value.id : value.name);
-            SetOptionalText(versionText, "Sürüm: " + Dash(value.version));
-            SetOptionalText(authorText, "Yapımcı: " + Dash(value.author));
+            SetOptionalText(modNameText, modName);
+            SetOptionalText(versionText, version);
+            SetOptionalText(authorText, author);
             SetOptionalText(identityText, "Kimlik: " + Dash(value.identity));
             SetOptionalText(dependencyInfoText, "Bağımlılık: " + (isBuiltIn ? "Yok" : (runtime.GetDependencyError(value) ?? "Yok")));
             SetOptionalText(descriptionInfoText, string.IsNullOrWhiteSpace(value.description) ? "Açıklama yok." : value.description);
