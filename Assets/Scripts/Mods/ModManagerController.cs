@@ -157,7 +157,7 @@ namespace Madness.Mods
             RectTransform rect = card.transform as RectTransform;
             if (rect != null)
             {
-                rect.anchoredPosition = new Vector2(0f, rect.anchoredPosition.y);
+                rect.anchoredPosition = new Vector2(1000f, rect.anchoredPosition.y);
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 800f);
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200f);
                 rect.localScale = Vector3.one;

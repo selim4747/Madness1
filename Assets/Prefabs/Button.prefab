@@ -1117,6 +1117,9 @@ MonoBehaviour:
   cardStatusText: {fileID: 673675422010984629}
   panelStatusText: {fileID: 6717180261690855076}
   toggleButtonText: {fileID: 2941078673613338345}
+  externalToggleButton: {fileID: 0}
+  externalToggle: {fileID: 0}
+  externalToggleButtonText: {fileID: 0}
   settingsContent: {fileID: 0}
   settingPrefab: {fileID: 0}
   modNameText: {fileID: 7096756038244213147}
@@ -1490,7 +1493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1295630384210241591
 RectTransform:
   m_ObjectHideFlags: 0

@@ -22,6 +22,13 @@ namespace Madness.Mods
         [SerializeField] private TMP_Text panelStatusText;
         [Tooltip("Modu Aç/Modu Kapat butonunun yazısı")]
         [SerializeField] private TMP_Text toggleButtonText;
+        [Header("Panel dışı aç/kapat kontrolü")]
+        [Tooltip("Panelin dışında bulunan aç/kapat Button'u.")]
+        [SerializeField] private Button externalToggleButton;
+        [Tooltip("Panelin dışında bulunan Toggle component'i; Button yerine kullanılabilir.")]
+        [SerializeField] private Toggle externalToggle;
+        [Tooltip("Panel dışı butonun yazısı.")]
+        [SerializeField] private TMP_Text externalToggleButtonText;
         [HideInInspector] [SerializeField] private Transform settingsContent;
         [HideInInspector] [SerializeField] private ModSettingUI settingPrefab;
         [Header("GameObject (2) uyumlu ayrı bilgi alanları - isteğe bağlı")]
@@ -95,6 +102,12 @@ namespace Madness.Mods
                 enabledToggle.onValueChanged.RemoveAllListeners();
                 enabledToggle.onValueChanged.AddListener(OnToggleChanged);
             }
+            if (externalToggle != null)
+            {
+                externalToggle.SetIsOnWithoutNotify(value.enabled);
+                externalToggle.onValueChanged.RemoveAllListeners();
+                externalToggle.onValueChanged.AddListener(OnExternalToggleChanged);
+            }
             // Button.prefab bir prefab olduğu için root Button'ın OnClick'i sahnedeki
             // objeye Inspector'dan bağlanamaz. Klonun kendi ana butonunu burada bağla.
             Button rootButton = GetComponent<Button>();
@@ -104,6 +117,7 @@ namespace Madness.Mods
             BindButton(closePanelButton, ClosePanel);
             BindButton(moveUpButton, MoveUp);
             BindButton(moveDownButton, MoveDown);
+            BindButton(externalToggleButton, OnExternalToggleClicked);
             UpdateMoveButtonState();
         }
 
@@ -131,6 +145,13 @@ namespace Madness.Mods
             if (label == null && enabledToggle != null)
                 label = enabledToggle.GetComponentInChildren<TMP_Text>(true);
             SetOptionalText(label, enabled ? "Modu Kapat" : "Modu Aç");
+
+            TMP_Text externalLabel = externalToggleButtonText;
+            if (externalLabel == null && externalToggleButton != null)
+                externalLabel = externalToggleButton.GetComponentInChildren<TMP_Text>(true);
+            SetOptionalText(externalLabel, enabled ? "Modu Kapat" : "Modu Aç");
+            if (externalToggle != null)
+                externalToggle.SetIsOnWithoutNotify(enabled);
         }
 
         private void UpdateMoveButtonState()
@@ -238,6 +259,28 @@ namespace Madness.Mods
         {
             SetStatusText(value);
             if (toggle != null) toggle(manifest, builtIn);
+        }
+
+        private void OnExternalToggleClicked()
+        {
+            bool nextValue = manifest != null && !manifest.enabled;
+            SetStatusText(nextValue);
+            if (toggle != null) toggle(manifest, builtIn);
+        }
+
+        private void OnExternalToggleChanged(bool value)
+        {
+            SetStatusText(value);
+            if (toggle != null) toggle(manifest, builtIn);
+        }
+
+        private void LateUpdate()
+        {
+            // VerticalLayoutGroup yatay konumu tekrar yazabildiği için kartın
+            // anchored Pos X değerini her frame 0'da tut.
+            RectTransform rect = transform as RectTransform;
+            if (rect != null && !Mathf.Approximately(rect.anchoredPosition.x, 1000f))
+                rect.anchoredPosition = new Vector2(1000f, rect.anchoredPosition.y);
         }
 
         public void MoveUp() { SendLoadOrderChange(1); }
