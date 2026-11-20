@@ -82,6 +82,11 @@ namespace Madness.Mods
                 enabledToggle.onValueChanged.RemoveAllListeners();
                 enabledToggle.onValueChanged.AddListener(OnToggleChanged);
             }
+            // Button.prefab bir prefab olduğu için root Button'ın OnClick'i sahnedeki
+            // objeye Inspector'dan bağlanamaz. Klonun kendi ana butonunu burada bağla.
+            Button rootButton = GetComponent<Button>();
+            if (rootButton != null && rootButton != selectButton)
+                BindButton(rootButton, OnSelectClicked);
             BindButton(selectButton, OnSelectClicked);
             BindButton(closePanelButton, ClosePanel);
             BindButton(moveUpButton, MoveUp);
