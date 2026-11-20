@@ -30,6 +30,14 @@ public class MainMenuController : MonoBehaviour
     [Tooltip("Y panelinin içindeki Geri Dön butonu.")]
     [SerializeField] private Button continueBackButton;
 
+    [Header("Mod paneli geçişi")]
+    [Tooltip("GameObject (2): mod listesinin bulunduğu panel.")]
+    [SerializeField] private GameObject modSelectionPanel;
+    [Tooltip("Ana menüdeki Modlar butonu.")]
+    [SerializeField] private Button modOpenButton;
+    [Tooltip("GameObject (2) içindeki Geri Dön butonu.")]
+    [SerializeField] private Button modBackButton;
+
     private void Start()
     {
         SaveSystem.EnsureExists();
@@ -49,8 +57,21 @@ public class MainMenuController : MonoBehaviour
             continueBackButton.onClick.AddListener(CloseContinueSelection);
         }
 
+        if (modOpenButton != null)
+        {
+            modOpenButton.onClick.RemoveAllListeners();
+            modOpenButton.onClick.AddListener(OpenModSelection);
+        }
+
+        if (modBackButton != null)
+        {
+            modBackButton.onClick.RemoveAllListeners();
+            modBackButton.onClick.AddListener(CloseModSelection);
+        }
+
         BindContinueSlotButtons();
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
+        if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
         if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
     }
 
@@ -83,6 +104,24 @@ public class MainMenuController : MonoBehaviour
     public void CloseContinueSelection()
     {
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+    }
+
+    private void OpenModSelection()
+    {
+        if (modSelectionPanel == null)
+        {
+            Debug.LogWarning("[MainMenuController] Mod Selection Panel Inspector'da atanmadı.");
+            return;
+        }
+
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        modSelectionPanel.SetActive(true);
+    }
+
+    public void CloseModSelection()
+    {
+        if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
     }
 
