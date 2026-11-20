@@ -57,6 +57,18 @@ public class MainMenuController : MonoBehaviour
             continueBackButton.onClick.AddListener(CloseContinueSelection);
         }
 
+        if (modOpenButton != null)
+        {
+            modOpenButton.onClick.RemoveListener(OpenModSelection);
+            modOpenButton.onClick.AddListener(OpenModSelection);
+        }
+
+        if (modBackButton != null)
+        {
+            modBackButton.onClick.RemoveListener(CloseModSelection);
+            modBackButton.onClick.AddListener(CloseModSelection);
+        }
+
         BindContinueSlotButtons();
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
         if (modSelectionPanel != null) modSelectionPanel.SetActive(false);

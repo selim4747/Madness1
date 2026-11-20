@@ -54,6 +54,7 @@ namespace Madness.Mods
         private Transform expandableOriginalParent;
         private int expandableOriginalSiblingIndex;
         private bool expandablePanelIsOverlay;
+        private bool suppressNextCardClick;
         private static ModCardUI activeOverlayCard;
 
         public void Bind(ModManifest value, bool isBuiltIn, ModRuntime modRuntime,
@@ -66,6 +67,7 @@ namespace Madness.Mods
             select = onSelect;
             toggle = onToggle;
             settingChanged = onSettingChanged;
+            ResolveAckapaButton();
 
             string modName = string.IsNullOrWhiteSpace(value.name) ? value.id : value.name;
             string author = Dash(value.author);
@@ -196,6 +198,12 @@ namespace Madness.Mods
         }
         private void OnSelectClicked()
         {
+            if (suppressNextCardClick)
+            {
+                suppressNextCardClick = false;
+                return;
+            }
+
             if (expandablePanel != null)
             {
                 bool shouldOpen = !expandablePanel.activeSelf;
@@ -257,12 +265,14 @@ namespace Madness.Mods
         }
         private void OnToggleChanged(bool value)
         {
+            suppressNextCardClick = true;
             SetStatusText(value);
             if (toggle != null) toggle(manifest, builtIn);
         }
 
         private void OnExternalToggleClicked()
         {
+            suppressNextCardClick = true;
             bool nextValue = manifest != null && !manifest.enabled;
             SetStatusText(nextValue);
             if (toggle != null) toggle(manifest, builtIn);
@@ -270,17 +280,45 @@ namespace Madness.Mods
 
         private void OnExternalToggleChanged(bool value)
         {
+            suppressNextCardClick = true;
             SetStatusText(value);
             if (toggle != null) toggle(manifest, builtIn);
         }
 
+        private void ResolveAckapaButton()
+        {
+            if (enabledToggle != null) return;
+            Transform target = FindChildByName(transform, "ackapabutton");
+            if (target == null) return;
+
+            enabledToggle = target.GetComponent<Toggle>();
+            if (toggleButtonText == null)
+                toggleButtonText = target.GetComponentInChildren<TMP_Text>(true);
+        }
+
+        private Transform FindChildByName(Transform parent, string targetName)
+        {
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Transform child = parent.GetChild(i);
+                if (string.Equals(child.name, targetName, StringComparison.Ordinal)) return child;
+                Transform nested = FindChildByName(child, targetName);
+                if (nested != null) return nested;
+            }
+            return null;
+        }
+
         private void LateUpdate()
         {
+            // Toggle parent Button olayını aynı frame içinde tetiklerse engelle;
+            // sonraki frame’de normal kart tıklamasına izin ver.
+            suppressNextCardClick = false;
+
             // VerticalLayoutGroup yatay konumu tekrar yazabildiği için kartın
-            // anchored Pos X değerini her frame 0'da tut.
+            // anchored Pos X değerini her frame 500'de tut.
             RectTransform rect = transform as RectTransform;
-            if (rect != null && !Mathf.Approximately(rect.anchoredPosition.x, 1000f))
-                rect.anchoredPosition = new Vector2(1000f, rect.anchoredPosition.y);
+            if (rect != null && !Mathf.Approximately(rect.anchoredPosition.x, 500f))
+                rect.anchoredPosition = new Vector2(500f, rect.anchoredPosition.y);
         }
 
         public void MoveUp() { SendLoadOrderChange(1); }
