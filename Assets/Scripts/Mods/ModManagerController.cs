@@ -124,15 +124,46 @@ namespace Madness.Mods
                 return;
             }
 
+            ConfigureModListLayout();
+
             for (int i = 0; i < entries.Count; i++)
             {
                 ModEntry entry = entries[i];
                 ModCardUI card = Instantiate(modCardPrefab, modContent);
+                ConfigureModCardLayout(card);
                 card.Bind(entry.Manifest, entry.BuiltIn, runtime, SelectMod, ToggleMod, SaveSetting);
                 cards.Add(card);
             }
             if (modScrollRect != null) modScrollRect.verticalNormalizedPosition = 1f;
             SetStatus("Mod sayısı: " + entries.Count);
+        }
+
+        private void ConfigureModListLayout()
+        {
+            VerticalLayoutGroup layout = modContent.GetComponent<VerticalLayoutGroup>();
+            if (layout == null) layout = modContent.gameObject.AddComponent<VerticalLayoutGroup>();
+
+            // Kart yüksekliği 200, aralık 25; ardışık kartların mesafesi 225 olur.
+            layout.spacing = 25f;
+            layout.childControlHeight = true;
+            layout.childForceExpandHeight = false;
+        }
+
+        private void ConfigureModCardLayout(ModCardUI card)
+        {
+            if (card == null) return;
+            RectTransform rect = card.transform as RectTransform;
+            if (rect != null)
+            {
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200f);
+                rect.localScale = Vector3.one;
+            }
+
+            LayoutElement layout = card.GetComponent<LayoutElement>();
+            if (layout == null) layout = card.gameObject.AddComponent<LayoutElement>();
+            layout.minHeight = 200f;
+            layout.preferredHeight = 200f;
+            layout.flexibleHeight = 0f;
         }
 
         private List<ModEntry> CollectMods()
