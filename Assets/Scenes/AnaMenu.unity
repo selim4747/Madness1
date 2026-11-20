@@ -281,8 +281,6 @@ MonoBehaviour:
   searchInput: {fileID: 0}
   filterDropdown: {fileID: 0}
   sortDropdown: {fileID: 0}
-  modPanel: {fileID: 624124928}
-  mainMenuPanel: {fileID: 216897047}
   detailPanel: {fileID: 0}
   settingsPanel: {fileID: 0}
   diagnosticsPanel: {fileID: 0}
@@ -295,8 +293,6 @@ MonoBehaviour:
   statusText: {fileID: 67740224}
   settingsContent: {fileID: 0}
   settingPrefab: {fileID: 0}
-  anaButton: {fileID: 215616202}
-  closeModPanelButton: {fileID: 1186406653}
   refreshButton: {fileID: 0}
   importButton: {fileID: 0}
   selectedToggleButton: {fileID: 0}
@@ -6423,6 +6419,9 @@ MonoBehaviour:
   - {fileID: 1333015511}
   - {fileID: 265398080}
   continueBackButton: {fileID: 316737007}
+  modSelectionPanel: {fileID: 624124928}
+  modOpenButton: {fileID: 215616202}
+  modBackButton: {fileID: 1186406653}
 --- !u!4 &1365089415
 Transform:
   m_ObjectHideFlags: 0

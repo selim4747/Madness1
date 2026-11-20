@@ -24,8 +24,6 @@ namespace Madness.Mods
         [HideInInspector] [SerializeField] private TMP_Dropdown sortDropdown;
 
         [Header("Paneller - GameObject'leri sen oluştur ve bağla")]
-        [SerializeField] private GameObject modPanel;
-        [SerializeField] private GameObject mainMenuPanel;
         [HideInInspector] [SerializeField] private GameObject detailPanel;
         [HideInInspector] [SerializeField] private GameObject settingsPanel;
         [HideInInspector] [SerializeField] private GameObject diagnosticsPanel;
@@ -44,8 +42,6 @@ namespace Madness.Mods
         [HideInInspector] [SerializeField] private ModSettingUI settingPrefab;
 
         [Header("Kontrol butonları - isteğe bağlı")]
-        [SerializeField] private Button anaButton;
-        [SerializeField] private Button closeModPanelButton;
         [HideInInspector] [SerializeField] private Button refreshButton;
         [HideInInspector] [SerializeField] private Button importButton;
         [HideInInspector] [SerializeField] private Button selectedToggleButton;
@@ -94,8 +90,6 @@ namespace Madness.Mods
 
         private void BindButtons()
         {
-            AddClick(anaButton, OpenModPanel);
-            AddClick(closeModPanelButton, CloseModPanel);
             AddClick(refreshButton, Refresh);
             AddClick(importButton, PickAndImportPackage);
             AddClick(selectedToggleButton, ToggleSelected);
@@ -110,19 +104,6 @@ namespace Madness.Mods
             if (searchInput != null) searchInput.onValueChanged.AddListener(_ => Refresh());
             if (filterDropdown != null) filterDropdown.onValueChanged.AddListener(_ => Refresh());
             if (sortDropdown != null) sortDropdown.onValueChanged.AddListener(_ => Refresh());
-        }
-
-        public void OpenModPanel()
-        {
-            if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-            if (modPanel != null) modPanel.SetActive(true);
-            Refresh();
-        }
-
-        public void CloseModPanel()
-        {
-            if (modPanel != null) modPanel.SetActive(false);
-            if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
         }
 
         private void AddClick(Button button, UnityEngine.Events.UnityAction action)
@@ -476,7 +457,6 @@ namespace Madness.Mods
 
         private void HidePanels()
         {
-            if (modPanel != null) modPanel.SetActive(false);
             if (detailPanel != null) detailPanel.SetActive(false);
             if (settingsPanel != null) settingsPanel.SetActive(false);
             if (diagnosticsPanel != null) diagnosticsPanel.SetActive(false);
