@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Madness.Mods;
 using TMPro;
 
 public class MainMenuController : MonoBehaviour
@@ -20,55 +19,20 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button quitButton;
 
     [Header("Paneller")]
-    [Tooltip("X paneli: ana menü butonlarının (Devam Et, Yeni Oyun, Ayarlar, Çıkış) çocuğu olduğu panel. Devam Et'e basılınca gizlenir.")]
+    [Tooltip("X paneli: ana menü butonlarının çocuğu olduğu panel. Devam Et'e basılınca gizlenir.")]
     [SerializeField] private GameObject mainMenuPanel;
 
     [Header("Devam seçimi")]
-    [Tooltip("Y paneli: Devam Et'e basılınca görünen kayıt seçim paneli (içindeki butonları sen hazırlarsın).")]
+    [Tooltip("Y paneli: Devam Et'e basılınca görünen kayıt seçim paneli.")]
     [SerializeField] private GameObject continueSelectionPanel;
-    [Tooltip("Y panelindeki 5 kayıt butonu, sırayla (0,1,2,3,4). OnClick'i elle bağlamana gerek yok; boş slotun butonu tıklanamaz olur.")]
+    [Tooltip("Y panelindeki kayıt butonları, sırayla 0,1,2,3,4.")]
     [SerializeField] private Button[] continueSlotButtons;
-    [Tooltip("Y panelinin içindeki Geri Dön butonu. Basılınca Y gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
+    [Tooltip("Y panelinin içindeki Geri Dön butonu.")]
     [SerializeField] private Button continueBackButton;
-
-    [Header("Mod seçimi")]
-    [Tooltip("Z paneli: 'Modlar' butonuna basılınca görünen mod listesi paneli.")]
-    [SerializeField] private GameObject modSelectionPanel;
-    [Tooltip("Ana menüdeki Modlar panelini açan buton.")]
-    [SerializeField] private Button modOpenButton;
-    [Tooltip("Z panelindeki mod butonları. Mod sayısı kadar görünür, geri kalanı gizlenir.")]
-    [SerializeField] private Button[] modSlotButtons;
-    [Tooltip("Silme modunu açıp kapatan global buton. Açıldıktan sonra tıklanan ilk harici mod silinir; tekrar basılırsa iptal edilir.")]
-    [SerializeField] private Button modDeleteButton;
-    [Tooltip("Z panelinin içindeki Geri Dön butonu. Basılınca Z gizlenir ve X (ana menü paneli) tekrar görünür olur.")]
-    [SerializeField] private Button modBackButton;
-
-    [Header("Mod görünümü")]
-    [Tooltip("Mod butonlarındaki bilgi metninin ana font boyutu.")]
-    [SerializeField] private float modFontSize = 23f;
-    [Tooltip("Font otomatik boyutlandırılırsa kullanılabilecek minimum değer. Otomatik boyutlandırma kapalıyken de Inspector'da saklanır.")]
-    [SerializeField] private float modFontSizeMin = 18f;
-    [Tooltip("Font otomatik boyutlandırılırsa kullanılabilecek maksimum değer.")]
-    [SerializeField] private float modFontSizeMax = 28f;
-    [Tooltip("Mod bilgilerindeki satır aralığı. Daha küçük değer satırları sıkıştırır.")]
-    [SerializeField] private float modLineSpacing = -4f;
-    [Tooltip("Mod bilgi metninin iç kenar boşluğu: sol, üst, sağ, alt.")]
-    [SerializeField] private Vector4 modTextMargin = new Vector4(18f, 10f, 18f, 8f);
-    [Tooltip("Mod bilgi metninin hizalaması.")]
-    [SerializeField] private TextAlignmentOptions modTextAlignment = TextAlignmentOptions.TopLeft;
-
-    private ModRuntime modRuntime;
-    private bool deleteMode;
 
     private void Start()
     {
-        try // Mod Ekle butonu artık sahnede elle: ModImportUI bileşeni
-        {
-            modRuntime = ModRuntime.EnsureExists();
-            modRuntime.OnModsChanged += RefreshModButtons; // mod aç/kapa, içe aktarma → butonlar tazelenir
-        }
-        catch (System.Exception ex) { Debug.LogException(ex); }
-        SaveSystem.EnsureExists(); // ana menü sahnesinde SaveSystem yok — PeekSlot null veriyordu
+        SaveSystem.EnsureExists();
 
         if (slots != null)
         {
@@ -77,39 +41,20 @@ public class MainMenuController : MonoBehaviour
         }
 
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
-        if (quitButton != null)     quitButton.onClick.AddListener(Quit);
-        if (modOpenButton != null)
-        {
-            modOpenButton.onClick.RemoveAllListeners();
-            modOpenButton.onClick.AddListener(OpenMods);
-        }
-        if (modDeleteButton == null) modDeleteButton = CreateFallbackDeleteButton();
-        if (modDeleteButton != null)
-        {
-            modDeleteButton.onClick.RemoveAllListeners();
-            modDeleteButton.onClick.AddListener(ToggleDeleteMode);
-            UpdateDeleteButtonLabel();
-        }
+        if (quitButton != null) quitButton.onClick.AddListener(Quit);
+
         if (continueBackButton != null)
         {
             continueBackButton.onClick.RemoveAllListeners();
             continueBackButton.onClick.AddListener(CloseContinueSelection);
         }
+
         BindContinueSlotButtons();
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
-
-        if (modBackButton != null)
-        {
-            modBackButton.onClick.RemoveAllListeners();
-            modBackButton.onClick.AddListener(CloseModSelection);
-        }
-        if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
-        RefreshModButtons();
-
         if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
     }
 
-    /// <summary>Kayitli oyunu yukle — sadece NIYETI isaretler, veriyi yuklemez.</summary>
+    /// <summary>Kayıtlı oyunu yükle — sadece niyeti işaretler, veriyi yüklemez.</summary>
     public void LoadSlot(int slot)
     {
         if (!SaveSystem.EnsureExists().SlotExists(slot)) return;
@@ -122,12 +67,11 @@ public class MainMenuController : MonoBehaviour
         OpenContinueSelection();
     }
 
-    /// <summary>Devam Et: ana menü paneli (X) gizlenir, kayıt seçim paneli (Y) görünür olur.</summary>
     private void OpenContinueSelection()
     {
         if (continueSelectionPanel == null)
         {
-            Debug.LogWarning("[MainMenuController] 'Continue Selection Panel' (Y) Inspector'da atanmadı.");
+            Debug.LogWarning("[MainMenuController] Continue Selection Panel Inspector'da atanmadı.");
             return;
         }
 
@@ -136,229 +80,12 @@ public class MainMenuController : MonoBehaviour
         continueSelectionPanel.SetActive(true);
     }
 
-    /// <summary>Geri Dön: kayıt seçim paneli (Y) gizlenir, ana menü paneli (X) tekrar görünür olur.</summary>
     public void CloseContinueSelection()
     {
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
     }
 
-    /// <summary>Modlar: ana menü paneli (X) gizlenir, mod listesi paneli (Z) görünür olur.</summary>
-    public void OpenMods()
-    {
-        OpenModSelection();
-    }
-
-    private void OpenModSelection()
-    {
-        if (modSelectionPanel == null)
-        {
-            Debug.LogWarning("[MainMenuController] 'Mod Selection Panel' (Z) Inspector'da atanmadı.");
-            return;
-        }
-
-        RefreshModButtons();
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-        modSelectionPanel.SetActive(true);
-    }
-
-    /// <summary>Geri Dön: mod paneli (Z) gizlenir, ana menü paneli (X) tekrar görünür olur.</summary>
-    public void CloseModSelection()
-    {
-        if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
-    }
-
-    /// <summary>Z panelindeki butonları modlarla doldurur: her moda bir buton, artan butonlar gizlenir.</summary>
-    private void RefreshModButtons()
-    {
-        if (modSlotButtons == null) return;
-
-        List<ModManifest> mods = CollectMods();
-        for (int i = 0; i < modSlotButtons.Length; i++)
-        {
-            Button button = modSlotButtons[i];
-            if (button == null) continue;
-
-            bool used = i < mods.Count;
-            button.gameObject.SetActive(used);
-            button.onClick.RemoveAllListeners();
-            if (!used) continue;
-
-            ModManifest mod = mods[i];
-            TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
-            if (label != null)
-            {
-                label.text = BuildModDetails(mod);
-                label.richText = false;
-                label.enableAutoSizing = false;
-                label.fontSize = modFontSize;
-                label.fontSizeMin = modFontSizeMin;
-                label.fontSizeMax = modFontSizeMax;
-                label.lineSpacing = modLineSpacing;
-                label.alignment = modTextAlignment;
-                label.enableWordWrapping = true;
-                label.margin = modTextMargin;
-            }
-            bool builtIn = modRuntime != null && modRuntime.IsBuiltIn(mod.id);
-            button.onClick.AddListener(() => OnModButtonClicked(mod, builtIn));
-        }
-
-        if (mods.Count > modSlotButtons.Length)
-            Debug.LogWarning($"[MainMenuController] {mods.Count} mod var ama sadece {modSlotButtons.Length} mod butonu atanmış; fazlası gösterilmiyor.");
-    }
-
-    private void OnModButtonClicked(ModManifest mod, bool builtIn)
-    {
-        if (deleteMode)
-        {
-            if (builtIn)
-            {
-                if (ToastNotification.Instance != null)
-                    ToastNotification.Instance.Show("Yerleşik modlar silinemez.", 3f);
-                return;
-            }
-
-            deleteMode = false;
-            UpdateDeleteButtonLabel();
-            DeleteMod(mod.id);
-            return;
-        }
-
-        SetModEnabled(mod.id, !mod.enabled, builtIn);
-    }
-
-    private void ToggleDeleteMode()
-    {
-        deleteMode = !deleteMode;
-        UpdateDeleteButtonLabel();
-        if (ToastNotification.Instance != null)
-            ToastNotification.Instance.Show(deleteMode ? "Silme modu açık. Silinecek ilk moda basın." : "Silme işlemi iptal edildi.", 3f);
-    }
-
-    private void UpdateDeleteButtonLabel()
-    {
-        if (modDeleteButton == null) return;
-        TextMeshProUGUI label = modDeleteButton.GetComponentInChildren<TextMeshProUGUI>(true);
-        if (label != null) label.text = deleteMode ? "İptal" : "Mod Sil";
-        Text legacyLabel = modDeleteButton.GetComponentInChildren<Text>(true);
-        if (legacyLabel != null) legacyLabel.text = deleteMode ? "İptal" : "Mod Sil";
-    }
-
-    private Button CreateFallbackDeleteButton()
-    {
-        if (modSelectionPanel == null) return null;
-
-        GameObject buttonObject = new GameObject("RuntimeModDeleteButton", typeof(RectTransform), typeof(Image), typeof(Button));
-        buttonObject.transform.SetParent(modSelectionPanel.transform, false);
-        RectTransform rect = buttonObject.GetComponent<RectTransform>();
-        rect.anchorMin = new Vector2(1f, 1f);
-        rect.anchorMax = new Vector2(1f, 1f);
-        rect.pivot = new Vector2(1f, 1f);
-        rect.anchoredPosition = new Vector2(-220f, -40f);
-        rect.sizeDelta = new Vector2(180f, 54f);
-        buttonObject.GetComponent<Image>().color = new Color(0.45f, 0.14f, 0.14f, 1f);
-
-        GameObject labelObject = new GameObject("Label", typeof(RectTransform));
-        labelObject.transform.SetParent(buttonObject.transform, false);
-        RectTransform labelRect = labelObject.GetComponent<RectTransform>();
-        labelRect.anchorMin = Vector2.zero;
-        labelRect.anchorMax = Vector2.one;
-        labelRect.offsetMin = Vector2.zero;
-        labelRect.offsetMax = Vector2.zero;
-        Text label = labelObject.AddComponent<Text>();
-        label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        label.fontSize = 22;
-        label.alignment = TextAnchor.MiddleCenter;
-        label.color = Color.white;
-        label.raycastTarget = false;
-        label.text = "Mod Sil";
-        return buttonObject.GetComponent<Button>();
-    }
-
-    /// <summary>Harici modlar + yerleşik modlar (varsa) tek listede.</summary>
-    private List<ModManifest> CollectMods()
-    {
-        List<ModManifest> mods = new List<ModManifest>();
-        if (modRuntime == null)
-        {
-            try { modRuntime = ModRuntime.EnsureExists(); }
-            catch (System.Exception ex) { Debug.LogException(ex); }
-        }
-
-        if (modRuntime != null)
-        {
-            IReadOnlyList<ModManifest> loaded = modRuntime.LoadedManifests;
-            for (int i = 0; i < loaded.Count; i++)
-                if (loaded[i] != null) mods.Add(loaded[i]);
-        }
-
-        IReadOnlyList<string> builtInIds = BuiltInModCatalog.GetAvailableIds();
-        for (int i = 0; i < builtInIds.Count; i++)
-        {
-            string id = builtInIds[i];
-            bool listed = false;
-            for (int j = 0; j < mods.Count; j++)
-                if (string.Equals(mods[j].id, id, System.StringComparison.OrdinalIgnoreCase)) { listed = true; break; }
-            if (listed) continue;
-
-            mods.Add(new ModManifest
-            {
-                id = id,
-                name = BuiltInModCatalog.GetDisplayName(id),
-                identity = BuiltInModCatalog.GetIdentity(id),
-                version = "yerleşik",
-                author = "NJG Games",
-                enabled = BuiltInModCatalog.IsEnabled(id)
-            });
-        }
-
-        return mods;
-    }
-
-    /// <summary>Mod butonu yazısı: tüm bilgiler okunabilir biçimde alt alta gösterilir.</summary>
-    private string BuildModDetails(ModManifest mod)
-    {
-        string name = string.IsNullOrWhiteSpace(mod.name) ? mod.id : mod.name;
-        string identity = string.IsNullOrWhiteSpace(mod.identity) ? "-" : mod.identity;
-        string version = string.IsNullOrWhiteSpace(mod.version) ? "-" : mod.version;
-        string author = string.IsNullOrWhiteSpace(mod.author) ? "Bilinmiyor" : mod.author;
-        string description = string.IsNullOrWhiteSpace(mod.description) ? "Açıklama yok." : mod.description;
-        string status = modRuntime != null && !modRuntime.IsBuiltIn(mod.id)
-            ? modRuntime.GetModStatus(mod)
-            : (mod.enabled ? "Açık" : "Kapalı");
-
-        return "Mod: " + name + "\n" +
-               "Kimlik: " + identity + "\n" +
-               "Sürüm: " + version + "\n" +
-               "Yapımcı: " + author + "\n" +
-               "Durum: " + status + "\n" +
-               "Açıklama: " + description;
-    }
-
-    private void SetModEnabled(string modId, bool enabled, bool builtIn)
-    {
-        bool changed = builtIn
-            ? BuiltInModCatalog.SetEnabled(modId, enabled)
-            : modRuntime != null && modRuntime.SetExternalModEnabled(modId, enabled);
-        if (!changed) RefreshModButtons();
-    }
-
-    private void DeleteMod(string modId)
-    {
-        string message;
-        if (modRuntime != null) modRuntime.DeleteExternalMod(modId, out message);
-        else message = "Mod sistemi hazır değil.";
-        if (ToastNotification.Instance != null) ToastNotification.Instance.Show(message, 3f);
-        RefreshModButtons();
-    }
-
-    private void OnDestroy()
-    {
-        if (modRuntime != null) modRuntime.OnModsChanged -= RefreshModButtons;
-    }
-
-    /// <summary>Y panelindeki kendi yaptığın kayıt butonlarını slotlarına bağlar.</summary>
     private void BindContinueSlotButtons()
     {
         if (continueSlotButtons == null) return;
@@ -374,12 +101,11 @@ public class MainMenuController : MonoBehaviour
         RefreshContinueSlotButtons();
     }
 
-    /// <summary>Buton yazılarını ve boş slotların tıklanamazlığını günceller.</summary>
     private void RefreshContinueSlotButtons()
     {
         if (continueSlotButtons == null) return;
-        SaveSystem saveSystem = SaveSystem.EnsureExists();
 
+        SaveSystem saveSystem = SaveSystem.EnsureExists();
         for (int i = 0; i < continueSlotButtons.Length; i++)
         {
             Button button = continueSlotButtons[i];
@@ -391,8 +117,6 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    /// <summary>Slot butonunun yazısı: kayıt adı, gün, para, son kayıt zamanı ve
-    /// kaydın gerektirdiği 6 karakterlik mod kimlikleri (küçük yazı).</summary>
     private static string BuildSlotInfo(SaveSystem saveSystem, int slot)
     {
         SaveData data = saveSystem.PeekSlot(slot);
@@ -414,16 +138,17 @@ public class MainMenuController : MonoBehaviour
         {
             RequiredModSaveEntry mod = data.requiredMods[i];
             if (mod == null) continue;
+
             string id = string.IsNullOrEmpty(mod.modIdentity) ? mod.modId : mod.modIdentity;
             if (string.IsNullOrEmpty(id)) continue;
             if (ids.Length > 0) ids.Append(", ");
             ids.Append(id);
         }
+
         return ids.Length > 0 ? ids.ToString() : "yok";
     }
 
-    /// <summary>Yeni oyun — sadece NIYETI isaretler. Verilen slot bossa orada, doluysa ilk bos
-    /// slota yazilir; hic bos slot yoksa mevcut kaydin uzerine yazmaz.</summary>
+    /// <summary>Yeni oyun — boş slot varsa onu kullanır; dolu slotların üzerine yazmaz.</summary>
     public void StartNewGame(int slot)
     {
         SaveSystem saveSystem = SaveSystem.EnsureExists();
@@ -433,7 +158,13 @@ public class MainMenuController : MonoBehaviour
         {
             int emptySlot = -1;
             for (int i = 0; i < SaveSystem.SlotCount; i++)
-                if (!saveSystem.SlotExists(i)) { emptySlot = i; break; }
+            {
+                if (!saveSystem.SlotExists(i))
+                {
+                    emptySlot = i;
+                    break;
+                }
+            }
 
             if (emptySlot < 0)
             {

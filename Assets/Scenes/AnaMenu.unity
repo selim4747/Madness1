@@ -281,7 +281,8 @@ MonoBehaviour:
   searchInput: {fileID: 0}
   filterDropdown: {fileID: 0}
   sortDropdown: {fileID: 0}
-  modPanel: {fileID: 0}
+  modPanel: {fileID: 624124928}
+  mainMenuPanel: {fileID: 216897047}
   detailPanel: {fileID: 0}
   settingsPanel: {fileID: 0}
   diagnosticsPanel: {fileID: 0}
@@ -294,7 +295,8 @@ MonoBehaviour:
   statusText: {fileID: 67740224}
   settingsContent: {fileID: 0}
   settingPrefab: {fileID: 0}
-  anaButton: {fileID: 0}
+  anaButton: {fileID: 215616202}
+  closeModPanelButton: {fileID: 1186406653}
   refreshButton: {fileID: 0}
   importButton: {fileID: 0}
   selectedToggleButton: {fileID: 0}
@@ -4063,7 +4065,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
   m_Padding:
     m_Left: 0
@@ -5684,7 +5686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
   m_Content: {fileID: 2120719671}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
@@ -6421,37 +6423,6 @@ MonoBehaviour:
   - {fileID: 1333015511}
   - {fileID: 265398080}
   continueBackButton: {fileID: 316737007}
-  modSelectionPanel: {fileID: 624124928}
-  modOpenButton: {fileID: 215616202}
-  modSlotButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  modDeleteButton: {fileID: 0}
-  modBackButton: {fileID: 0}
-  modFontSize: 23
-  modFontSizeMin: 18
-  modFontSizeMax: 28
-  modLineSpacing: -4
-  modTextMargin: {x: 18, y: 10, z: 18, w: 8}
-  modTextAlignment: 257
 --- !u!4 &1365089415
 Transform:
   m_ObjectHideFlags: 0
@@ -9075,6 +9046,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2120719671}
+  - component: {fileID: 2120719672}
+  - component: {fileID: 2120719673}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -9101,6 +9074,46 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.0007179918}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &2120719672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120719670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 8
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &2120719673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120719670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2132819319
 GameObject:
   m_ObjectHideFlags: 0
