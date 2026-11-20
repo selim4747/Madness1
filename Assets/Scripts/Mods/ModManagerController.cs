@@ -145,6 +145,8 @@ namespace Madness.Mods
 
             // Kart yüksekliği 200, aralık 25; ardışık kartların mesafesi 225 olur.
             layout.spacing = 25f;
+            layout.childControlWidth = true;
+            layout.childForceExpandWidth = false;
             layout.childControlHeight = true;
             layout.childForceExpandHeight = false;
         }
@@ -155,12 +157,16 @@ namespace Madness.Mods
             RectTransform rect = card.transform as RectTransform;
             if (rect != null)
             {
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 800f);
                 rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200f);
                 rect.localScale = Vector3.one;
             }
 
             LayoutElement layout = card.GetComponent<LayoutElement>();
             if (layout == null) layout = card.gameObject.AddComponent<LayoutElement>();
+            layout.minWidth = 800f;
+            layout.preferredWidth = 800f;
+            layout.flexibleWidth = 0f;
             layout.minHeight = 200f;
             layout.preferredHeight = 200f;
             layout.flexibleHeight = 0f;

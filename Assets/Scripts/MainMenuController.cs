@@ -57,18 +57,6 @@ public class MainMenuController : MonoBehaviour
             continueBackButton.onClick.AddListener(CloseContinueSelection);
         }
 
-        if (modOpenButton != null)
-        {
-            modOpenButton.onClick.RemoveAllListeners();
-            modOpenButton.onClick.AddListener(OpenModSelection);
-        }
-
-        if (modBackButton != null)
-        {
-            modBackButton.onClick.RemoveAllListeners();
-            modBackButton.onClick.AddListener(CloseModSelection);
-        }
-
         BindContinueSlotButtons();
         if (continueSelectionPanel != null) continueSelectionPanel.SetActive(false);
         if (modSelectionPanel != null) modSelectionPanel.SetActive(false);
@@ -107,7 +95,7 @@ public class MainMenuController : MonoBehaviour
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
     }
 
-    private void OpenModSelection()
+    public void OpenModSelection()
     {
         if (modSelectionPanel == null)
         {
