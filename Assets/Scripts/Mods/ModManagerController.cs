@@ -127,7 +127,7 @@ namespace Madness.Mods
             {
                 ModEntry entry = entries[i];
                 ModCardUI card = Instantiate(modCardPrefab, modContent);
-                card.Bind(entry.Manifest, entry.BuiltIn, runtime, SelectMod, ToggleMod, AskDelete);
+                card.Bind(entry.Manifest, entry.BuiltIn, runtime, SelectMod, ToggleMod, SaveSetting);
                 cards.Add(card);
             }
             if (modScrollRect != null) modScrollRect.verticalNormalizedPosition = 1f;
