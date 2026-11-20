@@ -1,0 +1,25 @@
+ModManagerController kurulumu
+==============================
+
+Bu script panel, ScrollRect, kart veya ayar satırı oluşturmaz. UI nesnelerini Unity'de sen oluşturup Inspector'dan bağlamalısın.
+
+1) ModManagerController'ı mod paneline veya ayrı bir GameObject'e ekle.
+2) ScrollRect alanına kendi ScrollRect'ini, Mod Content alanına ScrollRect Content nesnesini ver.
+3) Kendi hazırladığın mod kartı prefabına ModCardUI ekle ve şu alanları bağla:
+   - Title Text, Details Text, Status Text
+   - Enabled Toggle
+   - Select, Delete, Move Up, Move Down butonları
+   Bu prefabı Mod Card Prefab alanına ver.
+4) Detail, Settings, Diagnostics, Import, Profiles ve Save Compatibility panellerini kendin oluşturup ilgili GameObject alanlarına bağla.
+5) Settings Content altına eklenecek kendi ayar satırı prefabına ModSettingUI ekle. Label, Toggle, Slider, TMP_Dropdown, TMP_InputField ve Value Text alanlarını bağla; prefabı Setting Prefab alanına ver.
+6) Profil panelinde TMP_InputField, TMP_Dropdown ve kaydet/uygula/sil butonlarını bağla.
+7) Kayıt uyumluluk panelinde Save Compatibility Text ve devam/iptal butonlarını bağla.
+8) MainMenuController'daki LoadSlot yerine önce ModManagerController.CheckSaveCompatibility(slot) çağır. Eksik mod yoksa controller SaveSystem.RequestLoadSlot çağrısını yapar; ardından mevcut oyun sahnesine geçişi senin buton akışın yapmalıdır.
+9) Mod kartındaki aç/kapat, seç, sil, ayar, içe aktarma, yeniden yükleme, profil ve kayıt kontrolleri runtime'da mevcut API'lere bağlanır.
+
+Notlar:
+- ModManagerUI eski runtime-UI üreticisidir; bu yeni kontrol katmanında panel üretimi yoktur.
+- Delete işlemi doğrudan silmez; önce Confirm Delete butonuna ihtiyaç duyar.
+- ScrollRect'in Content, Viewport ve LayoutGroup ayarlarını Unity Inspector'da sen yapmalısın.
+- Ayarlarda restartRequired true ise statusText'te yeniden yükleme uyarısı verilir.
+- Save compatibility Continue butonu eksik modlarla devam etme kararını temsil eder.

@@ -15,6 +15,7 @@ namespace Madness.Mods
         public string version = "1.0.0";
         public string apiVersion = "1";
         public string author = "";
+        public string updateUrl = "";
         // Manifest bu alanı içermiyorsa mod güvenli biçimde kapalı başlar.
         public bool enabled = false;
         public int loadOrder = 0;
