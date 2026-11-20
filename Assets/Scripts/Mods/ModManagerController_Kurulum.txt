@@ -9,20 +9,30 @@ Bu script panel, ScrollRect, kart veya ayar satırı oluşturmaz. UI nesnelerini
    - Title Text, Details Text, Status Text, Description Text, Dependency Text
    - Expandable Panel: kartın kendi açılır panel GameObject'i
    - Enabled Toggle
-   - Select, Move Up, Move Down butonları
+   - Select, Close Panel, Move Up, Move Down butonları
+   - İstersen GameObject (2) yapısındaki ayrı alanları da bağla:
+     - ModAd -> Mod Name Text
+     - Sürüm -> Version Text
+     - Yapımcı -> Author Text
+     - ModKimligi -> Identity Text
+     - Gereklilik -> Dependency Info Text
+     - Aciklama -> Description Info Text
+   Bu ayrı alanlar isteğe bağlıdır; bağlanırsa controller bu alanları da doldurur.
+   Not: Güncel AnaMenu.unity içinde ModAd, Sürüm, Yapımcı, ModKimligi, Gereklilik ve Aciklama nesneleri mevcut metin/placeholder olarak duruyor. Bunları sabit etiket olarak koruyacaksan ModCardUI'daki ayrı bilgi alanlarına yeni TMP_Text değer nesneleri bağla; mevcut etiketleri doğrudan bağlamak onların yazısını mod verisiyle değiştirir.
    - İstersen prefab içindeki ayar listesi için Settings Content ve Setting Prefab
    Bu prefabı Mod Card Prefab alanına ver. Controller her mod için bu prefabın bir örneğini ScrollRect Content altında oluşturur.
-4) Detail, Settings, Diagnostics, Import, Profiles ve Save Compatibility panellerini kendin oluşturup ilgili GameObject alanlarına bağla.
+4) Mod Panel alanına GameObject (2) gibi mod listesinin bulunduğu paneli bağla. Ana Button alanına paneli açacak AnaButton'ı bağla. Detail, Settings, Diagnostics, Import, Profiles ve Save Compatibility panellerini kendin oluşturup ilgili GameObject alanlarına bağla.
 5) Her kartın kendi panelinde ayar göstereceksen ModCardUI içindeki Settings Content ve Setting Prefab alanlarını kullan. Ayar satırı prefabına ModSettingUI ekle; Label, Toggle, Slider, TMP_Dropdown, TMP_InputField ve Value Text alanlarını bağla.
 6) Profil panelinde TMP_InputField, TMP_Dropdown ve kaydet/uygula/sil butonlarını bağla.
 7) Kayıt uyumluluk panelinde Save Compatibility Text ve devam/iptal butonlarını bağla.
 8) MainMenuController'daki LoadSlot yerine önce ModManagerController.CheckSaveCompatibility(slot) çağır. Eksik mod yoksa controller SaveSystem.RequestLoadSlot çağrısını yapar; ardından mevcut oyun sahnesine geçişi senin buton akışın yapmalıdır.
-9) Mod kartındaki aç/kapat, seç, sil, ayar, içe aktarma, yeniden yükleme, profil ve kayıt kontrolleri runtime'da mevcut API'lere bağlanır.
+9) Mod kartındaki aç/kapat, seç, paneli kapat, ayar, içe aktarma, yeniden yükleme, profil ve kayıt kontrolleri runtime'da mevcut API'lere bağlanır. Selected Delete Button olarak SilButton'ı bağla; ilk tıkta "Emin misin?", ikinci tıkta "Son şansın", üçüncü tıkta silme gerçekleşir. İstersen butonun iç TMP yazısını Selected Delete Button Label alanına bağla.
 
 Notlar:
 - ModManagerUI eski runtime-UI üreticisidir; bu yeni kontrol katmanında panel üretimi yoktur.
-- Delete işlemi doğrudan silmez; önce Confirm Delete butonuna ihtiyaç duyar.
-- Mod kartı prefabında Sil butonu bulunmaz. Paneldeki Selected Delete Button seçili mod için silme onayını açar; Confirm Delete gerçek silme işlemini yapar.
+- Silme işlemi aynı SilButton üzerinden üç tıklamalıdır: 1. tık "Emin misin?", 2. tık "Son şansın", 3. tık gerçek silme.
+- Mod kartı prefabında Sil butonu bulunmaz. Paneldeki Selected Delete Button olarak bağlanan SilButton seçili mod için üç aşamalı silme akışını yürütür. Delete Confirm Button alanı eski kurulumlarla uyumluluk için durur ancak bu akışta bağlanması gerekmez.
+- AnaMenu.unity içindeki GameObject (2) yalnızca örnek hiyerarşi olarak incelenmiştir: kök Button kartı açar, ackapabutton Toggle'dır, Panel içindeki Ackapabutton paneli kapatır. Paneldeki mevcut SilButton prefab kartına bağlanmamalıdır; silme için Selected Delete Button ve Confirm Delete Button kullanılır.
 - ScrollRect'in Content, Viewport ve LayoutGroup ayarlarını Unity Inspector'da sen yapmalısın.
 - Ayarlarda restartRequired true ise statusText'te yeniden yükleme uyarısı verilir.
 - Save compatibility Continue butonu eksik modlarla devam etme kararını temsil eder.

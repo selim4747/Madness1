@@ -16,8 +16,16 @@ namespace Madness.Mods
         [SerializeField] private GameObject expandablePanel;
         [SerializeField] private Transform settingsContent;
         [SerializeField] private ModSettingUI settingPrefab;
+        [Header("GameObject (2) uyumlu ayrı bilgi alanları - isteğe bağlı")]
+        [SerializeField] private TMP_Text modNameText;
+        [SerializeField] private TMP_Text versionText;
+        [SerializeField] private TMP_Text authorText;
+        [SerializeField] private TMP_Text identityText;
+        [SerializeField] private TMP_Text dependencyInfoText;
+        [SerializeField] private TMP_Text descriptionInfoText;
         [SerializeField] private Toggle enabledToggle;
         [SerializeField] private Button selectButton;
+        [SerializeField] private Button closePanelButton;
         [SerializeField] private Button moveUpButton;
         [SerializeField] private Button moveDownButton;
 
@@ -45,6 +53,12 @@ namespace Madness.Mods
             if (statusText != null) statusText.text = isBuiltIn ? (value.enabled ? "Açık" : "Kapalı") : runtime.GetModStatus(value);
             if (descriptionText != null) descriptionText.text = string.IsNullOrWhiteSpace(value.description) ? "Açıklama yok." : value.description;
             if (dependencyText != null) dependencyText.text = isBuiltIn ? "Bağımlılık: Yok" : "Bağımlılık: " + (runtime.GetDependencyError(value) ?? "Yok");
+            SetOptionalText(modNameText, string.IsNullOrWhiteSpace(value.name) ? value.id : value.name);
+            SetOptionalText(versionText, "Sürüm: " + Dash(value.version));
+            SetOptionalText(authorText, "Yapımcı: " + Dash(value.author));
+            SetOptionalText(identityText, "Kimlik: " + Dash(value.identity));
+            SetOptionalText(dependencyInfoText, "Bağımlılık: " + (isBuiltIn ? "Yok" : (runtime.GetDependencyError(value) ?? "Yok")));
+            SetOptionalText(descriptionInfoText, string.IsNullOrWhiteSpace(value.description) ? "Açıklama yok." : value.description);
             ClearSettingRows();
             if (expandablePanel != null) expandablePanel.SetActive(false);
             if (!isBuiltIn && settingsContent != null && settingPrefab != null && value.settings != null)
@@ -63,6 +77,7 @@ namespace Madness.Mods
                 enabledToggle.onValueChanged.AddListener(OnToggleChanged);
             }
             BindButton(selectButton, OnSelectClicked);
+            BindButton(closePanelButton, ClosePanel);
             BindButton(moveUpButton, MoveUp);
             BindButton(moveDownButton, MoveDown);
         }
@@ -76,6 +91,10 @@ namespace Madness.Mods
         }
 
         private string Dash(string value) { return string.IsNullOrWhiteSpace(value) ? "-" : value; }
+        private void SetOptionalText(TMP_Text target, string value)
+        {
+            if (target != null) target.text = value ?? "";
+        }
         private void BindButton(Button button, UnityEngine.Events.UnityAction action)
         {
             if (button == null) return;
@@ -86,6 +105,10 @@ namespace Madness.Mods
         {
             if (expandablePanel != null) expandablePanel.SetActive(!expandablePanel.activeSelf);
             if (select != null) select(manifest, builtIn);
+        }
+        private void ClosePanel()
+        {
+            if (expandablePanel != null) expandablePanel.SetActive(false);
         }
         private void OnToggleChanged(bool value) { if (toggle != null) toggle(manifest, builtIn); }
 

@@ -24,6 +24,7 @@ namespace Madness.Mods
         [SerializeField] private TMP_Dropdown sortDropdown;
 
         [Header("Paneller - GameObject'leri sen oluştur ve bağla")]
+        [SerializeField] private GameObject modPanel;
         [SerializeField] private GameObject detailPanel;
         [SerializeField] private GameObject settingsPanel;
         [SerializeField] private GameObject diagnosticsPanel;
@@ -42,10 +43,12 @@ namespace Madness.Mods
         [SerializeField] private ModSettingUI settingPrefab;
 
         [Header("Kontrol butonları - isteğe bağlı")]
+        [SerializeField] private Button anaButton;
         [SerializeField] private Button refreshButton;
         [SerializeField] private Button importButton;
         [SerializeField] private Button selectedToggleButton;
         [SerializeField] private Button selectedDeleteButton;
+        [SerializeField] private TMP_Text selectedDeleteButtonLabel;
         [SerializeField] private Button deleteConfirmButton;
         [SerializeField] private Button deleteCancelButton;
         [SerializeField] private Button reloadButton;
@@ -68,6 +71,7 @@ namespace Madness.Mods
         private ModManifest selected;
         private bool selectedBuiltIn;
         private string pendingDeleteId;
+        private int deleteClickStage;
         private int pendingSaveSlot = -1;
         private List<ModProfile> profiles = new List<ModProfile>();
 
@@ -88,11 +92,11 @@ namespace Madness.Mods
 
         private void BindButtons()
         {
+            AddClick(anaButton, OpenModPanel);
             AddClick(refreshButton, Refresh);
             AddClick(importButton, PickAndImportPackage);
             AddClick(selectedToggleButton, ToggleSelected);
-            AddClick(selectedDeleteButton, AskDeleteSelected);
-            AddClick(deleteConfirmButton, ConfirmDelete);
+            AddClick(selectedDeleteButton, HandleDeleteButtonClick);
             AddClick(deleteCancelButton, CancelDelete);
             AddClick(reloadButton, ReloadMods);
             AddClick(continueWithMissingModsButton, ContinuePendingSaveLoad);
@@ -103,6 +107,12 @@ namespace Madness.Mods
             if (searchInput != null) searchInput.onValueChanged.AddListener(_ => Refresh());
             if (filterDropdown != null) filterDropdown.onValueChanged.AddListener(_ => Refresh());
             if (sortDropdown != null) sortDropdown.onValueChanged.AddListener(_ => Refresh());
+        }
+
+        public void OpenModPanel()
+        {
+            if (modPanel != null) modPanel.SetActive(true);
+            Refresh();
         }
 
         private void AddClick(Button button, UnityEngine.Events.UnityAction action)
@@ -246,14 +256,49 @@ namespace Madness.Mods
             selected = manifest;
             selectedBuiltIn = false;
             pendingDeleteId = manifest.id;
+            deleteClickStage = 1;
             if (detailPanel != null) detailPanel.SetActive(true);
-            if (deleteConfirmButton != null) deleteConfirmButton.gameObject.SetActive(true);
-            SetStatus("Silmek için onayla: " + manifest.name);
+            SetDeleteButtonLabel("Emin misin?");
+            SetStatus("Emin misin? Silmek için SilButton'a tekrar bas.");
         }
 
-        private void AskDeleteSelected()
+        private void HandleDeleteButtonClick()
         {
-            if (selected != null) AskDelete(selected, selectedBuiltIn);
+            if (selected == null)
+            {
+                SetStatus("Önce bir mod seçmelisin.");
+                return;
+            }
+            if (selectedBuiltIn)
+            {
+                SetStatus("Yerleşik modlar silinemez.");
+                return;
+            }
+
+            if (!string.Equals(pendingDeleteId, selected.id, StringComparison.OrdinalIgnoreCase))
+            {
+                pendingDeleteId = selected.id;
+                deleteClickStage = 1;
+            }
+            else
+            {
+                deleteClickStage++;
+            }
+
+            if (deleteClickStage == 1)
+            {
+                SetDeleteButtonLabel("Emin misin?");
+                SetStatus("Emin misin? Silmek için SilButton'a tekrar bas.");
+            }
+            else if (deleteClickStage == 2)
+            {
+                SetDeleteButtonLabel("Son şansın");
+                SetStatus("Son şansın. Silmek için SilButton'a üçüncü kez bas.");
+            }
+            else
+            {
+                ConfirmDelete();
+            }
         }
 
         private void ConfirmDelete()
@@ -262,6 +307,8 @@ namespace Madness.Mods
             string message;
             runtime.DeleteExternalMod(pendingDeleteId, out message);
             pendingDeleteId = null;
+            deleteClickStage = 0;
+            SetDeleteButtonLabel("Sil");
             SetStatus(message);
             Refresh();
         }
@@ -269,7 +316,14 @@ namespace Madness.Mods
         private void CancelDelete()
         {
             pendingDeleteId = null;
+            deleteClickStage = 0;
+            SetDeleteButtonLabel("Sil");
             SetStatus("Silme iptal edildi.");
+        }
+
+        private void SetDeleteButtonLabel(string text)
+        {
+            if (selectedDeleteButtonLabel != null) selectedDeleteButtonLabel.text = text;
         }
 
         public void ChangeSelectedLoadOrder(int delta)
