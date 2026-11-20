@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}
+  m_Color: {r: 0.105882354, g: 0.6745098, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -940,7 +940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8301887, g: 0.6304735, b: 0.6304735, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1096,8 +1096,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Madness.Mods.ModCardUI
   titleText: {fileID: 1781728578129151424}
-  detailsText: {fileID: 0}
-  statusText: {fileID: 0}
+  detailsText: {fileID: 2377927211933454725}
+  statusText: {fileID: 4048550238339410206}
   descriptionText: {fileID: 0}
   dependencyText: {fileID: 0}
   expandablePanel: {fileID: 6332297036562572294}
@@ -1173,10 +1173,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.8584906, g: 0.28751338, b: 0.28751338, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_HighlightedColor: {r: 0.7075472, g: 0.51731044, b: 0.51731044, a: 1}
+    m_PressedColor: {r: 0.5803922, g: 0, b: 0, a: 1}
+    m_SelectedColor: {r: 0.7075472, g: 0.5306604, b: 0.5306604, a: 1}
+    m_DisabledColor: {r: 0.6603774, g: 0.47036314, b: 0.47036314, a: 0.5019608}
     m_ColorMultiplier: 3.35
     m_FadeDuration: 0.1
   m_SpriteState:
